@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tom.im">
+
+    <application>
+        <!--全面屏适配-->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
+
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="高德地图的 AppKey" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.tom.im.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
+
+    </application>
+</manifest>

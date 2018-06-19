@@ -1,0 +1,83 @@
+if (isBuildModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+apply plugin: 'org.greenrobot.greendao'
+
+
+android {
+    compileSdkVersion rootProject.ext.android["COMPILE_SDK_VERSION"]
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
+        targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
+        versionCode 1
+        versionName "1.0.0"
+
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+                includeCompileClasspath true
+            }
+        }
+
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "boolean", "IS_BUILD_MODULE", "${isBuildModule}"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            buildConfigField "boolean", "IS_BUILD_MODULE", "${isBuildModule}"
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            if (isBuildModule.toBoolean()) {
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/release/AndroidManifest.xml'
+            }
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation rootProject.ext.dependencies["appcompat-v7"]
+    implementation rootProject.ext.dependencies["design"]
+    implementation rootProject.ext.dependencies["constraint-layout"]
+    implementation rootProject.ext.dependencies["eventbus"]
+    implementation rootProject.ext.dependencies["glide"]
+    implementation rootProject.ext.dependencies["greendao"]
+    implementation rootProject.ext.dependencies["gson"]
+    //公共业务类库（必备）
+    implementation project(':CommonSDK')
+    //加强版WebView（常用）
+    implementation project(':ThirdLibrarys:AgentWeb')
+    //样式依赖库 （可选）
+    //implementation project(':ThirdLibrarys:QMUI')
+    //轮播图控件（可选）
+    //implementation project(':ThirdLibrarys:Banner')
+    if (isBuildModule.toBoolean()) {
+        annotationProcessor rootProject.ext.dependencies["arouter-compiler"]
+    } else {
+        compileOnly rootProject.ext.dependencies["arouter-compiler"]
+    }
+    implementation project(':RongCloud:CallKit')
+    implementation project(':RongCloud:CallLib')
+    implementation project(':RongCloud:IMKit')
+    implementation project(':RongCloud:IMLib')
+}

@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+android {
+    compileSdkVersion rootProject.ext.android["COMPILE_SDK_VERSION"]
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
+        targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
+        versionCode 1
+        versionName "1.0.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    api project(':ThirdLibrarys:BRVAH')
+    api project(':ThirdLibrarys:TomBaseLib')
+    implementation rootProject.ext.dependencies["appcompat-v7"]
+    implementation rootProject.ext.dependencies["constraint-layout"]
+    implementation rootProject.ext.dependencies["design"]
+    implementation rootProject.ext.dependencies["eventbus"]
+    implementation rootProject.ext.dependencies["glide"]
+    implementation rootProject.ext.dependencies["gson"]
+    implementation project(':ThirdLibrarys:QMUI')
+    implementation rootProject.ext.dependencies["greendao"]
+    implementation project(':ThirdLibrarys:EasyPhotos')
+}

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/qmui_config_color_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/bg_et"
+            android:drawableLeft="@mipmap/icon_phone"
+            android:drawablePadding="@dimen/dp_10"
+            android:ems="10"
+            android:gravity="left"
+            android:hint="请输入用户名"
+            android:imeOptions="actionNext"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:textSize="@dimen/sp_14" />
+
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/bg_et"
+            android:drawableLeft="@mipmap/icon_password"
+            android:drawablePadding="@dimen/dp_10"
+            android:ems="10"
+            android:hint="请输入密码"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="@dimen/sp_14" />
+
+        <EditText
+            android:id="@+id/et_repassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/bg_et"
+            android:drawableLeft="@mipmap/icon_password"
+            android:drawablePadding="@dimen/dp_10"
+            android:ems="10"
+            android:hint="请再次输入密码"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="@dimen/sp_14" />
+
+        <com.qmuiteam.tom.widget.roundwidget.QMUIRoundButton
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="64dp"
+            android:layout_marginLeft="64dp"
+            android:layout_marginRight="64dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="64dp"
+            android:minWidth="160dp"
+            android:padding="8dp"
+            android:text="注册"
+            android:textSize="@dimen/sp_16"
+
+            />
+    </LinearLayout>
+</ScrollView>

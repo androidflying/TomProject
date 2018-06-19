@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.android["COMPILE_SDK_VERSION"]
+
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
+        targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
+        versionCode 1
+        versionName "6.9.2"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api files('libs/umeng-share-QQ-simplify-6.9.2.jar')
+    api files('libs/umeng-share-sina-simplify-6.9.2.jar')
+    api files('libs/umeng-share-wechat-simplify-6.9.2.jar')
+    api files('libs/umeng-sharetool-6.9.2.jar')
+    api files('libs/SecurityEnvSDK-release-1.1.0.jar')
+    api project(':Umeng:Common')
+}

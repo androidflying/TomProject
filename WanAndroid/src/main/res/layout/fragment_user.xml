@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tab_panel_bg">
+
+
+    <com.qmuiteam.tom.widget.QMUIAppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:fitsSystemWindows="true">
+
+        <com.qmuiteam.tom.widget.QMUICollapsingTopBarLayout
+            android:id="@+id/collapsing_topbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:qmui_collapsedTitleGravity="center"
+            app:qmui_contentScrim="?attr/qmui_config_color_blue"
+            app:qmui_expandedTitleGravity="center_horizontal|bottom"
+            app:qmui_expandedTitleMarginBottom="20dp"
+            app:qmui_statusBarScrim="?attr/qmui_config_color_blue">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="false"
+                app:qmui_layout_collapseMode="parallax"
+                app:qmui_layout_collapseParallaxMultiplier="0.7">
+
+                <ImageView
+                    android:id="@+id/fragment_user_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.qmuiteam.tom.widget.QMUIRadiusImageView
+                        android:id="@+id/iv_user_header"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_launcher_round"
+                        app:qmui_border_width="0dp"
+                        app:qmui_is_circle="true" />
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+                </LinearLayout>
+
+
+            </FrameLayout>
+
+            <com.qmuiteam.tom.widget.QMUITopBar
+                android:id="@+id/topbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/qmui_topbar_height"
+                android:fitsSystemWindows="true"
+                app:qmui_layout_collapseMode="pin"
+                app:qmui_topbar_bg_color="@color/qmui_config_color_transparent"
+                app:qmui_topbar_need_separator="false" />
+        </com.qmuiteam.tom.widget.QMUICollapsingTopBarLayout>
+    </com.qmuiteam.tom.widget.QMUIAppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/qmui_config_color_background"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.qmuiteam.tom.widget.grouplist.QMUIGroupListView
+            android:id="@+id/groupListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_color_blue"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.LoginActivity">
+
+    <com.qmuiteam.tom.widget.QMUITopBar
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/qmui_topbar_height" />
+
+    <com.qmuiteam.tom.widget.QMUITabSegment
+        android:id="@+id/tabSegment"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:qmui_tab_mode="fixed"
+        app:qmui_tab_has_indicator="true"
+        android:textSize="@dimen/sp_14"
+        app:qmui_tab_indicator_top="false"
+        app:qmui_tab_indicator_height="2dp"
+        android:background="@drawable/tab_panel_bg"
+        app:layout_constraintTop_toBottomOf="@+id/topbar" />
+
+    <com.qmuiteam.tom.widget.QMUIViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/qmui_config_color_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabSegment" />
+
+</android.support.constraint.ConstraintLayout>
