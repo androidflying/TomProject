@@ -27,6 +27,6 @@ dependencies {
     api files('libs/umeng-share-sina-simplify-6.9.2.jar')
     api files('libs/umeng-share-wechat-simplify-6.9.2.jar')
     api files('libs/umeng-sharetool-6.9.2.jar')
-    api files('libs/SecurityEnvSDK-release-1.1.0.jar')
+    api files('libs/umeng-share-core-6.9.2.jar')
     api project(':Umeng:Common')
 }

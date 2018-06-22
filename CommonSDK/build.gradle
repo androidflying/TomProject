@@ -32,4 +32,12 @@ dependencies {
     implementation project(':ThirdLibrarys:QMUI')
     implementation rootProject.ext.dependencies["greendao"]
     implementation project(':ThirdLibrarys:EasyPhotos')
+
+
+    //友盟统计
+    implementation project(':Umeng:Analytics')
+    //友盟推送
+    implementation project(':Umeng:Push')
+    //友盟分享
+    implementation project(':Umeng:Share')
 }

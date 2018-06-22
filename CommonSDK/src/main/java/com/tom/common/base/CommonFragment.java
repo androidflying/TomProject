@@ -3,6 +3,7 @@ package com.tom.common.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.qmuiteam.tom.widget.dialog.QMUITipDialog;
 import com.tom.baselib.BaseLazyFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,5 +38,15 @@ public abstract class CommonFragment extends BaseLazyFragment {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+    }
+
+
+    public void showLoadingDialog() {
+    }
+
+    public void showLoadingDialog(String message) {
+    }
+
+    public void missLoadingDialog() {
     }
 }

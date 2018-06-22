@@ -9,7 +9,4 @@ package com.tom.common.util;
  */
 public class AnalyticsUtil {
 
-    public static void init() {
-
-    }
 }
