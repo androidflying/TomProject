@@ -2,6 +2,7 @@ package com.tom.baselib;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -33,6 +34,7 @@ public abstract class BaseApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
         Utils.init(this);
         initARouter();
         initNetWork();
