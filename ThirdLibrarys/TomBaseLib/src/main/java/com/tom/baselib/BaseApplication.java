@@ -1,11 +1,13 @@
 package com.tom.baselib;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.tom.baselib.utils.ActivityUtils;
 import com.tom.baselib.utils.CrashUtils;
 import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.Utils;
@@ -29,19 +31,25 @@ import okhttp3.OkHttpClient;
  * 创建日期: 2018/4/18
  * 描述：基类Application
  */
-public abstract class BaseApplication extends MultiDexApplication {
+public class BaseApplication extends MultiDexApplication {
+
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+
         Utils.init(this);
         initARouter();
         initNetWork();
         initLog();
         initCrash();
 
+        modulesApplicationInit();
+
     }
+
 
     private void initARouter() {
         if (BuildConfig.DEBUG) {
@@ -146,5 +154,27 @@ public abstract class BaseApplication extends MultiDexApplication {
         }
     }
 
-    public abstract void initCrashReport();
+    public void initCrashReport() {
+
+    }
+
+
+    private void modulesApplicationInit() {
+        for (String moduleImpl : ConfigModule.MODULESLIST) {
+            try {
+                Class<?> clazz = Class.forName(moduleImpl);
+                Object obj = clazz.newInstance();
+                if (obj instanceof ApplicationImpl) {
+                    ((ApplicationImpl) obj).onCreate(this);
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

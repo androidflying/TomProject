@@ -18,4 +18,9 @@ public class ConstantValues {
      * 是否登录
      */
     public static final String IS_LOGIN = "is_login";
+
+    /**
+     * 融云登录的token
+     */
+    public static final String IM_TOKEN = "im_token";
 }

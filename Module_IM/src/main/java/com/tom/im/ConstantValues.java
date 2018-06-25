@@ -14,4 +14,6 @@ public class ConstantValues {
     public static final String IS_LOGIN = "is_login";
 
 
+    public static final String EXIT = "EXIT";
+
 }

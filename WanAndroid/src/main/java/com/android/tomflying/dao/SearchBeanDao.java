@@ -93,7 +93,7 @@ public class SearchBeanDao extends AbstractDao<SearchBean, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public SearchBean readEntity(Cursor cursor, int offset) {

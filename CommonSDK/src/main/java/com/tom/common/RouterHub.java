@@ -26,8 +26,12 @@ public interface RouterHub {
     //宿主 App 组件
 
     String APP = "/app";
-    //....
 
+    //即时通讯组件
+
+    String IM = "/im";
+
+    //....
 
     /**
      * 服务组件, 用于给每个组件暴露特有的服务
@@ -43,4 +47,11 @@ public interface RouterHub {
     String APP_MAINACTIVITY = APP + "/MainActivity";
 
     //....
+
+    /**
+     * 即时通讯分组
+     */
+    String IM_CHAT_DETAIL = IM + "/ChatDetailActivity";
+    String IM_CHAT_LIST = IM + "/ChatListActivity";
+
 }

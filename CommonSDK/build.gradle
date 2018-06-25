@@ -29,8 +29,8 @@ dependencies {
     implementation rootProject.ext.dependencies["eventbus"]
     implementation rootProject.ext.dependencies["glide"]
     implementation rootProject.ext.dependencies["gson"]
-    implementation project(':ThirdLibrarys:QMUI')
     implementation rootProject.ext.dependencies["greendao"]
+    implementation project(':ThirdLibrarys:QMUI')
     implementation project(':ThirdLibrarys:EasyPhotos')
 
 
@@ -40,4 +40,5 @@ dependencies {
     implementation project(':Umeng:Push')
     //友盟分享
     implementation project(':Umeng:Share')
+
 }

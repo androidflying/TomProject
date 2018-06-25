@@ -1,5 +1,6 @@
 package com.qmuiteam.tom.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -10,6 +11,7 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -104,6 +106,7 @@ public class QMUIDisplayHelper {
      * @return
      */
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int[] getRealScreenSize(Context context) {
         int[] size = new int[2];
         int widthPixels, heightPixels;
@@ -247,6 +250,7 @@ public class QMUIDisplayHelper {
      * @param context
      * @return
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int getNavMenuHeight(Context context) {
         if (!isNavMenuExist(context)) {
             return 0;
@@ -298,6 +302,7 @@ public class QMUIDisplayHelper {
      * @param context
      * @return
      */
+    @SuppressLint("MissingPermission")
     public static boolean hasInternet(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
