@@ -1,12 +1,16 @@
 package com.tom.baselib.utils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import com.tom.baselib.BuildConfig;
 
@@ -21,6 +25,9 @@ import java.lang.reflect.Field;
  */
 public class KeyboardUtils {
     private static int sContentViewInvisibleHeightPre;
+    private static OnGlobalLayoutListener onGlobalLayoutListener;
+    private static OnSoftInputChangedListener onSoftInputChangedListener;
+    private static int sContentViewInvisibleHeightPre5497;
 
     private KeyboardUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -44,7 +51,6 @@ public class KeyboardUtils {
             view.setFocusableInTouchMode(true);
             view.requestFocus();
         }
-
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
@@ -133,10 +139,15 @@ public class KeyboardUtils {
     }
 
     private static int getContentViewInvisibleHeight(final Activity activity) {
-        final View contentView = activity.findViewById(android.R.id.content);
-        Rect outRect = new Rect();
-        contentView.getWindowVisibleDisplayFrame(outRect);
-        return contentView.getBottom() - outRect.bottom;
+        final FrameLayout contentView = activity.findViewById(android.R.id.content);
+        final View contentViewChild = contentView.getChildAt(0);
+        final Rect outRect = new Rect();
+        contentViewChild.getWindowVisibleDisplayFrame(outRect);
+        LogUtils.d(
+                contentViewChild.getTop(), contentViewChild.getBottom(),
+                outRect.top, outRect.bottom
+        );
+        return contentViewChild.getBottom() - outRect.bottom;
     }
 
     /**
@@ -147,20 +158,72 @@ public class KeyboardUtils {
      */
     public static void registerSoftInputChangedListener(final Activity activity,
                                                         final OnSoftInputChangedListener listener) {
-        final View contentView = activity.findViewById(android.R.id.content);
+        final int flags = activity.getWindow().getAttributes().flags;
+        if ((flags & WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) != 0) {
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+        final FrameLayout contentView = activity.findViewById(android.R.id.content);
         sContentViewInvisibleHeightPre = getContentViewInvisibleHeight(activity);
-        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        onSoftInputChangedListener = listener;
+        onGlobalLayoutListener = new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (listener != null) {
+                if (onSoftInputChangedListener != null) {
                     int height = getContentViewInvisibleHeight(activity);
                     if (sContentViewInvisibleHeightPre != height) {
-                        listener.onSoftInputChanged(height);
+                        onSoftInputChangedListener.onSoftInputChanged(height);
                         sContentViewInvisibleHeightPre = height;
                     }
                 }
             }
-        });
+        };
+        contentView.getViewTreeObserver()
+                .addOnGlobalLayoutListener(onGlobalLayoutListener);
+    }
+
+    /**
+     * Register soft input changed listener.
+     *
+     * @param activity The activity.
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public static void unregisterSoftInputChangedListener(final Activity activity) {
+        final View contentView = activity.findViewById(android.R.id.content);
+        contentView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
+        onSoftInputChangedListener = null;
+        onGlobalLayoutListener = null;
+    }
+
+    /**
+     * Fix the bug of 5497 in Android.
+     *
+     * @param activity The activity.
+     */
+    public static void fixAndroidBug5497(final Activity activity) {
+        final int flags = activity.getWindow().getAttributes().flags;
+        if ((flags & WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) != 0) {
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+        final FrameLayout contentView = activity.findViewById(android.R.id.content);
+        final View contentViewChild = contentView.getChildAt(0);
+        final int paddingBottom = contentViewChild.getPaddingBottom();
+        sContentViewInvisibleHeightPre5497 = getContentViewInvisibleHeight(activity);
+        contentView.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int height = getContentViewInvisibleHeight(activity);
+                        if (sContentViewInvisibleHeightPre5497 != height) {
+                            contentViewChild.setPadding(
+                                    contentViewChild.getPaddingLeft(),
+                                    contentViewChild.getPaddingTop(),
+                                    contentViewChild.getPaddingRight(),
+                                    paddingBottom + height
+                            );
+                            sContentViewInvisibleHeightPre5497 = height;
+                        }
+                    }
+                });
     }
 
     /**
@@ -209,9 +272,7 @@ public class KeyboardUtils {
      * <p>Copy the following code in ur activity.</p>
      */
     public static void clickBlankArea2HideSoftInput() {
-        if (BuildConfig.DEBUG) {
-            Log.i("KeyboardUtils", "Please refer to the following code.");
-        }
+        Log.i("KeyboardUtils", "Please refer to the following code.");
         /*
         @Override
         public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -227,7 +288,6 @@ public class KeyboardUtils {
             }
             return super.dispatchTouchEvent(ev);
         }
-
         // Return whether touch the view.
         private boolean isShouldHideKeyboard(View v, MotionEvent event) {
             if (v != null && (v instanceof EditText)) {

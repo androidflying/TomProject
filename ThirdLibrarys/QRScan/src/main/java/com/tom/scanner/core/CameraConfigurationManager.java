@@ -22,54 +22,50 @@ public class CameraConfigurationManager {
     private static final int TEN_DESIRED_ZOOM = 27;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private final Context mContext;
-    private Point mScreenResolution;
     private Point mCameraResolution;
     private Point mPreviewResolution;
 
-    public CameraConfigurationManager(Context context) {
+    CameraConfigurationManager(Context context) {
         mContext = context;
     }
 
-    public void initFromCameraParameters(Camera camera) {
+    void initFromCameraParameters(Camera camera) {
         Camera.Parameters parameters = camera.getParameters();
 
         if (CameraConfigurationManager.autoFocusAble(camera)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
 
-        mScreenResolution = QRCodeUtil.getScreenResolution(mContext);
+        Point screenResolution = QRCodeUtil.getScreenResolution(mContext);
         Point screenResolutionForCamera = new Point();
-        screenResolutionForCamera.x = mScreenResolution.x;
-        screenResolutionForCamera.y = mScreenResolution.y;
+        screenResolutionForCamera.x = screenResolution.x;
+        screenResolutionForCamera.y = screenResolution.y;
 
-        // preview size is always something like 480*320, other 320*480
-        int orientation = QRCodeUtil.getOrientation(mContext);
-
-        if (orientation == QRCodeUtil.ORIENTATION_PORTRAIT) {
-            screenResolutionForCamera.x = mScreenResolution.y;
-            screenResolutionForCamera.y = mScreenResolution.x;
+        if (QRCodeUtil.isPortrait(mContext)) {
+            screenResolutionForCamera.x = screenResolution.y;
+            screenResolutionForCamera.y = screenResolution.x;
         }
 
         mPreviewResolution = getPreviewResolution(parameters, screenResolutionForCamera);
 
-        if (orientation == QRCodeUtil.ORIENTATION_PORTRAIT) {
+        if (QRCodeUtil.isPortrait(mContext)) {
             mCameraResolution = new Point(mPreviewResolution.y, mPreviewResolution.x);
         } else {
             mCameraResolution = mPreviewResolution;
         }
     }
 
-    public static boolean autoFocusAble(Camera camera) {
+    private static boolean autoFocusAble(Camera camera) {
         List<String> supportedFocusModes = camera.getParameters().getSupportedFocusModes();
         String focusMode = findSettableValue(supportedFocusModes, Camera.Parameters.FOCUS_MODE_AUTO);
         return focusMode != null;
     }
 
-    public Point getCameraResolution() {
+    Point getCameraResolution() {
         return mCameraResolution;
     }
 
-    public void setDesiredCameraParameters(Camera camera) {
+    void setDesiredCameraParameters(Camera camera) {
         Camera.Parameters parameters = camera.getParameters();
         parameters.setPreviewSize(mPreviewResolution.x, mPreviewResolution.y);
         setZoom(parameters);
@@ -78,11 +74,11 @@ public class CameraConfigurationManager {
         camera.setParameters(parameters);
     }
 
-    public void openFlashlight(Camera camera) {
+    void openFlashlight(Camera camera) {
         doSetTorch(camera, true);
     }
 
-    public void closeFlashlight(Camera camera) {
+    void closeFlashlight(Camera camera) {
         doSetTorch(camera, false);
     }
 
@@ -114,10 +110,13 @@ public class CameraConfigurationManager {
         return result;
     }
 
-    public int getDisplayOrientation() {
+    private int getDisplayOrientation() {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        if (wm == null) {
+            return 0;
+        }
         Display display = wm.getDefaultDisplay();
 
         int rotation = display.getRotation();
@@ -191,7 +190,7 @@ public class CameraConfigurationManager {
             double value;
             try {
                 value = Double.parseDouble(stringValue);
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException ignored) {
                 return tenDesiredZoom;
             }
             int tenValue = (int) (10.0 * value);
@@ -219,7 +218,7 @@ public class CameraConfigurationManager {
                 if (tenDesiredZoom > tenMaxZoom) {
                     tenDesiredZoom = tenMaxZoom;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException ignored) {
             }
         }
 
@@ -230,7 +229,7 @@ public class CameraConfigurationManager {
                 if (tenDesiredZoom > tenMaxZoom) {
                     tenDesiredZoom = tenMaxZoom;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException ignored) {
             }
         }
 
@@ -247,7 +246,7 @@ public class CameraConfigurationManager {
                 if (tenZoomStep > 1) {
                     tenDesiredZoom -= tenDesiredZoom % tenZoomStep;
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException ignored) {
                 // continue
             }
         }

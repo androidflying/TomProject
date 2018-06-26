@@ -35,6 +35,99 @@ public class ShellUtils {
     /**
      * Execute the command.
      *
+     * @param commands        The commands.
+     * @param isRoot          True to use root, false otherwise.
+     * @param isNeedResultMsg True to return the message of result, false otherwise.
+     * @return the single {@link CommandResult} instance
+     */
+    public static CommandResult execCmd(final String[] commands,
+                                        final boolean isRoot,
+                                        final boolean isNeedResultMsg) {
+        int result = -1;
+        if (commands == null || commands.length == 0) {
+            return new CommandResult(result, "", "");
+        }
+        Process process = null;
+        BufferedReader successResult = null;
+        BufferedReader errorResult = null;
+        StringBuilder successMsg = null;
+        StringBuilder errorMsg = null;
+        DataOutputStream os = null;
+        try {
+            process = Runtime.getRuntime().exec(isRoot ? "su" : "sh");
+            os = new DataOutputStream(process.getOutputStream());
+            for (String command : commands) {
+                if (command == null) {
+                    continue;
+                }
+                os.write(command.getBytes());
+                os.writeBytes(LINE_SEP);
+                os.flush();
+            }
+            os.writeBytes("exit" + LINE_SEP);
+            os.flush();
+            result = process.waitFor();
+            if (isNeedResultMsg) {
+                successMsg = new StringBuilder();
+                errorMsg = new StringBuilder();
+                successResult = new BufferedReader(
+                        new InputStreamReader(process.getInputStream(), "UTF-8")
+                );
+                errorResult = new BufferedReader(
+                        new InputStreamReader(process.getErrorStream(), "UTF-8")
+                );
+                String line;
+                if ((line = successResult.readLine()) != null) {
+                    successMsg.append(line);
+                    while ((line = successResult.readLine()) != null) {
+                        successMsg.append(LINE_SEP).append(line);
+                    }
+                }
+                if ((line = errorResult.readLine()) != null) {
+                    errorMsg.append(line);
+                    while ((line = errorResult.readLine()) != null) {
+                        errorMsg.append(LINE_SEP).append(line);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (successResult != null) {
+                    successResult.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (errorResult != null) {
+                    errorResult.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (process != null) {
+                process.destroy();
+            }
+        }
+        return new CommandResult(
+                result,
+                successMsg == null ? "" : successMsg.toString(),
+                errorMsg == null ? "" : errorMsg.toString()
+        );
+    }
+
+    /**
+     * Execute the command.
+     *
      * @param commands The commands.
      * @param isRoot   True to use root, false otherwise.
      * @return the single {@link CommandResult} instance
@@ -85,97 +178,6 @@ public class ShellUtils {
     }
 
     /**
-     * Execute the command.
-     *
-     * @param commands        The commands.
-     * @param isRoot          True to use root, false otherwise.
-     * @param isNeedResultMsg True to return the message of result, false otherwise.
-     * @return the single {@link CommandResult} instance
-     */
-    public static CommandResult execCmd(final String[] commands,
-                                        final boolean isRoot,
-                                        final boolean isNeedResultMsg) {
-        int result = -1;
-        if (commands == null || commands.length == 0) {
-            return new CommandResult(result, null, null);
-        }
-        Process process = null;
-        BufferedReader successResult = null;
-        BufferedReader errorResult = null;
-        StringBuilder successMsg = null;
-        StringBuilder errorMsg = null;
-        DataOutputStream os = null;
-        try {
-            process = Runtime.getRuntime().exec(isRoot ? "su" : "sh");
-            os = new DataOutputStream(process.getOutputStream());
-            for (String command : commands) {
-                if (command == null) {
-                    continue;
-                }
-                os.write(command.getBytes());
-                os.writeBytes(LINE_SEP);
-                os.flush();
-            }
-            os.writeBytes("exit" + LINE_SEP);
-            os.flush();
-            result = process.waitFor();
-            if (isNeedResultMsg) {
-                successMsg = new StringBuilder();
-                errorMsg = new StringBuilder();
-                successResult = new BufferedReader(new InputStreamReader(process.getInputStream(),
-                        "UTF-8"));
-                errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream(),
-                        "UTF-8"));
-                String line;
-                if ((line = successResult.readLine()) != null) {
-                    successMsg.append(line);
-                    while ((line = successResult.readLine()) != null) {
-                        successMsg.append(LINE_SEP).append(line);
-                    }
-                }
-                if ((line = errorResult.readLine()) != null) {
-                    errorMsg.append(line);
-                    while ((line = errorResult.readLine()) != null) {
-                        errorMsg.append(LINE_SEP).append(line);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (successResult != null) {
-                    successResult.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (errorResult != null) {
-                    errorResult.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (process != null) {
-                process.destroy();
-            }
-        }
-        return new CommandResult(
-                result,
-                successMsg == null ? null : successMsg.toString(),
-                errorMsg == null ? null : errorMsg.toString()
-        );
-    }
-
-    /**
      * The result of command.
      */
     public static class CommandResult {
@@ -187,6 +189,14 @@ public class ShellUtils {
             this.result = result;
             this.successMsg = successMsg;
             this.errorMsg = errorMsg;
+        }
+
+
+        @Override
+        public String toString() {
+            return "result: " + result + "\n" +
+                    "successMsg: " + successMsg + "\n" +
+                    "errorMsg: " + errorMsg;
         }
     }
 }
