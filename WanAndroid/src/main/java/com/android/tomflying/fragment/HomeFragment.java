@@ -23,7 +23,6 @@ import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.android.tomflying.valid.CollectAction;
 import com.android.tomflying.valid.LoginValid;
-import com.google.gson.Gson;
 import com.qmuiteam.tom.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.tom.widget.QMUIEmptyView;
 import com.qmuiteam.tom.widget.QMUITopBar;
@@ -35,7 +34,6 @@ import com.tom.baselib.utils.ActivityUtils;
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.itemdecoration.RecyclerViewDecoration;
 import com.tom.network.OkGo;
-import com.tom.network.callback.StringCallback;
 import com.tom.network.model.Response;
 import com.tom.network.request.base.Request;
 
@@ -133,12 +131,30 @@ public class HomeFragment extends MyFragment {
             }
 
             @Override
+            public void onError(Response<LzyResponse<ArticlesBean>> response) {
+                emptyView.setTitleText("网络错误");
+                emptyView.setDetailText(response.body().errorMsg);
+                emptyView.setButton("重试", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getArticles(true);
+                    }
+                });
+                articleAdapter.setEmptyView(emptyView);
+            }
+
+            @Override
+            public void onFinish() {
+                missLoadingDialog();
+            }
+
+            @Override
             public void onSuccess(Response<LzyResponse<ArticlesBean>> response) {
                 ArticlesBean data = response.body().data;
                 articleAdapter.setEnableLoadMore(!data.isOver());
                 //说明到最后一页了
                 if (data.getCurPage() == data.getPageCount()) {
-                    articleAdapter.loadMoreEnd();
+                    articleAdapter.loadMoreEnd(true);
                 }
                 if (data.getData() == null || data.getData().size() == 0) {
                     emptyView.show("暂无数据", "快去看看其他模块吧");
@@ -157,23 +173,7 @@ public class HomeFragment extends MyFragment {
                 }
             }
 
-            @Override
-            public void onError(Response<LzyResponse<ArticlesBean>> response) {
-                emptyView.setTitleText("网络错误");
-                emptyView.setDetailText(response.body().errorMsg);
-                emptyView.setButton("重试", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getArticles(true);
-                    }
-                });
-                articleAdapter.setEmptyView(emptyView);
-            }
 
-            @Override
-            public void onFinish() {
-                missLoadingDialog();
-            }
         });
 
     }
@@ -261,6 +261,7 @@ public class HomeFragment extends MyFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(ArticleActivity.BUNDLE_URL, articles.get(position).getLink());
                 bundle.putString(ArticleActivity.BUNDLE_TITLE, articles.get(position).getTitle());
+
                 ActivityUtils.startActivity(bundle, ArticleActivity.class);
             }
         });

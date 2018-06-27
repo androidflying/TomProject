@@ -33,7 +33,6 @@ dependencies {
     implementation project(':ThirdLibrarys:QMUI')
     implementation project(':ThirdLibrarys:EasyPhotos')
 
-
     //友盟统计
     implementation project(':Umeng:Analytics')
     //友盟推送

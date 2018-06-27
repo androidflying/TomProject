@@ -26,9 +26,7 @@ public class DaoMaster extends AbstractDaoMaster {
         SearchBeanDao.createTable(db, ifNotExists);
     }
 
-    /**
-     * Drops underlying database table using DAOs.
-     */
+    /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
         SearchBeanDao.dropTable(db, ifExists);
     }
@@ -79,9 +77,7 @@ public class DaoMaster extends AbstractDaoMaster {
         }
     }
 
-    /**
-     * WARNING: Drops all table on Upgrade! Use only during development.
-     */
+    /** WARNING: Drops all table on Upgrade! Use only during development. */
     public static class DevOpenHelper extends OpenHelper {
         public DevOpenHelper(Context context, String name) {
             super(context, name);

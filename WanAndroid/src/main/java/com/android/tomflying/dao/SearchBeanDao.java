@@ -43,16 +43,14 @@ public class SearchBeanDao extends AbstractDao<SearchBean, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SEARCH_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"NAME\" TEXT UNIQUE ," + // 1: name
                 "\"TIME\" INTEGER NOT NULL );"); // 2: time
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"SEARCH_BEAN\"";
         db.execSQL(sql);
@@ -61,12 +59,12 @@ public class SearchBeanDao extends AbstractDao<SearchBean, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, SearchBean entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(2, name);
@@ -77,12 +75,12 @@ public class SearchBeanDao extends AbstractDao<SearchBean, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, SearchBean entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(2, name);
@@ -104,20 +102,20 @@ public class SearchBeanDao extends AbstractDao<SearchBean, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, SearchBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setTime(cursor.getLong(offset + 2));
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(SearchBean entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(SearchBean entity) {
         if (entity != null) {
@@ -136,5 +134,5 @@ public class SearchBeanDao extends AbstractDao<SearchBean, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

@@ -80,4 +80,5 @@ dependencies {
     implementation project(':RongCloud:CallLib')
     implementation project(':RongCloud:IMKit')
     implementation project(':RongCloud:IMLib')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tom.baselib.ApplicationImpl;
+import com.tom.baselib.utils.LogUtils;
 
 /**
  * 作者：tom_flying

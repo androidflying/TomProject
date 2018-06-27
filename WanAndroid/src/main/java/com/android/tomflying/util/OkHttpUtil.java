@@ -1,6 +1,5 @@
-package com.tom.common.util;
+package com.android.tomflying.util;
 
-import com.tom.common.net.JsonCallback;
 import com.tom.network.OkGo;
 import com.tom.network.model.HttpParams;
 
@@ -9,10 +8,9 @@ import com.tom.network.model.HttpParams;
  * 邮箱：tom_flying@163.com
  * 博客: www.tianfeifei.com
  * 创建日期: 2018/6/6
- * 描述：二次封装的网络请求工具
+ * 描述：
  */
 public class OkHttpUtil {
-
     public static <T> void getRequets(String url, Object tag, HttpParams params, JsonCallback<T> callback) {
         OkGo.<T>get(url)
                 .tag(tag)
@@ -25,13 +23,5 @@ public class OkHttpUtil {
                 .tag(tag)
                 .params(params)
                 .execute(callback);
-    }
-
-    public static void cancelTag(Object tag) {
-        OkGo.cancelTag(OkGo.getInstance().getOkHttpClient(), tag);
-    }
-
-    public static void cancelAll() {
-        OkGo.cancelAll(OkGo.getInstance().getOkHttpClient());
     }
 }

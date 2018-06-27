@@ -4,6 +4,11 @@
 
     <application>
 
+
+        <meta-data
+            android:name="ConfigModule"
+            android:value="com.tom.im.AppImpl" />
+
         <!-- 全面屏适配 -->
         <meta-data
             android:name="android.max_aspect"

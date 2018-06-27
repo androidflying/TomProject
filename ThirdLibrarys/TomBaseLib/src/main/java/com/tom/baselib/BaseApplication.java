@@ -10,6 +10,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.tom.baselib.utils.ActivityUtils;
 import com.tom.baselib.utils.CrashUtils;
 import com.tom.baselib.utils.LogUtils;
+import com.tom.baselib.utils.ProcessUtils;
 import com.tom.baselib.utils.Utils;
 import com.tom.network.OkGo;
 import com.tom.network.cache.CacheMode;
@@ -31,24 +32,24 @@ import okhttp3.OkHttpClient;
  * 创建日期: 2018/4/18
  * 描述：基类Application
  */
-public class BaseApplication extends MultiDexApplication {
-
+public abstract class BaseApplication extends MultiDexApplication {
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        MultiDex.install(this);
-
-        Utils.init(this);
-        initARouter();
-        initNetWork();
-        initLog();
-        initCrash();
-
-        modulesApplicationInit();
-
+        if (ProcessUtils.isMainProcess(this)) {
+            MultiDex.install(this);
+            Utils.init(this);
+            initARouter();
+            initNetWork();
+            initLog();
+            initCrash();
+            modulesApplicationInit();
+        }
     }
+
+    protected abstract void modulesApplicationInit();
 
 
     private void initARouter() {
@@ -58,7 +59,6 @@ public class BaseApplication extends MultiDexApplication {
             // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
             ARouter.openDebug();
         }
-
         ARouter.init(this);
     }
 
@@ -154,27 +154,6 @@ public class BaseApplication extends MultiDexApplication {
         }
     }
 
-    public void initCrashReport() {
-
-    }
-
-
-    private void modulesApplicationInit() {
-        for (String moduleImpl : ConfigModule.MODULESLIST) {
-            try {
-                Class<?> clazz = Class.forName(moduleImpl);
-                Object obj = clazz.newInstance();
-                if (obj instanceof ApplicationImpl) {
-                    ((ApplicationImpl) obj).onCreate(this);
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    public abstract void initCrashReport();
 
 }
