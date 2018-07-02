@@ -156,4 +156,10 @@ public abstract class BaseApplication extends MultiDexApplication {
 
     public abstract void initCrashReport();
 
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        ARouter.getInstance().destroy();
+    }
 }

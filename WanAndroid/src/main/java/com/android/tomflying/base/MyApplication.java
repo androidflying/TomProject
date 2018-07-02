@@ -15,6 +15,11 @@ import com.tom.baselib.BaseApplication;
 public class MyApplication extends BaseApplication {
 
     @Override
+    protected void modulesApplicationInit() {
+
+    }
+
+    @Override
     public void initCrashReport() {
         Bugly.init(getApplicationContext(), "e332b521ef", BuildConfig.DEBUG);
     }
