@@ -3,7 +3,6 @@ package com.tom.common.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.qmuiteam.tom.widget.dialog.QMUITipDialog;
 import com.tom.baselib.BaseLazyFragment;
 
 import org.greenrobot.eventbus.EventBus;

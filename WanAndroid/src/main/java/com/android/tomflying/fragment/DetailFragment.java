@@ -127,6 +127,7 @@ public class DetailFragment extends MyFragment {
             @Override
             public void onFinish() {
                 missLoadingDialog();
+                recyclerView.stopScroll();
             }
         });
 

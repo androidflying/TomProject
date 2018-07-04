@@ -2,10 +2,8 @@ package com.tom.common;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tom.baselib.ApplicationImpl;
-import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.Utils;
 import com.tom.common.util.PushUtil;
 import com.umeng.commonsdk.UMConfigure;

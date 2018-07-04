@@ -188,6 +188,7 @@ public class CategoryActivity extends MyActivity {
             @Override
             public void onFinish() {
                 missLoadingDialog();
+                recyclerView.stopScroll();
             }
         });
 

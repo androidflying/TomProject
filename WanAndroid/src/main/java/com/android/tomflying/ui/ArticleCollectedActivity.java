@@ -220,6 +220,7 @@ public class ArticleCollectedActivity extends MyActivity {
             @Override
             public void onFinish() {
                 missLoadingDialog();
+                recyclerView.stopScroll();
             }
         });
     }

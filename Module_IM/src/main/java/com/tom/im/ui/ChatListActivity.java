@@ -1,15 +1,14 @@
 package com.tom.im.ui;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.tom.im.R;
-import com.tom.common.base.CommonActivity;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.tom.common.RouterHub;
+import com.tom.common.base.CommonActivity;
+import com.tom.im.R;
 
 
 /**

@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -21,6 +22,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 /**
@@ -35,23 +37,13 @@ public class QMUIDisplayHelper {
     public static final float DENSITY = Resources.getSystem()
             .getDisplayMetrics().density;
     private static final String TAG = "QMUIDisplayHelper";
-
+    // ====================== Setting ===========================
+    private static final String VIVO_NAVIGATION_GESTURE = "navigation_gesture_on";
+    private static final String HUAWAI_DISPLAY_NOTCH_STATUS = "display_notch_status";
     /**
      * 是否有摄像头
      */
     private static Boolean sHasCamera = null;
-
-    /**
-     * 获取 DisplayMetrics
-     *
-     * @return
-     */
-    public static DisplayMetrics getDisplayMetrics(Context context) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
-                .getDefaultDisplay().getMetrics(displayMetrics);
-        return displayMetrics;
-    }
 
     /**
      * 把以 dp 为单位的值，转化为以 px 为单位的值
@@ -73,14 +65,6 @@ public class QMUIDisplayHelper {
         return (int) (pxValue / DENSITY + 0.5f);
     }
 
-    public static float getDensity(Context context) {
-        return context.getResources().getDisplayMetrics().density;
-    }
-
-    public static float getFontDensity(Context context) {
-        return context.getResources().getDisplayMetrics().scaledDensity;
-    }
-
     /**
      * 获取屏幕宽度
      *
@@ -91,62 +75,15 @@ public class QMUIDisplayHelper {
     }
 
     /**
-     * 获取屏幕高度
+     * 获取 DisplayMetrics
      *
      * @return
      */
-    public static int getScreenHeight(Context context) {
-        return getDisplayMetrics(context).heightPixels;
-    }
-
-    /**
-     * 获取屏幕的真实宽高
-     *
-     * @param context
-     * @return
-     */
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static int[] getRealScreenSize(Context context) {
-        int[] size = new int[2];
-        int widthPixels, heightPixels;
-        WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display d = w.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        d.getMetrics(metrics);
-        // since SDK_INT = 1;
-        widthPixels = metrics.widthPixels;
-        heightPixels = metrics.heightPixels;
-        try {
-            // used when 17 > SDK_INT >= 14; includes window decorations (statusbar bar/menu bar)
-            widthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(d);
-            heightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(d);
-        } catch (Exception ignored) {
-        }
-        try {
-            // used when SDK_INT >= 17; includes window decorations (statusbar bar/menu bar)
-            Point realSize = new Point();
-            d.getRealSize(realSize);
-
-
-            Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
-            widthPixels = realSize.x;
-            heightPixels = realSize.y;
-        } catch (Exception ignored) {
-        }
-
-        size[0] = widthPixels;
-        size[1] = heightPixels;
-        return size;
-
-    }
-
-    public static boolean isNavMenuExist(Context context) {
-        //通过判断设备是否有返回键、菜单键(不是虚拟键,是手机屏幕外的按键)来确定是否有navigation bar
-        boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
-        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-
-        return !hasMenuKey && !hasBackKey;
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics;
     }
 
     /**
@@ -159,6 +96,10 @@ public class QMUIDisplayHelper {
         return (int) (getDensity(context) * dp + 0.5);
     }
 
+    public static float getDensity(Context context) {
+        return context.getResources().getDisplayMetrics().density;
+    }
+
     /**
      * 单位转换: sp -> px
      *
@@ -167,6 +108,10 @@ public class QMUIDisplayHelper {
      */
     public static int sp2px(Context context, int sp) {
         return (int) (getFontDensity(context) * sp + 0.5);
+    }
+
+    public static float getFontDensity(Context context) {
+        return context.getResources().getDisplayMetrics().scaledDensity;
     }
 
     /**
@@ -263,6 +208,65 @@ public class QMUIDisplayHelper {
 
         // 小米 MIX 有nav bar, 而 getRealScreenSize(context)[1] - getScreenHeight(context) = 0
         return getRealScreenSize(context)[1] - getScreenHeight(context);
+    }
+
+    public static boolean isNavMenuExist(Context context) {
+        //通过判断设备是否有返回键、菜单键(不是虚拟键,是手机屏幕外的按键)来确定是否有navigation bar
+        boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+
+        return !hasMenuKey && !hasBackKey;
+    }
+
+    /**
+     * 获取屏幕的真实宽高
+     *
+     * @param context
+     * @return
+     */
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static int[] getRealScreenSize(Context context) {
+        int[] size = new int[2];
+        int widthPixels, heightPixels;
+        WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display d = w.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        d.getMetrics(metrics);
+        // since SDK_INT = 1;
+        widthPixels = metrics.widthPixels;
+        heightPixels = metrics.heightPixels;
+        try {
+            // used when 17 > SDK_INT >= 14; includes window decorations (statusbar bar/menu bar)
+            widthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(d);
+            heightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(d);
+        } catch (Exception ignored) {
+        }
+        try {
+            // used when SDK_INT >= 17; includes window decorations (statusbar bar/menu bar)
+            Point realSize = new Point();
+            d.getRealSize(realSize);
+
+
+            Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
+            widthPixels = realSize.x;
+            heightPixels = realSize.y;
+        } catch (Exception ignored) {
+        }
+
+        size[0] = widthPixels;
+        size[1] = heightPixels;
+        return size;
+
+    }
+
+    /**
+     * 获取屏幕高度
+     *
+     * @return
+     */
+    public static int getScreenHeight(Context context) {
+        return getDisplayMetrics(context).heightPixels;
     }
 
     public static final boolean hasCamera(Context context) {
@@ -389,6 +393,71 @@ public class QMUIDisplayHelper {
         }
 
     }
+
+    public static boolean hasNavigationBar(Context context) {
+        boolean hasNav = deviceHasNavigationBar();
+        if (!hasNav) {
+            return false;
+        }
+        if (QMUIDeviceHelper.isVivo()) {
+            return vivoNavigationGestureEnabled(context);
+        }
+        return true;
+    }
+
+    /**
+     * 判断设备是否存在NavigationBar
+     *
+     * @return true 存在, false 不存在
+     */
+    private static boolean deviceHasNavigationBar() {
+        boolean haveNav = false;
+        try {
+            //1.通过WindowManagerGlobal获取windowManagerService
+            // 反射方法：IWindowManager windowManagerService = WindowManagerGlobal.getWindowManagerService();
+            Class<?> windowManagerGlobalClass = Class.forName("android.view.WindowManagerGlobal");
+            Method getWmServiceMethod = windowManagerGlobalClass.getDeclaredMethod("getWindowManagerService");
+            getWmServiceMethod.setAccessible(true);
+            //getWindowManagerService是静态方法，所以invoke null
+            Object iWindowManager = getWmServiceMethod.invoke(null);
+
+            //2.获取windowMangerService的hasNavigationBar方法返回值
+            // 反射方法：haveNav = windowManagerService.hasNavigationBar();
+            Class<?> iWindowManagerClass = iWindowManager.getClass();
+            Method hasNavBarMethod = iWindowManagerClass.getDeclaredMethod("hasNavigationBar");
+            hasNavBarMethod.setAccessible(true);
+            haveNav = (Boolean) hasNavBarMethod.invoke(iWindowManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return haveNav;
+    }
+
+    /**
+     * 获取vivo手机设置中的"navigation_gesture_on"值，判断当前系统是使用导航键还是手势导航操作
+     *
+     * @param context app Context
+     * @return false 表示使用的是虚拟导航键(NavigationBar)， true 表示使用的是手势， 默认是false
+     */
+    public static boolean vivoNavigationGestureEnabled(Context context) {
+        int val = Settings.Secure.getInt(context.getContentResolver(), VIVO_NAVIGATION_GESTURE, 0);
+        return val != 0;
+    }
+
+    public static boolean huaweiIsNotchSetToShowInSetting(Context context) {
+        // 0: 默认
+        // 1: 隐藏显示区域
+        int result = Settings.Secure.getInt(context.getContentResolver(), HUAWAI_DISPLAY_NOTCH_STATUS, 0);
+        return result == 0;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static boolean xiaomiIsNotchSetToShowInSetting(Context context) {
+        // 0: 默认
+        // 1: 隐藏显示区域
+        return Settings.Global.getInt(context.getContentResolver(), "force_black", 0) == 0;
+    }
+
 
     /**
      * 取消全屏

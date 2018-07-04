@@ -180,6 +180,7 @@ public class SearchResultActivity extends MyActivity {
             @Override
             public void onFinish() {
                 missLoadingDialog();
+                recyclerView.stopScroll();
             }
         });
 

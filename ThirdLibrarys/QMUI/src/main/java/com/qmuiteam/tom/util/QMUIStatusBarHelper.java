@@ -95,7 +95,7 @@ public class QMUIStatusBarHelper {
     private static boolean supportTranslucent() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 // Essential Phone 不支持沉浸式，否则系统又不从状态栏下方开始布局又给你下发 WindowInsets
-                && !Build.BRAND.toLowerCase().contains("essential");
+                && !QMUIDeviceHelper.isEssentialPhone();
     }
 
     /**
@@ -270,11 +270,10 @@ public class QMUIStatusBarHelper {
      */
     public static boolean FlymeSetStatusBarLightMode(Window window, boolean light) {
 
-        // flyme 在 6.2.0.0A 支持了 Android 官方的实现方案，旧的方案失效
-        Android6SetStatusBarLightMode(window, light);
-
         boolean result = false;
         if (window != null) {
+            // flyme 在 6.2.0.0A 支持了 Android 官方的实现方案，旧的方案失效
+            Android6SetStatusBarLightMode(window, light);
             try {
                 WindowManager.LayoutParams lp = window.getAttributes();
                 Field darkFlag = WindowManager.LayoutParams.class

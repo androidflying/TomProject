@@ -4,10 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.tom.baselib.utils.SPUtils;
 import com.tom.im.BuildConfig;
-
-import java.util.List;
 
 import io.rong.common.RLog;
 

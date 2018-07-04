@@ -2,10 +2,8 @@ package com.tom.common.base;
 
 import android.os.Bundle;
 
-import com.qmuiteam.tom.widget.dialog.QMUITipDialog;
 import com.tom.baselib.BaseActivity;
-import com.tom.baselib.utils.ToastUtils;
-import com.tom.common.util.ShareUtil;
+import com.tom.common.util.DialogUtil;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
@@ -64,12 +62,14 @@ public abstract class CommonActivity extends BaseActivity {
 
 
     public void showLoadingDialog() {
+        DialogUtil.showLoading();
     }
 
     public void showLoadingDialog(String message) {
+        DialogUtil.showLoading(message);
     }
 
     public void missLoadingDialog() {
-
+        DialogUtil.missLoading();
     }
 }

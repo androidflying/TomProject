@@ -22,9 +22,8 @@ public class QMUIKeyboardHelper {
      * 显示软键盘的延迟时间
      */
     public static final int SHOW_KEYBOARD_DELAY_TIME = 200;
+    public final static int KEYBOARD_VISIBLE_THRESHOLD_DP = 100;
     private static final String TAG = "QMUIKeyboardHelper";
-    private final static int KEYBOARD_VISIBLE_THRESHOLD_DP = 100;
-
 
     public static void showKeyboard(final EditText editText, boolean delay) {
         showKeyboard(editText, delay ? SHOW_KEYBOARD_DELAY_TIME : 0);

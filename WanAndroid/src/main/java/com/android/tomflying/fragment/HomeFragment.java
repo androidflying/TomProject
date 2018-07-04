@@ -146,6 +146,7 @@ public class HomeFragment extends MyFragment {
             @Override
             public void onFinish() {
                 missLoadingDialog();
+                recyclerView.stopScroll();
             }
 
             @Override
