@@ -54,6 +54,15 @@ android {
 
 }
 
+greendao {
+    //数据库的schema版本，也可以理解为数据库版本号
+    schemaVersion rootProject.ext.greendaoVersion
+    //设置DaoMaster、DaoSession、Dao包名，也就是要放置这些类的包的全路径。
+    daoPackage 'com.tom.im.dao'
+    //设置DaoMaster、DaoSession、Dao目录
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation rootProject.ext.dependencies["appcompat-v7"]
@@ -80,5 +89,5 @@ dependencies {
     implementation project(':RongCloud:CallLib')
     implementation project(':RongCloud:IMKit')
     implementation project(':RongCloud:IMLib')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation files('libs/MiPush_SDK_Client_3_6_2.jar')
 }

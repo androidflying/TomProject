@@ -30,6 +30,8 @@ ext {
             BUTTERKNIFE_VERSION:'8.8.1'
     ]
 
+    greendaoVersion = 1
+
 
     dependencies = [
             "appcompat-v7"             : "com.android.support:appcompat-v7:${version["APPCOMPAT_VERSION"]}",
