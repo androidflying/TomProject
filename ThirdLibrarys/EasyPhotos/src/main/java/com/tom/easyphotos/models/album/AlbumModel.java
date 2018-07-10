@@ -41,21 +41,6 @@ public class AlbumModel {
         init(act, callBack);
     }
 
-    public static AlbumModel getInstance(final Activity act, AlbumModel.CallBack callBack) {
-        if (null == instance) {
-            synchronized (AlbumModel.class) {
-                if (null == instance) {
-                    instance = new AlbumModel(act, callBack);
-                }
-            }
-        }
-        return instance;
-    }
-
-    public static void clear() {
-        instance = null;
-    }
-
     private void init(final Activity act, final CallBack callBack) {
         new Thread(new Runnable() {
             @Override
@@ -138,6 +123,10 @@ public class AlbumModel {
                         continue;
                     }
                 }
+                File file = new File(path);
+                if (!file.exists() || !file.isFile()) {
+                    continue;
+                }
 
                 Photo imageItem = new Photo(name, path, dateTime, width, height, size, type);
                 if (!Setting.selectedPhotos.isEmpty()) {
@@ -167,6 +156,21 @@ public class AlbumModel {
             } while (cursor.moveToNext());
             cursor.close();
         }
+    }
+
+    public static AlbumModel getInstance(final Activity act, AlbumModel.CallBack callBack) {
+        if (null == instance) {
+            synchronized (AlbumModel.class) {
+                if (null == instance) {
+                    instance = new AlbumModel(act, callBack);
+                }
+            }
+        }
+        return instance;
+    }
+
+    public static void clear() {
+        instance = null;
     }
 
     /**

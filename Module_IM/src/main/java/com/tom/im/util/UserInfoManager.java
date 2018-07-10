@@ -142,25 +142,25 @@ public class UserInfoManager {
 
     public void getGroupInfo(final String groupsId) {
 //        if (TextUtils.isEmpty(groupsId)) {
-//            return;
-//        }
-//        mWorkHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                Group groupInfo;
-//                Groups group = getGroupsByID(groupsId);
-//                if (group != null) {
-//                    groupInfo = new Group(groupsId, group.getName(), Uri.parse(group.getPortraitUri()));
-//                    RongIM.getInstance().refreshGroupInfoCache(groupInfo);
-//                    if (BuildConfig.DEBUG) {
-//                        LogUtils.e("SealUserInfoManager getGroupInfo from db " + groupsId + " "
-//                                + groupInfo.getName() + " " + groupInfo.getPortraitUri());
-//                    }
-//                    return;
-//                }
-////                GroupInfoEngine.getInstance(mContext).startEngine(groupsId);
-//            }
-//        });
+////            return;
+////        }
+////        mWorkHandler.post(new Runnable() {
+////            @Override
+////            public void run() {
+////                Group groupInfo;
+////                Groups group = getGroupsByID(groupsId);
+////                if (group != null) {
+////                    groupInfo = new Group(groupsId, group.getName(), Uri.parse(group.getPortraitUri()));
+////                    RongIM.getInstance().refreshGroupInfoCache(groupInfo);
+////                    if (BuildConfig.DEBUG) {
+////                        LogUtils.e("SealUserInfoManager getGroupInfo from db " + groupsId + " "
+////                                + groupInfo.getName() + " " + groupInfo.getPortraitUri());
+////                    }
+////                    return;
+////                }
+//////                GroupInfoEngine.getInstance(mContext).startEngine(groupsId);
+////            }
+////        });
     }
 
 

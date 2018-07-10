@@ -27,16 +27,6 @@ public abstract class QMUITouchableSpan extends ClickableSpan implements IToucha
 
     private boolean mIsNeedUnderline = false;
 
-    public abstract void onSpanClick(View widget);
-
-    @Override
-    public final void onClick(View widget) {
-        if (ViewCompat.isAttachedToWindow(widget)) {
-            onSpanClick(widget);
-        }
-    }
-
-
     public QMUITouchableSpan(@ColorInt int normalTextColor,
                              @ColorInt int pressedTextColor,
                              @ColorInt int normalBackgroundColor,
@@ -47,12 +37,33 @@ public abstract class QMUITouchableSpan extends ClickableSpan implements IToucha
         mPressedBackgroundColor = pressedBackgroundColor;
     }
 
+    @Override
+    public final void onClick(View widget) {
+        if (ViewCompat.isAttachedToWindow(widget)) {
+            onSpanClick(widget);
+        }
+    }
+
+    public abstract void onSpanClick(View widget);
+
+    @Override
+    public void updateDrawState(TextPaint ds) {
+        ds.setColor(mIsPressed ? mPressedTextColor : mNormalTextColor);
+        ds.bgColor = mIsPressed ? mPressedBackgroundColor
+                : mNormalBackgroundColor;
+        ds.setUnderlineText(mIsNeedUnderline);
+    }
+
     public int getNormalBackgroundColor() {
         return mNormalBackgroundColor;
     }
 
     public int getNormalTextColor() {
         return mNormalTextColor;
+    }
+
+    public void setNormalTextColor(int normalTextColor) {
+        mNormalTextColor = normalTextColor;
     }
 
     public int getPressedBackgroundColor() {
@@ -63,23 +74,19 @@ public abstract class QMUITouchableSpan extends ClickableSpan implements IToucha
         return mPressedTextColor;
     }
 
-    public void setPressed(boolean isSelected) {
-        mIsPressed = isSelected;
+    public void setPressedTextColor(int pressedTextColor) {
+        mPressedTextColor = pressedTextColor;
     }
 
     public boolean isPressed() {
         return mIsPressed;
     }
 
-    public void setIsNeedUnderline(boolean isNeedUnderline) {
-        mIsNeedUnderline = isNeedUnderline;
+    public void setPressed(boolean isSelected) {
+        mIsPressed = isSelected;
     }
 
-    @Override
-    public void updateDrawState(TextPaint ds) {
-        ds.setColor(mIsPressed ? mPressedTextColor : mNormalTextColor);
-        ds.bgColor = mIsPressed ? mPressedBackgroundColor
-                : mNormalBackgroundColor;
-        ds.setUnderlineText(mIsNeedUnderline);
+    public void setIsNeedUnderline(boolean isNeedUnderline) {
+        mIsNeedUnderline = isNeedUnderline;
     }
 }

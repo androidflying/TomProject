@@ -42,8 +42,8 @@
 
 
         <meta-data
-            android:name="ConfigModule"
-            android:value="com.tom.im.AppImpl" />
+            android:name="com.tom.im.AppImpl"
+            android:value="ConfigModule" />
 
         <!-- 全面屏适配 -->
         <meta-data
@@ -52,16 +52,6 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="高德地图的 AppKey" />
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.tom.im.FileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/rc_file_path" />
-        </provider>
 
         <receiver
             android:name=".TomNotificationReceiver"

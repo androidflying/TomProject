@@ -16,10 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data
-            android:name="ConfigModule"
-            android:value="com.tom.common.AppImpl" />
-
         <activity
             android:name=".ui.LoginActivity"
             android:launchMode="singleInstance"
