@@ -1166,7 +1166,7 @@ public class TimeUtils {
      * @return the day of week in Chinese
      */
     public static String getChineseWeek(final Date date) {
-        return new SimpleDateFormat("E", Locale.CHINA).format(date);
+        return new SimpleDateFormat("E", Locale.CHINA).format(date).replace("周", "");
     }
 
     /**

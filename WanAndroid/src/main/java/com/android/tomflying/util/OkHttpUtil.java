@@ -1,6 +1,7 @@
 package com.android.tomflying.util;
 
 import com.tom.network.OkGo;
+import com.tom.network.callback.StringCallback;
 import com.tom.network.model.HttpParams;
 
 /**
@@ -18,8 +19,23 @@ public class OkHttpUtil {
                 .execute(callback);
     }
 
+    public static void getRequets(String url, Object tag, HttpParams params, StringCallback callback) {
+        OkGo.<String>get(url)
+                .tag(tag)
+                .params(params)
+                .execute(callback);
+    }
+
     public static <T> void postRequest(String url, Object tag, HttpParams params, JsonCallback<T> callback) {
         OkGo.<T>post(url)
+                .tag(tag)
+                .params(params)
+                .execute(callback);
+    }
+
+
+    public static void postRequest(String url, Object tag, HttpParams params, StringCallback callback) {
+        OkGo.<String>post(url)
                 .tag(tag)
                 .params(params)
                 .execute(callback);

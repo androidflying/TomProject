@@ -3,14 +3,17 @@ package com.android.tomflying.fragment;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.tomflying.ApiConstant;
 import com.android.tomflying.GlideImageLoader;
 import com.android.tomflying.R;
+import com.android.tomflying.adapter.HeaderAdapter;
 import com.android.tomflying.adapter.MainArticleAdapter;
 import com.android.tomflying.base.MyFragment;
 import com.android.tomflying.bean.ArticlesBean;
@@ -18,7 +21,10 @@ import com.android.tomflying.bean.BannerBean;
 import com.android.tomflying.bean.LzyResponse;
 import com.android.tomflying.event.LoginEvent;
 import com.android.tomflying.ui.ArticleActivity;
+import com.android.tomflying.ui.CalendarActivity;
 import com.android.tomflying.ui.CategoryActivity;
+import com.android.tomflying.ui.MeiwenActivity;
+import com.android.tomflying.ui.MeiziActivity;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.android.tomflying.valid.CollectAction;
@@ -255,6 +261,7 @@ public class HomeFragment extends MyFragment {
         articleAdapter = new MainArticleAdapter(articles);
         articleAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         recyclerView.setAdapter(articleAdapter);
+        setHeader(articleAdapter);
         recyclerView.addItemDecoration(new RecyclerViewDecoration(mActivity, LinearLayoutManager.VERTICAL));
         articleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -297,6 +304,42 @@ public class HomeFragment extends MyFragment {
         }, recyclerView);
 
 
+    }
+
+    private void setHeader(MainArticleAdapter articleAdapter) {
+        RecyclerView header = new RecyclerView(mActivity);
+        header.setLayoutManager(new GridLayoutManager(mActivity, 3));
+        List<String> datas = new ArrayList<>();
+        datas.add(0, "程序员黄历");
+        datas.add(1, "每日一文");
+        datas.add(2, "妹子集中营");
+        HeaderAdapter adapter = new HeaderAdapter(datas);
+        header.setAdapter(adapter);
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (position) {
+                    case 0:
+                        ActivityUtils.startActivity(CalendarActivity.class);
+                        break;
+                    case 1:
+                        ActivityUtils.startActivity(MeiwenActivity.class);
+                        break;
+                    case 2:
+                        ActivityUtils.startActivity(MeiziActivity.class);
+                        break;
+                    default:
+
+                }
+            }
+        });
+        articleAdapter.addHeaderView(header);
+        TextView textView = new TextView(mActivity);
+        textView.setBackgroundColor(getResources().getColor(R.color.app_color_blue));
+        textView.setTextColor(getResources().getColor(R.color.white));
+        textView.setPadding(32, 32, 32, 32);
+        textView.setText("最新文章");
+        articleAdapter.addHeaderView(textView);
     }
 
 

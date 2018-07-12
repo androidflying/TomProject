@@ -52,5 +52,11 @@ public class ApiConstant {
 
     }
 
+    public interface Others {
+        String MEIZI_URL = "http://gank.io/api/random/data/福利/10";
+        String MEIWEN_URL = "https://interface.meiriyiwen.com/article/today";
+        String MEITU_URL = "https://meiriyiwen.com/images/new_feed/bg_";
+    }
+
 
 }
