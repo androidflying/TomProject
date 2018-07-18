@@ -19,6 +19,7 @@ import com.android.tomflying.base.MyFragment;
 import com.android.tomflying.bean.ArticlesBean;
 import com.android.tomflying.bean.BannerBean;
 import com.android.tomflying.bean.LzyResponse;
+import com.android.tomflying.bean.TypeBean;
 import com.android.tomflying.event.LoginEvent;
 import com.android.tomflying.ui.ArticleActivity;
 import com.android.tomflying.ui.CalendarActivity;
@@ -309,10 +310,10 @@ public class HomeFragment extends MyFragment {
     private void setHeader(MainArticleAdapter articleAdapter) {
         RecyclerView header = new RecyclerView(mActivity);
         header.setLayoutManager(new GridLayoutManager(mActivity, 3));
-        List<String> datas = new ArrayList<>();
-        datas.add(0, "程序员黄历");
-        datas.add(1, "每日一文");
-        datas.add(2, "妹子集中营");
+        List<TypeBean> datas = new ArrayList<>();
+        datas.add(0, new TypeBean(R.mipmap.ic_rili, "程序员黄历"));
+        datas.add(1, new TypeBean(R.mipmap.ic_meiwen, "每日一文"));
+        datas.add(2, new TypeBean(R.mipmap.ic_meizi, "妹子集中营"));
         HeaderAdapter adapter = new HeaderAdapter(datas);
         header.setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {

@@ -4,14 +4,18 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowInsetsCompat;
+import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
+import com.qmuiteam.tom.widget.INotchInsetConsumer;
 import com.qmuiteam.tom.widget.IWindowInsetLayout;
 
 import java.lang.ref.WeakReference;
@@ -24,27 +28,42 @@ import java.lang.ref.WeakReference;
 public class QMUIWindowInsetHelper {
     private final int KEYBOARD_HEIGHT_BOUNDARY;
     private final WeakReference<IWindowInsetLayout> mWindowInsetLayoutWR;
+    private int sApplySystemWindowInsetsCount = 0;
 
+    @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
     public QMUIWindowInsetHelper(ViewGroup viewGroup, IWindowInsetLayout windowInsetLayout) {
         mWindowInsetLayoutWR = new WeakReference<>(windowInsetLayout);
         KEYBOARD_HEIGHT_BOUNDARY = QMUIDisplayHelper.dp2px(viewGroup.getContext(), 100);
-        ViewCompat.setOnApplyWindowInsetsListener(viewGroup,
-                new android.support.v4.view.OnApplyWindowInsetsListener() {
-                    @Override
-                    public WindowInsetsCompat onApplyWindowInsets(View v,
-                                                                  WindowInsetsCompat insets) {
-                        return setWindowInsets(insets);
-                    }
-                });
-    }
 
-    private WindowInsetsCompat setWindowInsets(WindowInsetsCompat insets) {
-        if (Build.VERSION.SDK_INT >= 21 && mWindowInsetLayoutWR.get() != null) {
-            if (mWindowInsetLayoutWR.get().applySystemWindowInsets21(insets)) {
-                return insets.consumeSystemWindowInsets();
-            }
+        if (QMUINotchHelper.isNotchOfficialSupport()) {
+            // WindowInsetsCompat does not exist DisplayCutout stuff...
+            viewGroup.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                    if (mWindowInsetLayoutWR.get() != null &&
+                            mWindowInsetLayoutWR.get().applySystemWindowInsets(windowInsets)) {
+                        windowInsets = windowInsets.consumeDisplayCutout();
+                        return windowInsets.consumeSystemWindowInsets();
+                    }
+                    return windowInsets;
+                }
+            });
+        } else {
+            // some rom crash with WindowInsets...
+            ViewCompat.setOnApplyWindowInsetsListener(viewGroup,
+                    new android.support.v4.view.OnApplyWindowInsetsListener() {
+                        @Override
+                        public WindowInsetsCompat onApplyWindowInsets(View v,
+                                                                      WindowInsetsCompat insets) {
+                            if (Build.VERSION.SDK_INT >= 21 && mWindowInsetLayoutWR.get() != null) {
+                                if (mWindowInsetLayoutWR.get().applySystemWindowInsets21(insets)) {
+                                    return insets.consumeSystemWindowInsets();
+                                }
+                            }
+                            return insets;
+                        }
+                    });
         }
-        return insets;
     }
 
     @SuppressWarnings("deprecation")
@@ -116,6 +135,63 @@ public class QMUIWindowInsetHelper {
         }
 
         return consumed;
+    }
+
+    @TargetApi(23)
+    public boolean defaultApplySystemWindowInsets(ViewGroup viewGroup, WindowInsets insets) {
+        sApplySystemWindowInsetsCount++;
+        if (QMUINotchHelper.isNotchOfficialSupport()) {
+            if (sApplySystemWindowInsetsCount == 1) {
+                // avoid dispatching multiple times
+                dispatchNotchInsetChange(viewGroup);
+            }
+            DisplayCutout displayCutout = insets.getDisplayCutout();
+            if (displayCutout != null) {
+                insets = insets.consumeDisplayCutout();
+            }
+        }
+
+        boolean consumed = false;
+        if (insets.hasSystemWindowInsets()) {
+            boolean showKeyboard = false;
+            if (insets.getSystemWindowInsetBottom() >= KEYBOARD_HEIGHT_BOUNDARY) {
+                showKeyboard = true;
+                QMUIViewHelper.setPaddingBottom(viewGroup, insets.getSystemWindowInsetBottom());
+            } else {
+                QMUIViewHelper.setPaddingBottom(viewGroup, 0);
+            }
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+
+                if (jumpDispatch(child)) {
+                    continue;
+                }
+
+                Rect childInsets = new Rect(
+                        insets.getSystemWindowInsetLeft(),
+                        insets.getSystemWindowInsetTop(),
+                        insets.getSystemWindowInsetRight(),
+                        showKeyboard ? 0 : insets.getSystemWindowInsetBottom());
+                computeInsetsWithGravity(child, childInsets);
+                WindowInsets childWindowInsets = insets.replaceSystemWindowInsets(childInsets);
+                WindowInsets windowInsets = child.dispatchApplyWindowInsets(childWindowInsets);
+                consumed = consumed || windowInsets.isConsumed();
+            }
+        }
+        sApplySystemWindowInsetsCount--;
+        return consumed;
+    }
+
+    private void dispatchNotchInsetChange(View view) {
+        if (view instanceof INotchInsetConsumer) {
+            ((INotchInsetConsumer) view).notifyInsetMaybeChanged();
+        } else if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            int childCount = viewGroup.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                dispatchNotchInsetChange(viewGroup.getChildAt(i));
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")

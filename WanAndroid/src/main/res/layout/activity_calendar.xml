@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_color_blue"
+    android:id="@+id/rootView"
     android:fitsSystemWindows="true"
     tools:context=".ui.CalendarActivity">
 
@@ -38,32 +39,81 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"
+                    android:layout_weight="7"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_nvshen"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/dp_10" />
+                        android:paddingRight="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_10">
 
-                    <TextView
-                        android:id="@+id/tv_drink"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/dp_10" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/sp_16"
+                            android:text="女神指数：" />
 
-                    <TextView
-                        android:id="@+id/tv_zuowei"
+                        <TextView
+                            android:id="@+id/tv_nvshen"
+                            android:layout_width="0dp"
+                            android:textSize="@dimen/sp_16"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/dp_10" />
+                        android:paddingRight="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_10">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/sp_16"
+                            android:text="今日宜饮：" />
+
+                        <com.qmuiteam.tom.widget.QMUIFloatLayout
+                            android:id="@+id/floatLayout"
+                            android:layout_width="0dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content"
+                            app:qmui_childHorizontalSpacing="8dp"
+                            app:qmui_childVerticalSpacing="@dimen/dp_4"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingRight="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_10">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/sp_16"
+                            android:text="码神位置：" />
+
+                        <TextView
+                            android:id="@+id/tv_zuowei"
+                            android:layout_width="0dp"
+                            android:background="@drawable/bg_key"
+                            android:textSize="@dimen/sp_12"
+                            android:gravity="center"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <View
@@ -75,8 +125,9 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:gravity="center_vertical"
+                    android:padding="@dimen/dp_10"
                     android:orientation="vertical">
 
                     <TextView
@@ -84,7 +135,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="2018年7月"
                         android:textSize="16dp" />
 
                     <TextView
@@ -92,7 +142,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="12"
                         android:textSize="48dp" />
 
                     <TextView
@@ -100,7 +149,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="星期四"
                         android:textSize="16dp" />
 
                     <TextView
@@ -109,7 +157,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:paddingTop="@dimen/dp_4"
-                        android:text="戊戌年【狗年】"
                         android:textSize="16dp" />
 
                     <TextView
@@ -118,7 +165,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:paddingTop="@dimen/dp_4"
-                        android:text="五月廿九"
                         android:textSize="16dp" />
 
                     <TextView
@@ -127,7 +173,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:paddingTop="@dimen/dp_4"
-                        android:text="巨蟹座"
                         android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -139,8 +184,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -158,8 +202,10 @@
                     android:background="@color/app_color_blue" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_good"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
                     android:layout_weight="3">
 
                 </android.support.v7.widget.RecyclerView>
@@ -172,8 +218,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -191,8 +236,10 @@
                     android:background="@color/app_color_blue" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_bad"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
                     android:layout_weight="3">
 
                 </android.support.v7.widget.RecyclerView>

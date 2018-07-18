@@ -44,4 +44,11 @@ public class ActiviteBean {
     public void setWeek(boolean week) {
         isWeek = week;
     }
+
+    public ActiviteBean(String thing, String good, String bad, boolean isWeek) {
+        this.thing = thing;
+        this.good = good;
+        this.bad = bad;
+        this.isWeek = isWeek;
+    }
 }

@@ -48,6 +48,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
 import com.qmuiteam.tom.QMUIInterpolatorStaticHolder;
@@ -70,7 +71,6 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
  */
 
 public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowInsetLayout {
-
     private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;
 
     private boolean mRefreshToolbar = true;
@@ -1062,6 +1062,11 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
             mLastInsets = newInsets;
             requestLayout();
         }
+        return true;
+    }
+
+    @Override
+    public boolean applySystemWindowInsets(WindowInsets insets) {
         return true;
     }
 

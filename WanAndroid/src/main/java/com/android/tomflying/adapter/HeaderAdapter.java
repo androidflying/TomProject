@@ -1,11 +1,9 @@
 package com.android.tomflying.adapter;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 
 import com.android.tomflying.R;
-import com.android.tomflying.bean.ArticlesBean;
+import com.android.tomflying.bean.TypeBean;
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.BaseViewHolder;
 
@@ -18,15 +16,17 @@ import java.util.List;
  * 创建日期: 2018/7/12
  * 描述：
  */
-public class HeaderAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class HeaderAdapter extends BaseQuickAdapter<TypeBean, BaseViewHolder> {
 
-    public HeaderAdapter(@Nullable List<String> data) {
+    public HeaderAdapter(@Nullable List<TypeBean> data) {
         super(R.layout.item_main_head, data);
+
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, String item) {
-        helper.setText(R.id.tv_title, item);
+    protected void convert(BaseViewHolder helper, TypeBean item) {
+        helper.setText(R.id.tv_title, item.getTitle());
+        helper.setBackgroundRes(R.id.icon, item.getResId());
     }
 
 }
