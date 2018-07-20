@@ -73,7 +73,6 @@ public class MeiziActivity extends MyActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                meizi.clear();
                 meiziAdapter.setEmptyView(emptyView);
                 ToastUtils.showShort("妹子虽好，莫要贪杯哟~");
                 doBusiness();
@@ -132,6 +131,7 @@ public class MeiziActivity extends MyActivity {
                     meiziAdapter.setEmptyView(emptyView);
                 } else {
                     if (bean.getResults() != null || bean.getResults().size() != 0) {
+                        meizi.clear();
                         meizi.addAll(bean.getResults());
                         meiziAdapter.setNewData(meizi);
                     } else {
