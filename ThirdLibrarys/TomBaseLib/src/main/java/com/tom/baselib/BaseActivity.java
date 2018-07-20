@@ -1,6 +1,8 @@
 package com.tom.baselib;
 
 import android.app.Activity;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -86,5 +88,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         return true;
     }
 
-
+    @Override
+    protected void onResume() {
+        //强制字体大小不随着系统设置改变而改变
+        Resources resource = mActivity.getResources();
+        Configuration configuration = resource.getConfiguration();
+        // 设置字体的缩放比例
+        configuration.fontScale = 1.0f;
+        resource.updateConfiguration(configuration, resource.getDisplayMetrics());
+        super.onResume();
+    }
 }

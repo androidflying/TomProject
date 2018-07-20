@@ -3,6 +3,8 @@ package com.tom.baselib;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
@@ -38,6 +40,7 @@ public abstract class BaseApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
         if (ProcessUtils.isMainProcess(this)) {
             MultiDex.install(this);
             Utils.init(this);
@@ -48,9 +51,6 @@ public abstract class BaseApplication extends MultiDexApplication {
             modulesApplicationInit();
         }
     }
-
-    protected abstract void modulesApplicationInit();
-
 
     private void initARouter() {
         if (BuildConfig.DEBUG) {
@@ -154,6 +154,8 @@ public abstract class BaseApplication extends MultiDexApplication {
         }
     }
 
+    protected abstract void modulesApplicationInit();
+
     public abstract void initCrashReport();
 
 
@@ -162,4 +164,5 @@ public abstract class BaseApplication extends MultiDexApplication {
         super.onTerminate();
         ARouter.getInstance().destroy();
     }
+
 }
