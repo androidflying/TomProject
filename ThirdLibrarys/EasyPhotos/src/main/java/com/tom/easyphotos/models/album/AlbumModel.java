@@ -123,6 +123,7 @@ public class AlbumModel {
                         continue;
                     }
                 }
+
                 File file = new File(path);
                 if (!file.exists() || !file.isFile()) {
                     continue;

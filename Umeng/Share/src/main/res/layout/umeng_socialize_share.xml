@@ -92,7 +92,6 @@
         android:layout_marginRight="15dp"
         android:background="#F2F5F6"
         android:visibility="gone">
-
         <RelativeLayout
             android:layout_width="62dp"
             android:layout_height="62dp"

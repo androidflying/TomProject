@@ -17,6 +17,7 @@ import java.util.List;
 public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> extends BaseQuickAdapter<T, K> {
 
     private static final int NO_TOGGLE_VIEW = 0;
+    private static final String ERROR_NOT_SAME_ITEMTOUCHHELPER = "Item drag and item swipe should pass the same ItemTouchHelper";
     protected int mToggleViewId = NO_TOGGLE_VIEW;
     protected ItemTouchHelper mItemTouchHelper;
     protected boolean itemDragEnabled = false;
@@ -24,11 +25,8 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
     protected OnItemDragListener mOnItemDragListener;
     protected OnItemSwipeListener mOnItemSwipeListener;
     protected boolean mDragOnLongPress = true;
-
     protected View.OnTouchListener mOnToggleViewTouchListener;
     protected View.OnLongClickListener mOnToggleViewLongClickListener;
-
-    private static final String ERROR_NOT_SAME_ITEMTOUCHHELPER = "Item drag and item swipe should pass the same ItemTouchHelper";
 
 
     public BaseItemDraggableAdapter(List<T> data) {
@@ -71,6 +69,29 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
         }
     }
 
+    /**
+     * Enable drag items.
+     * Use itemView as the toggleView when long pressed.
+     *
+     * @param itemTouchHelper {@link ItemTouchHelper}
+     */
+    public void enableDragItem(@NonNull ItemTouchHelper itemTouchHelper) {
+        enableDragItem(itemTouchHelper, NO_TOGGLE_VIEW, true);
+    }
+
+    /**
+     * Enable drag items. Use the specified view as toggle.
+     *
+     * @param itemTouchHelper {@link ItemTouchHelper}
+     * @param toggleViewId    The toggle view's id.
+     * @param dragOnLongPress If true the drag event will be trigger on long press, otherwise on touch down.
+     */
+    public void enableDragItem(@NonNull ItemTouchHelper itemTouchHelper, int toggleViewId, boolean dragOnLongPress) {
+        itemDragEnabled = true;
+        mItemTouchHelper = itemTouchHelper;
+        setToggleViewId(toggleViewId);
+        setToggleDragOnLongPress(dragOnLongPress);
+    }
 
     /**
      * Set the toggle view's id which will trigger drag event.
@@ -121,30 +142,6 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
     }
 
     /**
-     * Enable drag items.
-     * Use itemView as the toggleView when long pressed.
-     *
-     * @param itemTouchHelper {@link ItemTouchHelper}
-     */
-    public void enableDragItem(@NonNull ItemTouchHelper itemTouchHelper) {
-        enableDragItem(itemTouchHelper, NO_TOGGLE_VIEW, true);
-    }
-
-    /**
-     * Enable drag items. Use the specified view as toggle.
-     *
-     * @param itemTouchHelper {@link ItemTouchHelper}
-     * @param toggleViewId    The toggle view's id.
-     * @param dragOnLongPress If true the drag event will be trigger on long press, otherwise on touch down.
-     */
-    public void enableDragItem(@NonNull ItemTouchHelper itemTouchHelper, int toggleViewId, boolean dragOnLongPress) {
-        itemDragEnabled = true;
-        mItemTouchHelper = itemTouchHelper;
-        setToggleViewId(toggleViewId);
-        setToggleDragOnLongPress(dragOnLongPress);
-    }
-
-    /**
      * Disable drag items.
      */
     public void disableDragItem() {
@@ -158,7 +155,6 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
 
     /**
      * <p>Enable swipe items.</p>
-     * You should attach {@link ItemTouchHelper} which construct with {@link ItemDragAndSwipeCallback} to the Recycler when you enable this.
      */
     public void enableSwipeItem() {
         itemSwipeEnabled = true;
@@ -179,14 +175,14 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
         mOnItemDragListener = onItemDragListener;
     }
 
-    public int getViewHolderPosition(RecyclerView.ViewHolder viewHolder) {
-        return viewHolder.getAdapterPosition() - getHeaderLayoutCount();
-    }
-
     public void onItemDragStart(RecyclerView.ViewHolder viewHolder) {
         if (mOnItemDragListener != null && itemDragEnabled) {
             mOnItemDragListener.onItemDragStart(viewHolder, getViewHolderPosition(viewHolder));
         }
+    }
+
+    public int getViewHolderPosition(RecyclerView.ViewHolder viewHolder) {
+        return viewHolder.getAdapterPosition() - getHeaderLayoutCount();
     }
 
     public void onItemDragMoving(RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
@@ -209,6 +205,10 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
         if (mOnItemDragListener != null && itemDragEnabled) {
             mOnItemDragListener.onItemDragMoving(source, from, target, to);
         }
+    }
+
+    private boolean inRange(int position) {
+        return position >= 0 && position < mData.size();
     }
 
     public void onItemDragEnd(RecyclerView.ViewHolder viewHolder) {
@@ -234,9 +234,6 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
     }
 
     public void onItemSwiped(RecyclerView.ViewHolder viewHolder) {
-        if (mOnItemSwipeListener != null && itemSwipeEnabled) {
-            mOnItemSwipeListener.onItemSwiped(viewHolder, getViewHolderPosition(viewHolder));
-        }
 
         int pos = getViewHolderPosition(viewHolder);
 
@@ -244,15 +241,14 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
             mData.remove(pos);
             notifyItemRemoved(viewHolder.getAdapterPosition());
         }
+        if (mOnItemSwipeListener != null && itemSwipeEnabled) {
+            mOnItemSwipeListener.onItemSwiped(viewHolder, getViewHolderPosition(viewHolder));
+        }
     }
 
     public void onItemSwiping(Canvas canvas, RecyclerView.ViewHolder viewHolder, float dX, float dY, boolean isCurrentlyActive) {
         if (mOnItemSwipeListener != null && itemSwipeEnabled) {
             mOnItemSwipeListener.onItemSwipeMoving(canvas, viewHolder, dX, dY, isCurrentlyActive);
         }
-    }
-
-    private boolean inRange(int position) {
-        return position >= 0 && position < mData.size();
     }
 }

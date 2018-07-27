@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -378,7 +379,7 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
             bannerTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         }
         if (titles != null && titles.size() > 0) {
-            bannerTitle.setText(titles.get(0));
+            bannerTitle.setText(Html.fromHtml(titles.get(0)));
             bannerTitle.setVisibility(View.VISIBLE);
             titleView.setVisibility(View.VISIBLE);
         }
@@ -537,13 +538,13 @@ public class Banner extends FrameLayout implements OnPageChangeListener {
                 break;
             case BannerConfig.NUM_INDICATOR_TITLE:
                 numIndicatorInside.setText(position + "/" + count);
-                bannerTitle.setText(titles.get(position - 1));
+                bannerTitle.setText(Html.fromHtml(titles.get(position - 1)));
                 break;
             case BannerConfig.CIRCLE_INDICATOR_TITLE:
-                bannerTitle.setText(titles.get(position - 1));
+                bannerTitle.setText(Html.fromHtml(titles.get(position - 1)));
                 break;
             case BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE:
-                bannerTitle.setText(titles.get(position - 1));
+                bannerTitle.setText(Html.fromHtml(titles.get(position - 1)));
                 break;
         }
 

@@ -9,7 +9,7 @@ android {
         minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
         versionCode 1
-        versionName "6.9.2"
+        versionName "6.9.3"
     }
 
     buildTypes {
@@ -23,10 +23,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api files('libs/umeng-share-QQ-simplify-6.9.2.jar')
-    api files('libs/umeng-share-sina-simplify-6.9.2.jar')
-    api files('libs/umeng-share-wechat-simplify-6.9.2.jar')
-    api files('libs/umeng-sharetool-6.9.2.jar')
-    api files('libs/umeng-share-core-6.9.2.jar')
+    api files('libs/umeng-share-QQ-simplify-6.9.3.jar')
+    api files('libs/umeng-share-sina-simplify-6.9.3.jar')
+    api files('libs/umeng-share-wechat-simplify-6.9.3.jar')
+    api files('libs/umeng-sharetool-6.9.3.jar')
+    api files('libs/umeng-share-core-6.9.3.jar')
     api project(':Umeng:Common')
 }
