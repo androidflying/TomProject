@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tom.baselib.utils.BarUtils;
+import com.tom.baselib.utils.DensityUtils;
 
 /**
  * 作者：tom_flying
@@ -34,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = this;
+        DensityUtils.setDefault(mActivity);
         //默认实现沉浸式状态栏
         BarUtils.setStatusBarAlpha(this);
 

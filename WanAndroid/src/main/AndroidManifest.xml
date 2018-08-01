@@ -19,7 +19,9 @@
             android:name="android.max_aspect"
             android:value="2.1" />
 
-        <activity android:name=".ui.MainActivity" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -29,17 +31,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ArticleActivity" />
-        <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.CategoryActivity" />
-        <activity android:name=".ui.OpenSourceActivity" />
-        <activity android:name=".ui.AboutActivity" />
-        <activity android:name=".ui.ArticleCollectedActivity" />
-        <activity android:name=".ui.SearchActivity" />
-        <activity android:name=".ui.SearchResultActivity" />
+        <activity
+            android:name=".ui.ArticleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.CategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.OpenSourceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ArticleCollectedActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SearchResultActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent" />
 
         <provider
@@ -52,13 +71,17 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".ui.CalendarActivity" />
+        <activity
+            android:name=".ui.CalendarActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MeiziActivity"
+            android:screenOrientation="portrait"
             android:windowContentTransitions="true" />
         <activity android:name=".ui.MeiwenActivity" />
         <activity
             android:name=".ui.PictureActivity"
+            android:screenOrientation="portrait"
             android:windowContentTransitions="true" />
     </application>
 
