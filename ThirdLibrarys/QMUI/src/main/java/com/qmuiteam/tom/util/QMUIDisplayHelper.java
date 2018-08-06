@@ -33,33 +33,21 @@ import java.util.Locale;
  * @date 2016-03-17
  */
 public class QMUIDisplayHelper {
-
     /**
      * 屏幕密度,系统源码注释不推荐使用
      */
     public static final float DENSITY = Resources.getSystem()
             .getDisplayMetrics().density;
     private static final String TAG = "QMUIDisplayHelper";
-
+    // ====================== Setting ===========================
+    private static final String VIVO_NAVIGATION_GESTURE = "navigation_gesture_on";
+    private static final String HUAWAI_DISPLAY_NOTCH_STATUS = "display_notch_status";
     /**
      * 是否有摄像头
      */
     private static Boolean sHasCamera = null;
-
     private static int[] sPortraitRealSizeCache = null;
     private static int[] sLandscapeRealSizeCache = null;
-
-    /**
-     * 获取 DisplayMetrics
-     *
-     * @return
-     */
-    public static DisplayMetrics getDisplayMetrics(Context context) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
-                .getDefaultDisplay().getMetrics(displayMetrics);
-        return displayMetrics;
-    }
 
     /**
      * 把以 dp 为单位的值，转化为以 px 为单位的值
@@ -81,14 +69,6 @@ public class QMUIDisplayHelper {
         return (int) (pxValue / DENSITY + 0.5f);
     }
 
-    public static float getDensity(Context context) {
-        return context.getResources().getDisplayMetrics().density;
-    }
-
-    public static float getFontDensity(Context context) {
-        return context.getResources().getDisplayMetrics().scaledDensity;
-    }
-
     /**
      * 获取屏幕宽度
      *
@@ -99,12 +79,57 @@ public class QMUIDisplayHelper {
     }
 
     /**
-     * 获取屏幕高度
+     * 获取 DisplayMetrics
      *
      * @return
      */
-    public static int getScreenHeight(Context context) {
-        return getDisplayMetrics(context).heightPixels;
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics;
+    }
+
+    /**
+     * 剔除挖孔屏等导致的不可用区域后的 width
+     *
+     * @param activity
+     * @return
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static int getUsefulScreenWidth(Activity activity) {
+        return getUsefulScreenWidth(activity, QMUINotchHelper.hasNotch(activity));
+    }
+
+    public static int getUsefulScreenWidth(Context context, boolean hasNotch) {
+        int result = getRealScreenSize(context)[0];
+        int orientation = context.getResources().getConfiguration().orientation;
+        boolean isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (!hasNotch) {
+            if (isLandscape && QMUIDeviceHelper.isEssentialPhone()
+                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                // https://arstechnica.com/gadgets/2017/09/essential-phone-review-impressive-for-a-new-company-but-not-competitive/
+                // 这里说挖孔屏是状态栏高度的两倍， 但横屏好像小了一点点
+                result -= 2 * QMUIStatusBarHelper.getStatusbarHeight(context);
+            }
+            return result;
+        }
+        if (isLandscape) {
+            // 华为挖孔屏横屏时，会把整个 window 往后移动，因此，可用区域减小
+            if (QMUIDeviceHelper.isHuawei() && !QMUIDisplayHelper.huaweiIsNotchSetToShowInSetting(context)) {
+                result -= QMUINotchHelper.getNotchSizeInHuawei(context)[1];
+            }
+
+            // TODO verify for MIUI
+            if (QMUIDeviceHelper.isXiaomi() && !QMUIDisplayHelper.xiaomiIsNotchSetToShowInSetting(context)) {
+                result -= QMUINotchHelper.getNotchHeightInXiaomi(context);
+            }
+
+            // TODO vivo 设置-系统导航-导航手势样式-显示手势操作区域 打开的情况下，应该减去手势操作区域的高度，但无API
+            // TODO vivo 设置-显示与亮度-第三方应用显示比例 选为安全区域显示时，整个 window 会移动，应该减去移动区域，但无API
+            // TODO oppo 设置-显示与亮度-应用全屏显示-凹形区域显示控制 关闭是，整个 window 会移动，应该减去移动区域，但无API
+        }
+        return result;
     }
 
     /**
@@ -131,6 +156,18 @@ public class QMUIDisplayHelper {
             }
             return sPortraitRealSizeCache;
         }
+    }
+
+    public static boolean huaweiIsNotchSetToShowInSetting(Context context) {
+        // 0: 默认
+        // 1: 隐藏显示区域
+        int result = Settings.Secure.getInt(context.getContentResolver(), HUAWAI_DISPLAY_NOTCH_STATUS, 0);
+        return result == 0;
+    }
+
+    @TargetApi(17)
+    public static boolean xiaomiIsNotchSetToShowInSetting(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(), "force_black", 0) == 0;
     }
 
     private static int[] doGetRealScreenSize(Context context) {
@@ -168,51 +205,9 @@ public class QMUIDisplayHelper {
         return size;
     }
 
-    /**
-     * 剔除挖孔屏等导致的不可用区域后的 width
-     *
-     * @param activity
-     * @return
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public static int getUsefulScreenWidth(Activity activity) {
-        return getUsefulScreenWidth(activity, QMUINotchHelper.hasNotch(activity));
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getUsefulScreenWidth(View view) {
         return getUsefulScreenWidth(view.getContext(), QMUINotchHelper.hasNotch(view));
-    }
-
-    public static int getUsefulScreenWidth(Context context, boolean hasNotch) {
-        int result = getRealScreenSize(context)[0];
-        int orientation = context.getResources().getConfiguration().orientation;
-        boolean isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
-        if (!hasNotch) {
-            if (isLandscape && QMUIDeviceHelper.isEssentialPhone()
-                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                // https://arstechnica.com/gadgets/2017/09/essential-phone-review-impressive-for-a-new-company-but-not-competitive/
-                // 这里说挖孔屏是状态栏高度的两倍， 但横屏好像小了一点点
-                result -= 2 * QMUIStatusBarHelper.getStatusbarHeight(context);
-            }
-            return result;
-        }
-        if (isLandscape) {
-            // 华为挖孔屏横屏时，会把整个 window 往后移动，因此，可用区域减小
-            if (QMUIDeviceHelper.isHuawei() && !QMUIDisplayHelper.huaweiIsNotchSetToShowInSetting(context)) {
-                result -= QMUINotchHelper.getNotchSizeInHuawei(context)[1];
-            }
-
-            // TODO verify for MIUI
-            if (QMUIDeviceHelper.isXiaomi() && !QMUIDisplayHelper.xiaomiIsNotchSetToShowInSetting(context)) {
-                result -= QMUINotchHelper.getNotchHeightInXiaomi(context);
-            }
-
-            // TODO vivo 设置-系统导航-导航手势样式-显示手势操作区域 打开的情况下，应该减去手势操作区域的高度，但无API
-            // TODO vivo 设置-显示与亮度-第三方应用显示比例 选为安全区域显示时，整个 window 会移动，应该减去移动区域，但无API
-            // TODO oppo 设置-显示与亮度-应用全屏显示-凹形区域显示控制 关闭是，整个 window 会移动，应该减去移动区域，但无API
-        }
-        return result;
     }
 
     /**
@@ -224,11 +219,6 @@ public class QMUIDisplayHelper {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getUsefulScreenHeight(Activity activity) {
         return getUsefulScreenHeight(activity, QMUINotchHelper.hasNotch(activity));
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public static int getUsefulScreenHeight(View view) {
-        return getUsefulScreenHeight(view.getContext(), QMUINotchHelper.hasNotch(view));
     }
 
     private static int getUsefulScreenHeight(Context context, boolean hasNotch) {
@@ -256,12 +246,9 @@ public class QMUIDisplayHelper {
         return result;
     }
 
-    public static boolean isNavMenuExist(Context context) {
-        //通过判断设备是否有返回键、菜单键(不是虚拟键,是手机屏幕外的按键)来确定是否有navigation bar
-        boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
-        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-
-        return !hasMenuKey && !hasBackKey;
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static int getUsefulScreenHeight(View view) {
+        return getUsefulScreenHeight(view.getContext(), QMUINotchHelper.hasNotch(view));
     }
 
     /**
@@ -274,6 +261,10 @@ public class QMUIDisplayHelper {
         return (int) (getDensity(context) * dp + 0.5);
     }
 
+    public static float getDensity(Context context) {
+        return context.getResources().getDisplayMetrics().density;
+    }
+
     /**
      * 单位转换: sp -> px
      *
@@ -282,6 +273,10 @@ public class QMUIDisplayHelper {
      */
     public static int sp2px(Context context, int sp) {
         return (int) (getFontDensity(context) * sp + 0.5);
+    }
+
+    public static float getFontDensity(Context context) {
+        return context.getResources().getDisplayMetrics().scaledDensity;
     }
 
     /**
@@ -379,6 +374,23 @@ public class QMUIDisplayHelper {
         return getRealScreenSize(context)[1] - getScreenHeight(context);
     }
 
+    public static boolean isNavMenuExist(Context context) {
+        //通过判断设备是否有返回键、菜单键(不是虚拟键,是手机屏幕外的按键)来确定是否有navigation bar
+        boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+
+        return !hasMenuKey && !hasBackKey;
+    }
+
+    /**
+     * 获取屏幕高度
+     *
+     * @return
+     */
+    public static int getScreenHeight(Context context) {
+        return getDisplayMetrics(context).heightPixels;
+    }
+
     public static final boolean hasCamera(Context context) {
         if (sHasCamera == null) {
             PackageManager pckMgr = context.getPackageManager();
@@ -401,12 +413,13 @@ public class QMUIDisplayHelper {
     @SuppressWarnings("SimplifiableIfStatement")
     public static boolean hasHardwareMenuKey(Context context) {
         boolean flag;
-        if (Build.VERSION.SDK_INT < 11)
+        if (Build.VERSION.SDK_INT < 11) {
             flag = true;
-        else if (Build.VERSION.SDK_INT >= 14) {
+        } else if (Build.VERSION.SDK_INT >= 14) {
             flag = ViewConfiguration.get(context).hasPermanentMenuKey();
-        } else
+        } else {
             flag = false;
+        }
         return flag;
     }
 
@@ -432,8 +445,9 @@ public class QMUIDisplayHelper {
         try {
             PackageInfo pckInfo = context.getPackageManager()
                     .getPackageInfo(pckName, 0);
-            if (pckInfo != null)
+            if (pckInfo != null) {
                 return true;
+            }
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         return false;
@@ -522,7 +536,6 @@ public class QMUIDisplayHelper {
         return (params.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
     }
 
-
     public static boolean isElevationSupported() {
         return android.os.Build.VERSION.SDK_INT >= 21;
     }
@@ -566,10 +579,6 @@ public class QMUIDisplayHelper {
         return haveNav;
     }
 
-    // ====================== Setting ===========================
-    private static final String VIVO_NAVIGATION_GESTURE = "navigation_gesture_on";
-    private static final String HUAWAI_DISPLAY_NOTCH_STATUS = "display_notch_status";
-
     /**
      * 获取vivo手机设置中的"navigation_gesture_on"值，判断当前系统是使用导航键还是手势导航操作
      *
@@ -579,17 +588,5 @@ public class QMUIDisplayHelper {
     public static boolean vivoNavigationGestureEnabled(Context context) {
         int val = Settings.Secure.getInt(context.getContentResolver(), VIVO_NAVIGATION_GESTURE, 0);
         return val != 0;
-    }
-
-    public static boolean huaweiIsNotchSetToShowInSetting(Context context) {
-        // 0: 默认
-        // 1: 隐藏显示区域
-        int result = Settings.Secure.getInt(context.getContentResolver(), HUAWAI_DISPLAY_NOTCH_STATUS, 0);
-        return result == 0;
-    }
-
-    @TargetApi(17)
-    public static boolean xiaomiIsNotchSetToShowInSetting(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "force_black", 0) == 0;
     }
 }

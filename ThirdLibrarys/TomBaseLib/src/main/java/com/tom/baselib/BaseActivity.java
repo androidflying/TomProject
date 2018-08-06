@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tom.baselib.utils.BarUtils;
-import com.tom.baselib.utils.DensityUtils;
+import com.tom.baselib.utils.ScreenUtils;
 
 /**
  * 作者：tom_flying
@@ -35,9 +35,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = this;
-        DensityUtils.setDefault(mActivity);
         //默认实现沉浸式状态栏
         BarUtils.setStatusBarAlpha(this);
+        //今日头条屏幕适配方案解决方式
+        if (ScreenUtils.isPortrait()) {
+            ScreenUtils.adaptScreen4VerticalSlide(this, 360);
+        } else {
+            ScreenUtils.adaptScreen4HorizontalSlide(this, 360);
+        }
 
         if (BarUtils.isNavBarVisible(this)) {
             if (isTransparent()) {

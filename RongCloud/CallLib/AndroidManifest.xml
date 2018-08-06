@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.rong.calllib">
 
+    <application android:supportsRtl="true"></application>
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -15,5 +16,4 @@
         android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
         tools:ignore="ProtectedPermissions" />
 
-    <application android:supportsRtl="true" />
 </manifest>

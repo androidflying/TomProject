@@ -28,7 +28,6 @@ public class MultiCallEndMessageProvider extends IContainerItemProvider.MessageP
     protected static class ViewHolder {
         public TextView textView;
     }
-
     @Override
     public View newView(Context context, ViewGroup group) {
         View v = LayoutInflater.from(context)

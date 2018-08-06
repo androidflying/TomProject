@@ -35,12 +35,12 @@ public class RongCallProxy implements IRongCallListener {
     public void setCallListener(IRongCallListener listener) {
         RLog.d(TAG, "setCallListener listener = " + listener);
         this.mCallListener = listener;
-        if (listener != null) {
-            CallDisconnectedInfo callDisconnectedInfo = mCachedCallQueue.poll();
-            if (callDisconnectedInfo != null) {
-                listener.onCallDisconnected(callDisconnectedInfo.mCallSession, callDisconnectedInfo.mReason);
-            }
-        }
+//        if (listener != null) {
+//            CallDisconnectedInfo callDisconnectedInfo = mCachedCallQueue.poll();
+//            if (callDisconnectedInfo != null) {
+//                listener.onCallDisconnected(callDisconnectedInfo.mCallSession, callDisconnectedInfo.mReason);
+//            }
+//        }
     }
 
     @Override

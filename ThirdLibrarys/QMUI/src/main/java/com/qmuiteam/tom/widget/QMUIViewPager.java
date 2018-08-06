@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.WindowInsetsCompat;
 import android.util.AttributeSet;
@@ -67,6 +68,12 @@ public class QMUIViewPager extends ViewPager implements IWindowInsetLayout {
     }
 
     @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        ViewCompat.requestApplyInsets(this);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return mIsSwipeable && super.onTouchEvent(ev);
 
@@ -103,14 +110,10 @@ public class QMUIViewPager extends ViewPager implements IWindowInsetLayout {
         return mQMUIWindowInsetHelper.defaultApplySystemWindowInsets19(this, insets);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
-    public boolean applySystemWindowInsets21(WindowInsetsCompat insets) {
+    public boolean applySystemWindowInsets21(Object insets) {
         return mQMUIWindowInsetHelper.defaultApplySystemWindowInsets21(this, insets);
-    }
-
-    @Override
-    public boolean applySystemWindowInsets(WindowInsets insets) {
-        return mQMUIWindowInsetHelper.defaultApplySystemWindowInsets(this, insets);
     }
 
     @Override

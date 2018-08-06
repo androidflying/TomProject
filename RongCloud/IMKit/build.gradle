@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
-        versionCode 20180613
-        versionName "2.9.1 Stable"
+        versionCode 20180731
+        versionName "2.9.3 Stable"
     }
     buildTypes {
         release {

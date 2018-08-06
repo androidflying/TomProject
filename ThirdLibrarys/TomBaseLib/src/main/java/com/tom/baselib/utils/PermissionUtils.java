@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.WindowManager;
 
 import com.tom.baselib.constant.PermissionConstants;
 
@@ -43,18 +45,6 @@ public class PermissionUtils {
     private List<String> mPermissionsGranted;
     private List<String> mPermissionsDenied;
     private List<String> mPermissionsDeniedForever;
-
-    private PermissionUtils(final String... permissions) {
-        mPermissions = new LinkedHashSet<>();
-        for (String permission : permissions) {
-            for (String aPermission : PermissionConstants.getPermissions(permission)) {
-                if (PERMISSIONS.contains(aPermission)) {
-                    mPermissions.add(aPermission);
-                }
-            }
-        }
-        sInstance = this;
-    }
 
     /**
      * Return the permissions used in application.
@@ -122,6 +112,18 @@ public class PermissionUtils {
      */
     public static PermissionUtils permission(@PermissionConstants.Permission final String... permissions) {
         return new PermissionUtils(permissions);
+    }
+
+    private PermissionUtils(final String... permissions) {
+        mPermissions = new LinkedHashSet<>();
+        for (String permission : permissions) {
+            for (String aPermission : PermissionConstants.getPermissions(permission)) {
+                if (PERMISSIONS.contains(aPermission)) {
+                    mPermissions.add(aPermission);
+                }
+            }
+        }
+        sInstance = this;
     }
 
     /**
@@ -193,33 +195,6 @@ public class PermissionUtils {
         }
     }
 
-    private void requestCallback() {
-        if (mSimpleCallback != null) {
-            if (mPermissionsRequest.size() == 0
-                    || mPermissions.size() == mPermissionsGranted.size()) {
-                mSimpleCallback.onGranted();
-            } else {
-                if (!mPermissionsDenied.isEmpty()) {
-                    mSimpleCallback.onDenied();
-                }
-            }
-            mSimpleCallback = null;
-        }
-        if (mFullCallback != null) {
-            if (mPermissionsRequest.size() == 0
-                    || mPermissions.size() == mPermissionsGranted.size()) {
-                mFullCallback.onGranted(mPermissionsGranted);
-            } else {
-                if (!mPermissionsDenied.isEmpty()) {
-                    mFullCallback.onDenied(mPermissionsDeniedForever, mPermissionsDenied);
-                }
-            }
-            mFullCallback = null;
-        }
-        mOnRationaleListener = null;
-        mThemeCallback = null;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void startPermissionActivity() {
         mPermissionsDenied = new ArrayList<>();
@@ -266,37 +241,38 @@ public class PermissionUtils {
         }
     }
 
+    private void requestCallback() {
+        if (mSimpleCallback != null) {
+            if (mPermissionsRequest.size() == 0
+                    || mPermissions.size() == mPermissionsGranted.size()) {
+                mSimpleCallback.onGranted();
+            } else {
+                if (!mPermissionsDenied.isEmpty()) {
+                    mSimpleCallback.onDenied();
+                }
+            }
+            mSimpleCallback = null;
+        }
+        if (mFullCallback != null) {
+            if (mPermissionsRequest.size() == 0
+                    || mPermissions.size() == mPermissionsGranted.size()) {
+                mFullCallback.onGranted(mPermissionsGranted);
+            } else {
+                if (!mPermissionsDenied.isEmpty()) {
+                    mFullCallback.onDenied(mPermissionsDeniedForever, mPermissionsDenied);
+                }
+            }
+            mFullCallback = null;
+        }
+        mOnRationaleListener = null;
+        mThemeCallback = null;
+    }
+
     private void onRequestPermissionsResult(final Activity activity) {
         getPermissionsStatus(activity);
         requestCallback();
     }
 
-
-    public interface OnRationaleListener {
-
-        void rationale(ShouldRequest shouldRequest);
-
-        interface ShouldRequest {
-            void again(boolean again);
-        }
-    }
-
-
-    public interface SimpleCallback {
-        void onGranted();
-
-        void onDenied();
-    }
-
-    public interface FullCallback {
-        void onGranted(List<String> permissionsGranted);
-
-        void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied);
-    }
-
-    public interface ThemeCallback {
-        void onActivityCreate(Activity activity);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static class PermissionActivity extends Activity {
@@ -309,13 +285,14 @@ public class PermissionUtils {
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
-
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                    | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
             if (sInstance == null) {
+                super.onCreate(savedInstanceState);
                 Log.e("PermissionUtils", "request permissions failed");
                 finish();
                 return;
             }
-
             if (sInstance.mThemeCallback != null) {
                 sInstance.mThemeCallback.onActivityCreate(this);
             }
@@ -342,5 +319,40 @@ public class PermissionUtils {
             sInstance.onRequestPermissionsResult(this);
             finish();
         }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent ev) {
+            finish();
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
+
+    public interface OnRationaleListener {
+
+        void rationale(ShouldRequest shouldRequest);
+
+        interface ShouldRequest {
+            void again(boolean again);
+        }
+    }
+
+    public interface SimpleCallback {
+        void onGranted();
+
+        void onDenied();
+    }
+
+    public interface FullCallback {
+        void onGranted(List<String> permissionsGranted);
+
+        void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied);
+    }
+
+    public interface ThemeCallback {
+        void onActivityCreate(Activity activity);
     }
 }

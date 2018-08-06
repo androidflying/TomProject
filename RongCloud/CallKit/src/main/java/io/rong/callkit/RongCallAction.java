@@ -11,7 +11,6 @@ public enum RongCallAction {
 
     int value;
     String msg;
-
     RongCallAction(int v, String msg) {
         this.value = v;
         this.msg = msg;

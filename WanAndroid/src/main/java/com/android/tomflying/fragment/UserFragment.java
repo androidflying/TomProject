@@ -27,6 +27,7 @@ import com.qmuiteam.tom.widget.grouplist.QMUIGroupListView;
 import com.tencent.bugly.beta.Beta;
 import com.tom.baselib.delay.SingleCall;
 import com.tom.baselib.utils.ActivityUtils;
+import com.tom.baselib.utils.AppUtils;
 import com.tom.baselib.utils.CacheDoubleUtils;
 import com.tom.baselib.utils.ImageUtils;
 import com.tom.baselib.utils.SPUtils;
@@ -149,7 +150,7 @@ public class UserFragment extends MyFragment {
 
 
         QMUICommonListItemView update = mGroupListView.createItemView("检查更新");
-        update.setDetailText(Utils.getVersionName());
+        update.setDetailText(AppUtils.getAppVersionName());
 
         QMUICommonListItemView about = mGroupListView.createItemView("关于我们");
         about.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);

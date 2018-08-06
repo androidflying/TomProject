@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -53,11 +54,13 @@ public class AudioPlugin implements IPluginModule, IPluginRequestPermissionResul
         context = currentFragment.getActivity().getApplicationContext();
         conversationType = extension.getConversationType();
         targetId = extension.getTargetId();
-
+        Log.i(TAG, "---- targetId==" + targetId);
         String[] permissions = {Manifest.permission.RECORD_AUDIO};
         if (PermissionCheckUtil.checkPermissions(currentFragment.getActivity(), permissions)) {
+            Log.i(TAG, "---- startAudioActivity ----");
             startAudioActivity(currentFragment, extension);
         } else {
+            Log.i(TAG, "---- requestPermissionForPluginResult ----");
             extension.requestPermissionForPluginResult(permissions, REQEUST_CODE_RECORD_AUDIO_PERMISSION, this);
         }
     }
@@ -83,9 +86,12 @@ public class AudioPlugin implements IPluginModule, IPluginRequestPermissionResul
         if (conversationType.equals(Conversation.ConversationType.PRIVATE)) {
             Intent intent = new Intent(RongVoIPIntent.RONG_INTENT_ACTION_VOIP_SINGLEAUDIO);
             intent.putExtra("conversationType", conversationType.getName().toLowerCase());
+            Log.i(TAG, "---- conversationType.getName().toLowerCase() =-" + conversationType.getName().toLowerCase());
             intent.putExtra("targetId", targetId);
             intent.putExtra("callAction", RongCallAction.ACTION_OUTGOING_CALL.getName());
+            Log.i(TAG, "---- callAction=" + RongCallAction.ACTION_OUTGOING_CALL.getName());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Log.i(TAG, "getPackageName===" + context.getPackageName());
             intent.setPackage(context.getPackageName());
             context.getApplicationContext().startActivity(intent);
         } else if (conversationType.equals(Conversation.ConversationType.DISCUSSION)) {

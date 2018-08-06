@@ -1,17 +1,11 @@
 package com.tom.baselib;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.tom.baselib.utils.ActivityUtils;
 import com.tom.baselib.utils.CrashUtils;
-import com.tom.baselib.utils.DensityUtils;
 import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.ProcessUtils;
 import com.tom.baselib.utils.Utils;
@@ -45,7 +39,6 @@ public abstract class BaseApplication extends MultiDexApplication {
             //设置屏幕适配
             MultiDex.install(this);
             Utils.init(this);
-            DensityUtils.setDensity(this);
             initARouter();
             initNetWork();
             initLog();

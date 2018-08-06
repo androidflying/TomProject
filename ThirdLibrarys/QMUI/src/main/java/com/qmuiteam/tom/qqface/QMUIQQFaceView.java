@@ -65,6 +65,8 @@ public class QMUIQQFaceView extends View {
     private boolean mIsSingleLine = false;
     private int mLines = 0;
     private Set<SpanInfo> mSpanInfos = new HashSet<>();
+    private boolean mIsTouchDownInMoreText = false;
+    private Rect mMoreHitRect = new Rect();
     private static final String mEllipsizeText = "...";
     private String mMoreActionText;
     private int mMoreActionColor;
@@ -96,8 +98,7 @@ public class QMUIQQFaceView extends View {
         super(context, attrs, defStyleAttr);
         TypedArray array = getContext().obtainStyledAttributes(attrs,
                 R.styleable.QMUIQQFaceView, defStyleAttr, 0);
-        // 默认表情小一点好看
-        mQQFaceSizeAddon = -QMUIDisplayHelper.dp2px(context, 2);
+        mQQFaceSizeAddon = -QMUIDisplayHelper.dp2px(context, 2); // 默认表情小一点好看
         mTextSize = array.getDimensionPixelSize(R.styleable.QMUIQQFaceView_android_textSize,
                 QMUIDisplayHelper.dp2px(context, 14));
         mTextColor = array.getColor(R.styleable.QMUIQQFaceView_android_textColor, Color.BLACK);
@@ -167,12 +168,13 @@ public class QMUIQQFaceView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
-        if (mSpanInfos.isEmpty()) {
+
+        if (mSpanInfos.isEmpty() && mMoreHitRect.isEmpty()) {
             return super.onTouchEvent(event);
         }
         final int action = event.getAction();
 
-        if (mTouchSpanInfo == null && action != MotionEvent.ACTION_DOWN) {
+        if (action != MotionEvent.ACTION_DOWN && (!mIsTouchDownInMoreText && mTouchSpanInfo == null)) {
             return super.onTouchEvent(event);
         }
 
@@ -185,42 +187,61 @@ public class QMUIQQFaceView extends View {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mTouchSpanInfo = null;
+                mIsTouchDownInMoreText = false;
 
-                for (SpanInfo spanInfo : mSpanInfos) {
-                    if (spanInfo.onTouch(x, y)) {
-                        mTouchSpanInfo = spanInfo;
-                        break;
+                if (mMoreHitRect.contains(x, y)) {
+                    mIsTouchDownInMoreText = true;
+                } else {
+                    for (SpanInfo spanInfo : mSpanInfos) {
+                        if (spanInfo.onTouch(x, y)) {
+                            mTouchSpanInfo = spanInfo;
+                            break;
+                        }
                     }
                 }
-                if (mTouchSpanInfo == null) {
+
+                if (mTouchSpanInfo != null) {
+                    mTouchSpanInfo.setPressed(true);
+                    mTouchSpanInfo.invalidateSpan();
+                } else if (!mIsTouchDownInMoreText) {
                     return super.onTouchEvent(event);
                 }
-                mTouchSpanInfo.setPressed(true);
-                mTouchSpanInfo.invalidateSpan();
+
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mPendingPressCancelAction = null;
-                mTouchSpanInfo.setPressed(false);
-                mTouchSpanInfo.invalidateSpan();
+                if (mTouchSpanInfo != null) {
+                    mTouchSpanInfo.setPressed(false);
+                    mTouchSpanInfo.invalidateSpan();
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (!mTouchSpanInfo.onTouch(x, y)) {
+                if (mTouchSpanInfo != null && !mTouchSpanInfo.onTouch(x, y)) {
                     mTouchSpanInfo.setPressed(false);
                     mTouchSpanInfo.invalidateSpan();
                     mTouchSpanInfo = null;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                mTouchSpanInfo.onClick();
-                mPendingPressCancelAction = new PressCancelAction(mTouchSpanInfo);
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mPendingPressCancelAction != null) {
-                            mPendingPressCancelAction.run();
+                if (mTouchSpanInfo != null) {
+                    mTouchSpanInfo.onClick();
+                    mPendingPressCancelAction = new PressCancelAction(mTouchSpanInfo);
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mPendingPressCancelAction != null) {
+                                mPendingPressCancelAction.run();
+                            }
                         }
+                    }, 100);
+                } else if (mIsTouchDownInMoreText) {
+                    if (mListener != null) {
+                        mListener.onMoreTextClick();
+                    } else if (isClickable()) {
+                        performClick();
                     }
-                }, 100);
+                }
+
                 break;
         }
         return true;
@@ -355,6 +376,10 @@ public class QMUIQQFaceView extends View {
         return mLines;
     }
 
+    public boolean isNeedEllipsize() {
+        return mIsNeedEllipsize;
+    }
+
     public void setSingleLine(boolean singleLine) {
         if (mIsSingleLine != singleLine) {
             mIsSingleLine = singleLine;
@@ -394,6 +419,15 @@ public class QMUIQQFaceView extends View {
 
     public CharSequence getText() {
         return mOriginText;
+    }
+
+    /**
+     * make sense only work after draw
+     *
+     * @return
+     */
+    public Rect getMoreHitRect() {
+        return mMoreHitRect;
     }
 
     public void setText(CharSequence charSequence) {
@@ -442,7 +476,11 @@ public class QMUIQQFaceView extends View {
             mLines = 0;
             calculateLinesAndContentWidth(getWidth());
             int oldDrawLine = mNeedDrawLine;
-            calculateNeedDrawLine();
+            int maxLine = mMaxLine;
+            if (getLayoutParams().height != ViewGroup.LayoutParams.WRAP_CONTENT) {
+                maxLine = (getLayoutParams().height + mLineSpace) / (mFontHeight / mLineSpace);
+            }
+            calculateNeedDrawLine(maxLine);
             // 优化： 如果高度固定或者绘制的行数相同，则不进行requestLayout
             if (oldDrawLine == mNeedDrawLine
                     || getLayoutParams().height != ViewGroup.LayoutParams.WRAP_CONTENT) {
@@ -540,12 +578,12 @@ public class QMUIQQFaceView extends View {
         return mLastCalContentWidth;
     }
 
-    private void calculateNeedDrawLine() {
+    private void calculateNeedDrawLine(int maxline) {
         mNeedDrawLine = mLines;
         if (mIsSingleLine) {
             mNeedDrawLine = Math.min(1, mLines);
-        } else if (mMaxLine < mLines) {
-            mNeedDrawLine = mMaxLine;
+        } else if (maxline < mLines) {
+            mNeedDrawLine = maxline;
         }
 
         mIsNeedEllipsize = mLines > mNeedDrawLine;
@@ -676,9 +714,9 @@ public class QMUIQQFaceView extends View {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        if (BuildConfig.DEBUG) {
-            Log.i(TAG, "widthSize = " + widthSize + "; heightSize = " + heightSize);
-        }
+
+        Log.i(TAG, "widthSize = " + widthSize + "; heightSize = " + heightSize);
+
         mLines = 0;
         int width, height;
         switch (widthMode) {
@@ -701,12 +739,12 @@ public class QMUIQQFaceView extends View {
             return;
         }
 
-        calculateNeedDrawLine();
-
         switch (heightMode) {
             case AT_MOST:
             case MeasureSpec.UNSPECIFIED:
             default:
+                // calculate line count first
+                calculateNeedDrawLine(mMaxLine);
                 height = getPaddingTop() + getPaddingBottom();
                 if (mNeedDrawLine < 2) {
                     height += mNeedDrawLine * mFontHeight;
@@ -716,13 +754,13 @@ public class QMUIQQFaceView extends View {
                 break;
             case MeasureSpec.EXACTLY:
                 height = heightSize;
+                int maxLine = (height + mLineSpace) / (mFontHeight + mLineSpace);
+                calculateNeedDrawLine(maxLine);
                 break;
         }
         setMeasuredDimension(width, height);
-        if (BuildConfig.DEBUG) {
-            Log.i(TAG, "mLines = " + mLines + " ; width = " + width + " ; height = " + height +
-                    "; measure time = " + (System.currentTimeMillis() - start));
-        }
+        Log.i(TAG, "mLines = " + mLines + " ; width = " + width + " ; height = " + height +
+                "; measure time = " + (System.currentTimeMillis() - start));
     }
 
 //    private int getParagraphCount(){
@@ -758,9 +796,7 @@ public class QMUIQQFaceView extends View {
         mCurrentDrawUsedWidth = getPaddingLeft();
         mIsExecutedMiddleEllipsize = false;
         drawElements(canvas, elements, getWidth() - getPaddingLeft() - getPaddingRight());
-        if (BuildConfig.DEBUG) {
-            Log.i(TAG, "onDraw spend time = " + (System.currentTimeMillis() - start));
-        }
+        Log.i(TAG, "onDraw spend time = " + (System.currentTimeMillis() - start));
     }
 
     private int mCurrentDrawBaseLine;
@@ -809,7 +845,7 @@ public class QMUIQQFaceView extends View {
                         mCurrentDrawUsedWidth <= endWidth - ellipsizeLength && mCurrentDrawLine == mNeedDrawLine) {
                     drawText(canvas, mEllipsizeText, 0, mEllipsizeText.length(), mEllipsizeTextLength);
                     mCurrentDrawUsedWidth += mEllipsizeTextLength;
-                    drawMoreActionText(canvas);
+                    drawMoreActionText(canvas, endWidth);
                     return;
                 }
                 toNewDrawLine(startLeft, true);
@@ -817,9 +853,14 @@ public class QMUIQQFaceView extends View {
         }
     }
 
-    private void drawMoreActionText(Canvas canvas) {
+    private void drawMoreActionText(Canvas canvas, int widthEnd) {
         if (!QMUILangHelper.isNullOrEmpty(mMoreActionText)) {
             mPaint.setColor(mMoreActionColor);
+            int top = getPaddingTop();
+            if (mCurrentDrawLine > 1) {
+                top = (mCurrentDrawLine - 1) * (mFontHeight + mLineSpace) + top;
+            }
+            mMoreHitRect.set(mCurrentDrawUsedWidth, top, widthEnd, top + mFontHeight);
             canvas.drawText(mMoreActionText, 0, mMoreActionText.length(), mCurrentDrawUsedWidth, mCurrentDrawBaseLine, mPaint);
             mPaint.setColor(mTextColor);
         }
@@ -981,7 +1022,7 @@ public class QMUIQQFaceView extends View {
                         }
                         drawText(canvas, mEllipsizeText, 0, mEllipsizeText.length(), mEllipsizeTextLength);
                         mCurrentDrawUsedWidth += mEllipsizeTextLength;
-                        drawMoreActionText(canvas);
+                        drawMoreActionText(canvas, widthEnd);
                         // 依然要去到下一行，使得后续不会进入这个逻辑
                         toNewDrawLine(widthStart);
                     } else {
@@ -1128,7 +1169,7 @@ public class QMUIQQFaceView extends View {
                         }
                         drawText(canvas, mEllipsizeText, 0, mEllipsizeText.length(), mEllipsizeTextLength);
                         mCurrentDrawUsedWidth += mEllipsizeTextLength;
-                        drawMoreActionText(canvas);
+                        drawMoreActionText(canvas, widthEnd);
                         // 去新的一行，避免再次走入这一行的逻辑
                         toNewDrawLine(widthStart);
                     } else {
@@ -1312,6 +1353,7 @@ public class QMUIQQFaceView extends View {
         }
     }
 
+
     public static class PressCancelAction implements Runnable {
         private WeakReference<SpanInfo> mWeakReference;
 
@@ -1331,5 +1373,7 @@ public class QMUIQQFaceView extends View {
 
     public interface QQFaceViewListener {
         void onCalculateLinesChange(int lines);
+
+        void onMoreTextClick();
     }
 }

@@ -70,7 +70,7 @@ public class PuzzleSelectorActivity extends AppCompatActivity implements View.On
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int statusColor = getWindow().getStatusBarColor();
             if (statusColor == Color.TRANSPARENT) {
-                statusColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+                statusColor = ContextCompat.getColor(this, R.color.easy_photos_status_bar);
             }
             if (ColorUtils.isWhiteColor(statusColor)) {
                 SystemUtils.getInstance().setStatusDark(this, true);
@@ -125,8 +125,7 @@ public class PuzzleSelectorActivity extends AppCompatActivity implements View.On
         setClick(R.id.iv_album_items);
         rvAlbumItems = findViewById(R.id.rv_album_items);
         LinearLayoutManager lm = new LinearLayoutManager(this);
-        ArrayList<Object> list = new ArrayList<Object>();
-        list.addAll(albumModel.getAlbumItems());
+        ArrayList<Object> list = new ArrayList<Object>(albumModel.getAlbumItems());
         albumItemsAdapter = new AlbumItemsAdapter(this, list, 0, this);
         rvAlbumItems.setLayoutManager(lm);
         rvAlbumItems.setAdapter(albumItemsAdapter);

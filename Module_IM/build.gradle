@@ -89,5 +89,4 @@ dependencies {
     implementation project(':RongCloud:CallLib')
     implementation project(':RongCloud:IMKit')
     implementation project(':RongCloud:IMLib')
-    implementation files('libs/MiPush_SDK_Client_3_6_2.jar')
 }

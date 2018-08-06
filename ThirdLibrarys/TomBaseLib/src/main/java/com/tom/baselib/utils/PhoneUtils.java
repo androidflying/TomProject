@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresPermission;
 import android.telephony.SmsManager;
@@ -74,13 +75,8 @@ public class PhoneUtils {
     @SuppressLint("HardwareIds")
     @RequiresPermission(READ_PHONE_STATE)
     public static String getSerial() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return Build.getSerial();
-        } else {
-            return Build.SERIAL;
-        }
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? Build.getSerial() : Build.SERIAL;
     }
-
 
     /**
      * Return the IMEI.
@@ -253,7 +249,8 @@ public class PhoneUtils {
      * @param phoneNumber The phone number.
      */
     public static void dial(final String phoneNumber) {
-        Utils.getApp().startActivity(IntentUtils.getDialIntent(phoneNumber, true));
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
+        Utils.getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     /**
@@ -264,7 +261,8 @@ public class PhoneUtils {
      */
     @RequiresPermission(CALL_PHONE)
     public static void call(final String phoneNumber) {
-        Utils.getApp().startActivity(IntentUtils.getCallIntent(phoneNumber, true));
+        Intent intent = new Intent("android.intent.action.CALL", Uri.parse("tel:" + phoneNumber));
+        Utils.getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     /**
@@ -274,7 +272,10 @@ public class PhoneUtils {
      * @param content     The content.
      */
     public static void sendSms(final String phoneNumber, final String content) {
-        Utils.getApp().startActivity(IntentUtils.getSendSmsIntent(phoneNumber, content, true));
+        Uri uri = Uri.parse("smsto:" + phoneNumber);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+        intent.putExtra("sms_body", content);
+        Utils.getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     /**
@@ -286,10 +287,10 @@ public class PhoneUtils {
      */
     @RequiresPermission(SEND_SMS)
     public static void sendSmsSilent(final String phoneNumber, final String content) {
-        if (StringUtils.isEmpty(content)) {
+        if (TextUtils.isEmpty(content)) {
             return;
         }
-        PendingIntent sentIntent = PendingIntent.getBroadcast(Utils.getApp(), 0, new Intent(), 0);
+        PendingIntent sentIntent = PendingIntent.getBroadcast(Utils.getApp(), 0, new Intent("send"), 0);
         SmsManager smsManager = SmsManager.getDefault();
         if (content.length() >= 70) {
             List<String> ms = smsManager.divideMessage(content);

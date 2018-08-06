@@ -30,24 +30,12 @@ public class QMUIWindowInsetHelper {
     private final WeakReference<IWindowInsetLayout> mWindowInsetLayoutWR;
     private int sApplySystemWindowInsetsCount = 0;
 
-    @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
     public QMUIWindowInsetHelper(ViewGroup viewGroup, IWindowInsetLayout windowInsetLayout) {
         mWindowInsetLayoutWR = new WeakReference<>(windowInsetLayout);
         KEYBOARD_HEIGHT_BOUNDARY = QMUIDisplayHelper.dp2px(viewGroup.getContext(), 100);
 
         if (QMUINotchHelper.isNotchOfficialSupport()) {
-            // WindowInsetsCompat does not exist DisplayCutout stuff...
-            viewGroup.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-                @Override
-                public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                    if (mWindowInsetLayoutWR.get() != null &&
-                            mWindowInsetLayoutWR.get().applySystemWindowInsets(windowInsets)) {
-                        windowInsets = windowInsets.consumeDisplayCutout();
-                        return windowInsets.consumeSystemWindowInsets();
-                    }
-                    return windowInsets;
-                }
-            });
+            setOnApplyWindowInsetsListener28(viewGroup);
         } else {
             // some rom crash with WindowInsets...
             ViewCompat.setOnApplyWindowInsetsListener(viewGroup,
@@ -64,6 +52,26 @@ public class QMUIWindowInsetHelper {
                         }
                     });
         }
+    }
+
+    @TargetApi(28)
+    private void setOnApplyWindowInsetsListener28(ViewGroup viewGroup) {
+        // WindowInsetsCompat does not exist DisplayCutout stuff...
+        viewGroup.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                if (mWindowInsetLayoutWR.get() != null &&
+                        mWindowInsetLayoutWR.get().applySystemWindowInsets21(windowInsets)) {
+                    windowInsets = windowInsets.consumeSystemWindowInsets();
+                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+                    if (displayCutout != null) {
+                        windowInsets = windowInsets.consumeDisplayCutout();
+                    }
+                    return windowInsets;
+                }
+                return windowInsets;
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
@@ -102,8 +110,17 @@ public class QMUIWindowInsetHelper {
         return consumed;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
+    public boolean defaultApplySystemWindowInsets21(ViewGroup viewGroup, Object insets) {
+        if (QMUINotchHelper.isNotchOfficialSupport()) {
+            return defaultApplySystemWindowInsets(viewGroup, (WindowInsets) insets);
+        } else {
+            return defaultApplySystemWindowInsetsComapt(viewGroup, (WindowInsetsCompat) insets);
+        }
+    }
+
     @TargetApi(21)
-    public boolean defaultApplySystemWindowInsets21(ViewGroup viewGroup, WindowInsetsCompat insets) {
+    public boolean defaultApplySystemWindowInsetsComapt(ViewGroup viewGroup, WindowInsetsCompat insets) {
         if (!insets.hasSystemWindowInsets()) {
             return false;
         }
@@ -137,7 +154,7 @@ public class QMUIWindowInsetHelper {
         return consumed;
     }
 
-    @TargetApi(23)
+    @TargetApi(28)
     public boolean defaultApplySystemWindowInsets(ViewGroup viewGroup, WindowInsets insets) {
         sApplySystemWindowInsetsCount++;
         if (QMUINotchHelper.isNotchOfficialSupport()) {
@@ -184,8 +201,12 @@ public class QMUIWindowInsetHelper {
 
     private void dispatchNotchInsetChange(View view) {
         if (view instanceof INotchInsetConsumer) {
-            ((INotchInsetConsumer) view).notifyInsetMaybeChanged();
-        } else if (view instanceof ViewGroup) {
+            boolean stop = ((INotchInsetConsumer) view).notifyInsetMaybeChanged();
+            if (stop) {
+                return;
+            }
+        }
+        if (view instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view;
             int childCount = viewGroup.getChildCount();
             for (int i = 0; i < childCount; i++) {

@@ -4,7 +4,9 @@ package com.qmuiteam.tom.widget.dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.annotation.IntDef;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
@@ -101,6 +103,7 @@ public class QMUIDialogAction {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public QMUIButton buildActionView(final QMUIDialog dialog, final int index) {
         mButton = generateActionButton(dialog.getContext(), mStr, mIconRes);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +120,7 @@ public class QMUIDialogAction {
     /**
      * 生成适用于对话框的按钮
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private QMUIButton generateActionButton(Context context, CharSequence text, int iconRes) {
         // button 有提供 buttonStyle, 覆盖第三个参数不是好选择
         QMUIButton button = new QMUIButton(context);
@@ -151,6 +155,9 @@ public class QMUIDialogAction {
                 negativeTextColor = a.getColorStateList(attr);
             } else if (attr == R.styleable.QMUIDialogActionStyleDef_qmui_dialog_action_icon_space) {
                 iconSpace = a.getDimensionPixelSize(attr, 0);
+            } else if (attr == R.styleable.QMUITextCommonStyleDef_android_textStyle) {
+                int styleIndex = a.getInt(attr, -1);
+                button.setTypeface(null, styleIndex);
             }
         }
 

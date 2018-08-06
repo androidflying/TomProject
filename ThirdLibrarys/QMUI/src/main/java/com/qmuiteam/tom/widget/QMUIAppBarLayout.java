@@ -7,7 +7,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowInsetsCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.WindowInsets;
 
 import com.qmuiteam.tom.util.QMUIWindowInsetHelper;
 
@@ -72,12 +71,7 @@ public class QMUIAppBarLayout extends AppBarLayout implements IWindowInsetLayout
     }
 
     @Override
-    public boolean applySystemWindowInsets21(WindowInsetsCompat insets) {
-        return true;
-    }
-
-    @Override
-    public boolean applySystemWindowInsets(WindowInsets insets) {
+    public boolean applySystemWindowInsets21(Object insets) {
         return true;
     }
 }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.tom.easyphotos.R;
 import com.tom.easyphotos.constant.Type;
@@ -46,8 +47,9 @@ public class AlbumModel {
             @Override
             public void run() {
                 initAlbum(act);
-                if (null != callBack)
+                if (null != callBack) {
                     callBack.onAlbumWorkedCallBack();
+                }
             }
         }).start();
     }
@@ -108,6 +110,9 @@ public class AlbumModel {
                 long size = cursor.getInt(sizeCol);
                 int width = 0;
                 int height = 0;
+                if (TextUtils.isEmpty(path) || TextUtils.isEmpty(type)) {
+                    continue;
+                }
                 if (!Setting.showGif) {
                     if (path.endsWith(Type.GIF) || type.endsWith(Type.GIF)) {
                         continue;
@@ -195,5 +200,4 @@ public class AlbumModel {
     public interface CallBack {
         void onAlbumWorkedCallBack();
     }
-
 }

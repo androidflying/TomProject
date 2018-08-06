@@ -12,8 +12,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
-import com.tom.baselib.BuildConfig;
-
 import java.lang.reflect.Field;
 
 /**
@@ -143,10 +141,8 @@ public class KeyboardUtils {
         final View contentViewChild = contentView.getChildAt(0);
         final Rect outRect = new Rect();
         contentViewChild.getWindowVisibleDisplayFrame(outRect);
-        LogUtils.d(
-                contentViewChild.getTop(), contentViewChild.getBottom(),
-                outRect.top, outRect.bottom
-        );
+        Log.d("KeyboardUtils", "getContentViewInvisibleHeight: "
+                + (contentViewChild.getBottom() - outRect.bottom));
         return contentViewChild.getBottom() - outRect.bottom;
     }
 
@@ -304,6 +300,10 @@ public class KeyboardUtils {
         }
         */
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
 
     public interface OnSoftInputChangedListener {
         void onSoftInputChanged(int height);

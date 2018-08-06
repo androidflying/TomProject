@@ -26,7 +26,6 @@
 	如果在项目中要对特定项目配置业务相关的 Theme，在 values 目录下修改 themes.xml 的 AppTheme。
      -->
     <style name="AppRootTheme" parent="android:Theme.Holo.Light" />
-
     <style name="AppBaseTheme" parent="AppRootTheme">
         <item name="android:listDivider">@drawable/qmui_divider</item>
         <item name="android:listViewStyle">@style/ListView</item>
@@ -223,7 +222,11 @@
         <item name="qmui_bottom_sheet_grid_line_padding_horizontal">12dp</item>
         <item name="qmui_bottom_sheet_grid_line_vertical_space">0dp</item>
         <item name="qmui_bottom_sheet_grid_item_mini_width">84dp</item>
+        <item name="qmui_bottom_sheet_grid_item_paddingTop">0dp</item>
+        <item name="qmui_bottom_sheet_grid_item_paddingBottom">8dp</item>
         <item name="qmui_bottom_sheet_grid_item_icon_size">56dp</item>
+        <item name="qmui_bottom_sheet_grid_item_icon_marginTop">12dp</item>
+        <item name="qmui_bottom_sheet_grid_item_icon_marginBottom">9dp</item>
         <item name="qmui_bottom_sheet_grid_item_text_appearance">
             @style/QMUITextAppearance.GridItem.Small
         </item>
@@ -290,21 +293,14 @@
     </style>
 
     <style name="ActionBarBase" parent="android:Widget.Holo.Light.ActionBar" />
-
     <style name="ActionBarTitleTextBase" parent="android:TextAppearance.Holo.Widget.ActionBar.Title" />
-
     <style name="ListViewBase" parent="android:Widget.Holo.Light.ListView" />
-
     <style name="GridViewBase" parent="android:Widget.Holo.Light.GridView" />
-
     <style name="ImageButtonBase" parent="android:Widget.Holo.Light.ImageButton" />
 
     <style name="ButtonBase" parent="android:Widget.Holo.Light.Button" />
-
     <style name="EditTextBase" parent="android:Widget.Holo.Light.EditText" />
-
     <style name="AutoCompleteTextViewBase" parent="android:Widget.Holo.Light.AutoCompleteTextView" />
-
     <style name="DropDownListViewBase" parent="android:Widget.Holo.Light.ListView.DropDown" />
 
     <style name="TextAppearanceBase" parent="android:TextAppearance.Holo" />
@@ -365,6 +361,4 @@
         <item name="android:dividerHeight">@dimen/qmui_list_divider_height</item>
         <item name="android:background">@color/qmui_config_color_white</item>
     </style>
-
-
 </resources>

@@ -43,13 +43,6 @@ import java.util.ArrayList;
  */
 public class PreviewActivity extends AppCompatActivity implements PreviewPhotosAdapter.OnClickListener, View.OnClickListener, PreviewFragment.OnPreviewFragmentClickListener {
 
-    public static void start(Activity act, int albumItemIndex, int currIndex) {
-        Intent intent = new Intent(act, PreviewActivity.class);
-        intent.putExtra(Key.PREVIEW_ALBUM_ITEM_INDEX, albumItemIndex);
-        intent.putExtra(Key.PREVIEW_PHOTO_INDEX, currIndex);
-        act.startActivityForResult(intent, Code.REQUEST_PREVIEW_ACTIVITY);
-    }
-
 
     /**
      * 一些旧设备在UI小部件更新之间需要一个小延迟
@@ -57,6 +50,7 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
      */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
+    View decorView;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -74,7 +68,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
         }
     };
     private boolean mVisible;
-    View decorView;
     private TextView tvOriginal, tvNumber;
     private PressedTextView tvDone;
     private ImageView ivSelector;
@@ -85,16 +78,19 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
     private int index;
     private ArrayList<Photo> photos = new ArrayList<>();
     private int resultCode = RESULT_CANCELED;
-
-    //记录recyclerView最后一次角标位置，用于判断是否转换了item
-
-    private int lastPosition = 0;
+    private int lastPosition = 0;//记录recyclerView最后一次角标位置，用于判断是否转换了item
     private boolean isSingle = Setting.count == 1;
     private boolean unable = Result.count() == Setting.count;
-
     private FrameLayout flFragment;
     private PreviewFragment previewFragment;
     private int statusColor;
+
+    public static void start(Activity act, int albumItemIndex, int currIndex) {
+        Intent intent = new Intent(act, PreviewActivity.class);
+        intent.putExtra(Key.PREVIEW_ALBUM_ITEM_INDEX, albumItemIndex);
+        intent.putExtra(Key.PREVIEW_PHOTO_INDEX, currIndex);
+        act.startActivityForResult(intent, Code.REQUEST_PREVIEW_ACTIVITY);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,15 +110,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
         initView();
     }
 
-    private void adaptationStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            if (ColorUtils.isWhiteColor(statusColor)) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            }
-        }
-    }
-
     private void hideActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -130,6 +117,14 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
         }
     }
 
+    private void adaptationStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusColor = ContextCompat.getColor(this, R.color.easy_photos_status_bar);
+            if (ColorUtils.isWhiteColor(statusColor)) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+        }
+    }
 
     private void initData() {
         Intent intent = getIntent();
@@ -145,6 +140,149 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
 
         lastPosition = index;
         mVisible = true;
+    }
+
+    private void initView() {
+        setClick(R.id.iv_back, R.id.tv_edit, R.id.tv_selector);
+
+        mToolBar = findViewById(R.id.m_top_bar_layout);
+        if (!SystemUtils.getInstance().hasNavigationBar(this)) {
+            FrameLayout mRootView = findViewById(R.id.m_root_view);
+            mRootView.setFitsSystemWindows(true);
+            mToolBar.setPadding(0, SystemUtils.getInstance().getStatusBarHeight(this), 0, 0);
+            if (ColorUtils.isWhiteColor(statusColor)) {
+                SystemUtils.getInstance().setStatusDark(this, true);
+            }
+        }
+        mBottomBar = findViewById(R.id.m_bottom_bar);
+        ivSelector = findViewById(R.id.iv_selector);
+        tvNumber = findViewById(R.id.tv_number);
+        tvDone = findViewById(R.id.tv_done);
+        tvOriginal = findViewById(R.id.tv_original);
+        flFragment = findViewById(R.id.fl_fragment);
+        previewFragment = (PreviewFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_preview);
+        if (Setting.showOriginalMenu) {
+            processOriginalMenu();
+        } else {
+            tvOriginal.setVisibility(View.GONE);
+        }
+
+        setClick(tvOriginal, tvDone, ivSelector);
+
+        initRecyclerView();
+        shouldShowMenuDone();
+    }
+
+    private void setClick(@IdRes int... ids) {
+        for (int id : ids) {
+            findViewById(id).setOnClickListener(this);
+        }
+    }
+
+    private void processOriginalMenu() {
+        if (Setting.selectedOriginal) {
+            tvOriginal.setTextColor(ContextCompat.getColor(this, R.color.easy_photos_fg_accent));
+        } else {
+            if (Setting.originalMenuUsable) {
+                tvOriginal.setTextColor(ContextCompat.getColor(this, R.color.easy_photos_fg_primary));
+            } else {
+                tvOriginal.setTextColor(ContextCompat.getColor(this, R.color.easy_photos_fg_primary_dark));
+            }
+        }
+    }
+
+    private void setClick(View... views) {
+        for (View v : views) {
+            v.setOnClickListener(this);
+        }
+    }
+
+    private void initRecyclerView() {
+        rvPhotos = findViewById(R.id.rv_photos);
+        adapter = new PreviewPhotosAdapter(this, photos, this);
+        lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvPhotos.setLayoutManager(lm);
+        rvPhotos.setAdapter(adapter);
+        rvPhotos.scrollToPosition(index);
+        toggleSelector();
+        snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(rvPhotos);
+        rvPhotos.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
+                    return;
+                }
+                int leftViewPosition = snapHelper.findTargetSnapPosition(lm, 1, rvPhotos.getHeight() / 2);
+                int rightViewPosition = snapHelper.findTargetSnapPosition(lm, rvPhotos.getWidth() - 1, rvPhotos.getHeight() / 2);
+                if (leftViewPosition == rightViewPosition) {
+                    if (lastPosition == leftViewPosition - 1) {
+                        return;
+                    }
+                    previewFragment.setSelectedPosition(-1);
+                    tvNumber.setText(getString(R.string.preview_current_number_easy_photos, leftViewPosition, photos.size()));
+                    lastPosition = leftViewPosition - 1;
+                    View view = snapHelper.findSnapView(lm);
+                    toggleSelector();
+                    if (null == view) {
+                        return;
+                    }
+                    PreviewPhotosAdapter.PreviewPhotosViewHolder viewHolder = (PreviewPhotosAdapter.PreviewPhotosViewHolder) rvPhotos.getChildViewHolder(view);
+                    if (viewHolder == null || viewHolder.ivPhoto == null) {
+                        return;
+                    }
+                    if (viewHolder.ivPhoto.getScale() != 1f) {
+                        viewHolder.ivPhoto.setScale(1f, true);
+                    }
+                }
+            }
+        });
+        tvNumber.setText(getString(R.string.preview_current_number_easy_photos, index + 1, photos.size()));
+    }
+
+    private void shouldShowMenuDone() {
+        if (Result.isEmpty()) {
+            if (View.VISIBLE == tvDone.getVisibility()) {
+                ScaleAnimation scaleHide = new ScaleAnimation(1f, 0f, 1f, 0f);
+                scaleHide.setDuration(200);
+                tvDone.startAnimation(scaleHide);
+            }
+            tvDone.setVisibility(View.GONE);
+            flFragment.setVisibility(View.GONE);
+        } else {
+            if (View.GONE == tvDone.getVisibility()) {
+                ScaleAnimation scaleShow = new ScaleAnimation(0f, 1f, 0f, 1f);
+                scaleShow.setDuration(200);
+                tvDone.startAnimation(scaleShow);
+            }
+            flFragment.setVisibility(View.VISIBLE);
+            tvDone.setVisibility(View.VISIBLE);
+            tvDone.setText(getString(R.string.selector_action_done_easy_photos, Result.count(), Setting.count));
+        }
+    }
+
+    private void toggleSelector() {
+        if (photos.get(lastPosition).selected) {
+            ivSelector.setImageResource(R.drawable.ic_selector_true_easy_photos);
+            if (!Result.isEmpty()) {
+                for (int i = 0; i < Result.count(); i++) {
+                    if (photos.get(lastPosition).path.equals(Result.getPhotoPath(i))) {
+                        previewFragment.setSelectedPosition(i);
+                        break;
+                    }
+                }
+            }
+        } else {
+            ivSelector.setImageResource(R.drawable.ic_selector_easy_photos);
+        }
+        previewFragment.notifyDataSetChanged();
+        shouldShowMenuDone();
+    }
+
+    @Override
+    public void onPhotoClick() {
+        toggle();
     }
 
     private void toggle() {
@@ -187,7 +325,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
 
     }
 
-
     private void show() {
         // Show the system bar
         if (Build.VERSION.SDK_INT >= 16) {
@@ -202,14 +339,10 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
     }
 
     @Override
-    public void onPhotoClick() {
-        toggle();
-    }
-
-    @Override
     public void onPhotoScaleChanged() {
-        if (mVisible)
+        if (mVisible) {
             hide();
+        }
     }
 
     @Override
@@ -222,80 +355,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
         intent.putExtra(Key.PREVIEW_CLICK_DONE, false);
         setResult(resultCode, intent);
         finish();
-    }
-
-    private void initView() {
-        setClick(R.id.iv_back, R.id.tv_edit, R.id.tv_selector);
-
-        mToolBar = findViewById(R.id.m_top_bar_layout);
-        if (!SystemUtils.getInstance().hasNavigationBar(this)) {
-            FrameLayout mRootView = findViewById(R.id.m_root_view);
-            mRootView.setFitsSystemWindows(true);
-            mToolBar.setPadding(0, SystemUtils.getInstance().getStatusBarHeight(this), 0, 0);
-            if (ColorUtils.isWhiteColor(statusColor)) {
-                SystemUtils.getInstance().setStatusDark(this, true);
-            }
-        }
-        mBottomBar = findViewById(R.id.m_bottom_bar);
-        ivSelector = findViewById(R.id.iv_selector);
-        tvNumber = findViewById(R.id.tv_number);
-        tvDone = findViewById(R.id.tv_done);
-        tvOriginal = findViewById(R.id.tv_original);
-        flFragment = findViewById(R.id.fl_fragment);
-        previewFragment = (PreviewFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_preview);
-        if (Setting.showOriginalMenu) {
-            processOriginalMenu();
-        } else {
-            tvOriginal.setVisibility(View.GONE);
-        }
-
-        setClick(tvOriginal, tvDone, ivSelector);
-
-        initRecyclerView();
-        shouldShowMenuDone();
-    }
-
-    private void initRecyclerView() {
-        rvPhotos = findViewById(R.id.rv_photos);
-        adapter = new PreviewPhotosAdapter(this, photos, this);
-        lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rvPhotos.setLayoutManager(lm);
-        rvPhotos.setAdapter(adapter);
-        rvPhotos.scrollToPosition(index);
-        toggleSelector();
-        snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(rvPhotos);
-        rvPhotos.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
-                    return;
-                }
-                int leftViewPosition = snapHelper.findTargetSnapPosition(lm, 1, rvPhotos.getHeight() / 2);
-                int rightViewPosition = snapHelper.findTargetSnapPosition(lm, rvPhotos.getWidth() - 1, rvPhotos.getHeight() / 2);
-                if (leftViewPosition == rightViewPosition) {
-                    if (lastPosition == leftViewPosition - 1) {
-                        return;
-                    }
-                    previewFragment.setSelectedPosition(-1);
-                    tvNumber.setText(getString(R.string.preview_current_number_easy_photos, leftViewPosition, photos.size()));
-                    lastPosition = leftViewPosition - 1;
-                    View view = snapHelper.findSnapView(lm);
-                    toggleSelector();
-                    if (null == view) {
-                        return;
-                    }
-                    PreviewPhotosAdapter.PreviewPhotosViewHolder viewHolder = (PreviewPhotosAdapter.PreviewPhotosViewHolder) rvPhotos.getChildViewHolder(view);
-                    if (viewHolder == null || viewHolder.ivPhoto == null) {
-                        return;
-                    }
-                    if (viewHolder.ivPhoto.getScale() != 1f)
-                        viewHolder.ivPhoto.setScale(1f, true);
-                }
-            }
-        });
-        tvNumber.setText(getString(R.string.preview_current_number_easy_photos, index + 1, photos.size()));
     }
 
     @Override
@@ -325,36 +384,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
 //        } else if (R.id.tv_edit == id) {
 //
 //        }
-    }
-
-    private void processOriginalMenu() {
-        if (Setting.selectedOriginal) {
-            tvOriginal.setTextColor(ContextCompat.getColor(this, R.color.easy_photos_fg_accent));
-        } else {
-            if (Setting.originalMenuUsable) {
-                tvOriginal.setTextColor(ContextCompat.getColor(this, R.color.easy_photos_fg_primary));
-            } else {
-                tvOriginal.setTextColor(ContextCompat.getColor(this, R.color.easy_photos_fg_primary_dark));
-            }
-        }
-    }
-
-    private void toggleSelector() {
-        if (photos.get(lastPosition).selected) {
-            ivSelector.setImageResource(R.drawable.ic_selector_true_easy_photos);
-            if (!Result.isEmpty()) {
-                for (int i = 0; i < Result.count(); i++) {
-                    if (photos.get(lastPosition).path.equals(Result.getPhotoPath(i))) {
-                        previewFragment.setSelectedPosition(i);
-                        break;
-                    }
-                }
-            }
-        } else {
-            ivSelector.setImageResource(R.drawable.ic_selector_easy_photos);
-        }
-        previewFragment.notifyDataSetChanged();
-        shouldShowMenuDone();
     }
 
     private void updateSelector() {
@@ -408,27 +437,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
         }
     }
 
-    private void shouldShowMenuDone() {
-        if (Result.isEmpty()) {
-            if (View.VISIBLE == tvDone.getVisibility()) {
-                ScaleAnimation scaleHide = new ScaleAnimation(1f, 0f, 1f, 0f);
-                scaleHide.setDuration(200);
-                tvDone.startAnimation(scaleHide);
-            }
-            tvDone.setVisibility(View.GONE);
-            flFragment.setVisibility(View.GONE);
-        } else {
-            if (View.GONE == tvDone.getVisibility()) {
-                ScaleAnimation scaleShow = new ScaleAnimation(0f, 1f, 0f, 1f);
-                scaleShow.setDuration(200);
-                tvDone.startAnimation(scaleShow);
-            }
-            flFragment.setVisibility(View.VISIBLE);
-            tvDone.setVisibility(View.VISIBLE);
-            tvDone.setText(getString(R.string.selector_action_done_easy_photos, Result.count(), Setting.count));
-        }
-    }
-
     @Override
     public void onPreviewPhotoClick(int position) {
         String path = Result.getPhotoPath(position);
@@ -441,18 +449,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                 toggleSelector();
                 return;
             }
-        }
-    }
-
-    private void setClick(@IdRes int... ids) {
-        for (int id : ids) {
-            findViewById(id).setOnClickListener(this);
-        }
-    }
-
-    private void setClick(View... views) {
-        for (View v : views) {
-            v.setOnClickListener(this);
         }
     }
 }

@@ -34,6 +34,15 @@ public class QMUINotchConsumeLayout extends FrameLayout implements INotchInsetCo
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (!QMUINotchHelper.isNotchOfficialSupport()) {
+            notifyInsetMaybeChanged();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (!QMUINotchHelper.isNotchOfficialSupport()) {
@@ -43,12 +52,13 @@ public class QMUINotchConsumeLayout extends FrameLayout implements INotchInsetCo
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void notifyInsetMaybeChanged() {
+    public boolean notifyInsetMaybeChanged() {
         setPadding(
                 QMUINotchHelper.getSafeInsetLeft(this),
                 QMUINotchHelper.getSafeInsetTop(this),
                 QMUINotchHelper.getSafeInsetRight(this),
                 QMUINotchHelper.getSafeInsetBottom(this)
         );
+        return true;
     }
 }

@@ -36,16 +36,18 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  * 描述：BUG管理工具类
  */
 public class CrashUtils {
-
-    private static final String FILE_SEP = System.getProperty("file.separator");
-    @SuppressLint("SimpleDateFormat")
-    private static final Format FORMAT = new SimpleDateFormat("MM-dd HH-mm-ss");
-    private static final UncaughtExceptionHandler DEFAULT_UNCAUGHT_EXCEPTION_HANDLER;
-    private static final UncaughtExceptionHandler UNCAUGHT_EXCEPTION_HANDLER;
     private static String defaultDir;
     private static String dir;
     private static String versionName;
     private static int versionCode;
+
+    private static final String FILE_SEP = System.getProperty("file.separator");
+    @SuppressLint("SimpleDateFormat")
+    private static final Format FORMAT = new SimpleDateFormat("MM-dd HH-mm-ss");
+
+    private static final UncaughtExceptionHandler DEFAULT_UNCAUGHT_EXCEPTION_HANDLER;
+    private static final UncaughtExceptionHandler UNCAUGHT_EXCEPTION_HANDLER;
+
     private static OnCrashListener sOnCrashListener;
 
     static {
@@ -135,11 +137,48 @@ public class CrashUtils {
      * <p>Must hold
      * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
      *
+     * @param crashDir The directory of saving crash information.
+     */
+    @RequiresPermission(WRITE_EXTERNAL_STORAGE)
+    public static void init(@NonNull final File crashDir) {
+        init(crashDir.getAbsolutePath(), null);
+    }
+
+    /**
+     * Initialization
+     * <p>Must hold
+     * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
+     *
      * @param crashDirPath The directory's path of saving crash information.
      */
     @RequiresPermission(WRITE_EXTERNAL_STORAGE)
     public static void init(final String crashDirPath) {
         init(crashDirPath, null);
+    }
+
+    /**
+     * Initialization
+     * <p>Must hold
+     * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
+     *
+     * @param onCrashListener The crash listener.
+     */
+    @RequiresPermission(WRITE_EXTERNAL_STORAGE)
+    public static void init(final OnCrashListener onCrashListener) {
+        init("", onCrashListener);
+    }
+
+    /**
+     * Initialization
+     * <p>Must hold
+     * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
+     *
+     * @param crashDir        The directory of saving crash information.
+     * @param onCrashListener The crash listener.
+     */
+    @RequiresPermission(WRITE_EXTERNAL_STORAGE)
+    public static void init(@NonNull final File crashDir, final OnCrashListener onCrashListener) {
+        init(crashDir.getAbsolutePath(), onCrashListener);
     }
 
     /**
@@ -167,54 +206,17 @@ public class CrashUtils {
         Thread.setDefaultUncaughtExceptionHandler(UNCAUGHT_EXCEPTION_HANDLER);
     }
 
-    private static boolean isSpace(final String s) {
-        if (s == null) {
-            return true;
-        }
-        for (int i = 0, len = s.length(); i < len; ++i) {
-            if (!Character.isWhitespace(s.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
+    ///////////////////////////////////////////////////////////////////////////
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
+
+    public interface OnCrashListener {
+        void onCrash(String crashInfo, Throwable e);
     }
 
-    /**
-     * Initialization
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
-     *
-     * @param crashDir The directory of saving crash information.
-     */
-    @RequiresPermission(WRITE_EXTERNAL_STORAGE)
-    public static void init(@NonNull final File crashDir) {
-        init(crashDir.getAbsolutePath(), null);
-    }
-
-    /**
-     * Initialization
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
-     *
-     * @param onCrashListener The crash listener.
-     */
-    @RequiresPermission(WRITE_EXTERNAL_STORAGE)
-    public static void init(final OnCrashListener onCrashListener) {
-        init("", onCrashListener);
-    }
-
-    /**
-     * Initialization
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />}</p>
-     *
-     * @param crashDir        The directory of saving crash information.
-     * @param onCrashListener The crash listener.
-     */
-    @RequiresPermission(WRITE_EXTERNAL_STORAGE)
-    public static void init(@NonNull final File crashDir, final OnCrashListener onCrashListener) {
-        init(crashDir.getAbsolutePath(), onCrashListener);
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
 
     private static void input2File(final String input, final String filePath) {
         Future<Boolean> submit = Executors.newSingleThreadExecutor().submit(new Callable<Boolean>() {
@@ -248,9 +250,7 @@ public class CrashUtils {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        if (BuildConfig.DEBUG) {
-            Log.e("CrashUtils", "write crash info to " + filePath + " failed!");
-        }
+        Log.e("CrashUtils", "write crash info to " + filePath + " failed!");
     }
 
     private static boolean createOrExistsFile(final String filePath) {
@@ -273,7 +273,15 @@ public class CrashUtils {
         return file != null && (file.exists() ? file.isDirectory() : file.mkdirs());
     }
 
-    public interface OnCrashListener {
-        void onCrash(String crashInfo, Throwable e);
+    private static boolean isSpace(final String s) {
+        if (s == null) {
+            return true;
+        }
+        for (int i = 0, len = s.length(); i < len; ++i) {
+            if (!Character.isWhitespace(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }

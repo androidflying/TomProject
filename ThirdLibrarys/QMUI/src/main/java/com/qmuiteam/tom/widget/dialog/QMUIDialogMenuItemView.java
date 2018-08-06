@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.qmuiteam.tom.R;
 import com.qmuiteam.tom.layout.QMUIRelativeLayout;
+import com.qmuiteam.tom.util.QMUIResHelper;
 import com.qmuiteam.tom.util.QMUIViewHelper;
 
 
@@ -139,7 +140,7 @@ public class QMUIDialogMenuItemView extends QMUIRelativeLayout {
                 if (attr == R.styleable.QMUIDialogMenuMarkDef_qmui_dialog_menu_item_check_mark_margin_hor) {
                     markMarginHor = a.getDimensionPixelSize(attr, 0);
                 } else if (attr == R.styleable.QMUIDialogMenuMarkDef_qmui_dialog_menu_item_mark_drawable) {
-                    mCheckedView.setImageDrawable(a.getDrawable(attr));
+                    mCheckedView.setImageDrawable(QMUIResHelper.getAttrDrawable(context, a, attr));
                 }
             }
             a.recycle();
@@ -193,7 +194,7 @@ public class QMUIDialogMenuItemView extends QMUIRelativeLayout {
                 if (attr == R.styleable.QMUIDialogMenuCheckDef_qmui_dialog_menu_item_check_mark_margin_hor) {
                     markMarginHor = a.getDimensionPixelSize(attr, 0);
                 } else if (attr == R.styleable.QMUIDialogMenuCheckDef_qmui_dialog_menu_item_check_drawable) {
-                    mCheckedView.setImageDrawable(a.getDrawable(attr));
+                    mCheckedView.setImageDrawable(QMUIResHelper.getAttrDrawable(context, a, attr));
                 }
             }
             a.recycle();

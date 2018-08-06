@@ -1,6 +1,7 @@
 package com.tom.baselib.utils;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tom.baselib.constant.MemoryConstants;
@@ -29,7 +31,6 @@ import java.io.UnsupportedEncodingException;
  * 描述：转换相关工具类
  */
 public final class ConvertUtils {
-
     private ConvertUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
@@ -44,6 +45,9 @@ public final class ConvertUtils {
      * @return bits
      */
     public static String bytes2Bits(final byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (byte aByte : bytes) {
             for (int j = 7; j >= 0; --j) {
@@ -127,11 +131,11 @@ public final class ConvertUtils {
      */
     public static String bytes2HexString(final byte[] bytes) {
         if (bytes == null) {
-            return null;
+            return "";
         }
         int len = bytes.length;
         if (len <= 0) {
-            return null;
+            return "";
         }
         char[] ret = new char[len << 1];
         for (int i = 0, j = 0; i < len; i++) {
@@ -211,7 +215,9 @@ public final class ConvertUtils {
      */
     public static double byte2MemorySize(final long byteSize,
                                          @MemoryConstants.Unit final int unit) {
-        if (byteSize < 0) return -1;
+        if (byteSize < 0) {
+            return -1;
+        }
         return (double) byteSize / unit;
     }
 
@@ -227,13 +233,13 @@ public final class ConvertUtils {
         if (byteSize < 0) {
             return "shouldn't be less than zero!";
         } else if (byteSize < MemoryConstants.KB) {
-            return String.format("%.0fB", (double) byteSize);
+            return String.format("%.3fB", (double) byteSize);
         } else if (byteSize < MemoryConstants.MB) {
-            return String.format("%.0fKB", (double) byteSize / MemoryConstants.KB);
+            return String.format("%.3fKB", (double) byteSize / MemoryConstants.KB);
         } else if (byteSize < MemoryConstants.GB) {
-            return String.format("%.2fMB", (double) byteSize / MemoryConstants.MB);
+            return String.format("%.3fMB", (double) byteSize / MemoryConstants.MB);
         } else {
-            return String.format("%.2fGB", (double) byteSize / MemoryConstants.GB);
+            return String.format("%.3fGB", (double) byteSize / MemoryConstants.GB);
         }
     }
 
@@ -291,7 +297,9 @@ public final class ConvertUtils {
      */
     @SuppressLint("DefaultLocale")
     public static String millis2FitTimeSpan(long millis, int precision) {
-        if (millis <= 0 || precision <= 0) return null;
+        if (millis <= 0 || precision <= 0) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
         String[] units = {"天", "小时", "分钟", "秒", "毫秒"};
         int[] unitLen = {86400000, 3600000, 60000, 1000, 1};
@@ -313,7 +321,9 @@ public final class ConvertUtils {
      * @return output stream
      */
     public static ByteArrayOutputStream input2OutputStream(final InputStream is) {
-        if (is == null) return null;
+        if (is == null) {
+            return null;
+        }
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             byte[] b = new byte[MemoryConstants.KB];
@@ -326,7 +336,11 @@ public final class ConvertUtils {
             e.printStackTrace();
             return null;
         } finally {
-            CloseUtils.closeIO(is);
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -337,7 +351,9 @@ public final class ConvertUtils {
      * @return input stream
      */
     public ByteArrayInputStream output2InputStream(final OutputStream out) {
-        if (out == null) return null;
+        if (out == null) {
+            return null;
+        }
         return new ByteArrayInputStream(((ByteArrayOutputStream) out).toByteArray());
     }
 
@@ -359,7 +375,9 @@ public final class ConvertUtils {
      * @return input stream
      */
     public static InputStream bytes2InputStream(final byte[] bytes) {
-        if (bytes == null || bytes.length <= 0) return null;
+        if (bytes == null || bytes.length <= 0) {
+            return null;
+        }
         return new ByteArrayInputStream(bytes);
     }
 
@@ -370,7 +388,9 @@ public final class ConvertUtils {
      * @return bytes
      */
     public static byte[] outputStream2Bytes(final OutputStream out) {
-        if (out == null) return null;
+        if (out == null) {
+            return null;
+        }
         return ((ByteArrayOutputStream) out).toByteArray();
     }
 
@@ -381,7 +401,9 @@ public final class ConvertUtils {
      * @return output stream
      */
     public static OutputStream bytes2OutputStream(final byte[] bytes) {
-        if (bytes == null || bytes.length <= 0) return null;
+        if (bytes == null || bytes.length <= 0) {
+            return null;
+        }
         ByteArrayOutputStream os = null;
         try {
             os = new ByteArrayOutputStream();
@@ -391,7 +413,13 @@ public final class ConvertUtils {
             e.printStackTrace();
             return null;
         } finally {
-            CloseUtils.closeIO(os);
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -403,12 +431,14 @@ public final class ConvertUtils {
      * @return string
      */
     public static String inputStream2String(final InputStream is, final String charsetName) {
-        if (is == null || isSpace(charsetName)) return null;
+        if (is == null || isSpace(charsetName)) {
+            return "";
+        }
         try {
             return new String(inputStream2Bytes(is), charsetName);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 
@@ -420,7 +450,9 @@ public final class ConvertUtils {
      * @return input stream
      */
     public static InputStream string2InputStream(final String string, final String charsetName) {
-        if (string == null || isSpace(charsetName)) return null;
+        if (string == null || isSpace(charsetName)) {
+            return null;
+        }
         try {
             return new ByteArrayInputStream(string.getBytes(charsetName));
         } catch (UnsupportedEncodingException e) {
@@ -437,12 +469,14 @@ public final class ConvertUtils {
      * @return string
      */
     public static String outputStream2String(final OutputStream out, final String charsetName) {
-        if (out == null || isSpace(charsetName)) return null;
+        if (out == null || isSpace(charsetName)) {
+            return "";
+        }
         try {
             return new String(outputStream2Bytes(out), charsetName);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 
@@ -454,7 +488,9 @@ public final class ConvertUtils {
      * @return output stream
      */
     public static OutputStream string2OutputStream(final String string, final String charsetName) {
-        if (string == null || isSpace(charsetName)) return null;
+        if (string == null || isSpace(charsetName)) {
+            return null;
+        }
         try {
             return bytes2OutputStream(string.getBytes(charsetName));
         } catch (UnsupportedEncodingException e) {
@@ -471,7 +507,9 @@ public final class ConvertUtils {
      * @return bytes
      */
     public static byte[] bitmap2Bytes(final Bitmap bitmap, final Bitmap.CompressFormat format) {
-        if (bitmap == null) return null;
+        if (bitmap == null) {
+            return null;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(format, 100, baos);
         return baos.toByteArray();
@@ -560,7 +598,9 @@ public final class ConvertUtils {
      * @return bitmap
      */
     public static Bitmap view2Bitmap(final View view) {
-        if (view == null) return null;
+        if (view == null) {
+            return null;
+        }
         Bitmap ret =
                 Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(ret);
@@ -581,7 +621,18 @@ public final class ConvertUtils {
      * @return value of px
      */
     public static int dp2px(final float dpValue) {
-        final float scale = Utils.getApp().getResources().getDisplayMetrics().density;
+        return dp2px(Utils.getApp(), dpValue);
+    }
+
+    /**
+     * Value of dp to value of px.
+     *
+     * @param context The context.
+     * @param dpValue The value of dp.
+     * @return value of px
+     */
+    public static int dp2px(@NonNull final Context context, final float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
@@ -592,7 +643,18 @@ public final class ConvertUtils {
      * @return value of dp
      */
     public static int px2dp(final float pxValue) {
-        final float scale = Utils.getApp().getResources().getDisplayMetrics().density;
+        return px2dp(Utils.getApp(), pxValue);
+    }
+
+    /**
+     * Value of px to value of dp.
+     *
+     * @param context The context.
+     * @param pxValue The value of px.
+     * @return value of dp
+     */
+    public static int px2dp(@NonNull final Context context, final float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -603,7 +665,18 @@ public final class ConvertUtils {
      * @return value of px
      */
     public static int sp2px(final float spValue) {
-        final float fontScale = Utils.getApp().getResources().getDisplayMetrics().scaledDensity;
+        return sp2px(Utils.getApp(), spValue);
+    }
+
+    /**
+     * Value of sp to value of px.
+     *
+     * @param context The context.
+     * @param spValue The value of sp.
+     * @return value of px
+     */
+    public static int sp2px(@NonNull final Context context, final float spValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
 
@@ -614,9 +687,24 @@ public final class ConvertUtils {
      * @return value of sp
      */
     public static int px2sp(final float pxValue) {
-        final float fontScale = Utils.getApp().getResources().getDisplayMetrics().scaledDensity;
+        return px2sp(Utils.getApp(), pxValue);
+    }
+
+    /**
+     * Value of px to value of sp.
+     *
+     * @param context The context.
+     * @param pxValue The value of px.
+     * @return value of sp
+     */
+    public static int px2sp(@NonNull final Context context, final float pxValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
 
     private static boolean isSpace(final String s) {
         if (s == null) {

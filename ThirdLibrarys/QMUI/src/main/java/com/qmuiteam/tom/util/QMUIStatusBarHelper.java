@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
  * @date 2016-03-27
  */
 public class QMUIStatusBarHelper {
-
     private final static int STATUSBAR_TYPE_DEFAULT = 0;
     private final static int STATUSBAR_TYPE_MIUI = 1;
     private final static int STATUSBAR_TYPE_FLYME = 2;
@@ -41,8 +40,8 @@ public class QMUIStatusBarHelper {
 
     private static boolean supportTranslucent() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                // Essential Phone 不支持沉浸式，否则系统又不从状态栏下方开始布局又给你下发 WindowInsets
-                && !QMUIDeviceHelper.isEssentialPhone();
+                // Essential Phone 在 Android 8 之前沉浸式做得不全，系统不从状态栏顶部开始布局却会下发 WindowInsets
+                && !(QMUIDeviceHelper.isEssentialPhone() && Build.VERSION.SDK_INT < Build.VERSION_CODES.O);
     }
 
     /**
@@ -51,6 +50,7 @@ public class QMUIStatusBarHelper {
      *
      * @param activity 需要被设置沉浸式状态栏的 Activity。
      */
+    @TargetApi(19)
     public static void translucent(Activity activity, @ColorInt int colorOn5x) {
         if (!supportTranslucent()) {
             // 版本小于4.4，绝对不考虑沉浸式
@@ -420,4 +420,5 @@ public class QMUIStatusBarHelper {
     @Retention(RetentionPolicy.SOURCE)
     private @interface StatusBarType {
     }
+
 }

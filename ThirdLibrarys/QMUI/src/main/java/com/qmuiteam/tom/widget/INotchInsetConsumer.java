@@ -8,5 +8,8 @@ package com.qmuiteam.tom.widget;
  * 描述：
  */
 public interface INotchInsetConsumer {
-    void notifyInsetMaybeChanged();
+    /**
+     * @return if true stop dispatch to child view
+     */
+    boolean notifyInsetMaybeChanged();
 }

@@ -10,8 +10,10 @@ import android.media.AudioManager;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -28,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bailingcloud.bailingvideo.engine.binstack.util.FinLog;
 import com.bailingcloud.bailingvideo.engine.view.BlinkVideoView;
 import com.blink.RendererCommon;
 
@@ -37,6 +40,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.rong.callkit.util.CallKitUtils;
+import io.rong.callkit.util.GlideUtils;
 import io.rong.calllib.CallUserProfile;
 import io.rong.calllib.RongCallClient;
 import io.rong.calllib.RongCallCommon;
@@ -61,16 +66,17 @@ public class MultiVideoCallActivity extends BaseCallActivity {
     SurfaceView localView;
     ContainerLayout localViewContainer;
     LinearLayout remoteViewContainer;
-    LinearLayout remoteViewContainer1;
+    //    LinearLayout remoteViewContainer1;
     LinearLayout remoteViewContainer2;
     LinearLayout topContainer;
     LinearLayout waitingContainer;
     LinearLayout bottomButtonContainer;
     LinearLayout participantPortraitContainer;
     LinearLayout portraitContainer1;
-    LinearLayout portraitContainer2;
+    //    LinearLayout portraitContainer2;
     LayoutInflater inflater;
-    ImageView minimizeButton;
+    //通话中的最小化按钮、呼叫中的最小化按钮
+    ImageView minimizeButton, rc_voip_multiVideoCall_minimize;
     ImageView moreButton;
     ImageView switchCameraButton;
     AsyncImageView userPortrait;
@@ -79,7 +85,11 @@ public class MultiVideoCallActivity extends BaseCallActivity {
     TextView userNameView;
     private WebView whiteboardView;
     private RelativeLayout mRelativeWebView;
-    int remoteUserViewWidth;
+    private int remoteUserViewWidth;
+    //    private int  remoteUserViewHeight;
+    //主叫、通话中 远端View
+    private float remoteUserViewMarginsRight = 10;
+    private float remoteUserViewMarginsLeft = 20;
 
     boolean isFullScreen = false;
     boolean isMuteMIC = false;
@@ -92,6 +102,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
     ImageView disableCameraButtion;
     CallPromptDialog dialog = null;
     RelativeLayout observerLayout;
+    private ImageView iv_large_preview_mutilvideo, iv_large_preview_Mask;
 
     @Override
     @TargetApi(23)
@@ -112,6 +123,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onNewIntent(Intent intent) {
         startForCheckPermissions = intent.getBooleanExtra("checkPermissions", false);
@@ -159,6 +171,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -220,8 +233,9 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         callSession = RongCallClient.getInstance().getCallSession();
         if (bundle != null) {
             RongCallAction callAction = RongCallAction.valueOf(bundle.getString("callAction"));
-            if (!callAction.equals(RongCallAction.ACTION_RESUME_CALL))
+            if (!callAction.equals(RongCallAction.ACTION_RESUME_CALL)) {
                 return;
+            }
             localViewUserId = bundle.getString("localViewUserId");
             isMuteCamera = bundle.getBoolean("muteCamera");
             isMuteMIC = bundle.getBoolean("muteMIC");
@@ -238,7 +252,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     break;
                 }
             }
-            remoteViewContainer1.removeAllViews();
+//            remoteViewContainer1.removeAllViews();
             remoteViewContainer2.removeAllViews();
             for (CallUserProfile profile : callSession.getParticipantProfileList()) {
                 String currentUserId = RongIMClient.getInstance().getCurrentUserId();
@@ -268,14 +282,46 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     }
                 }
             }
-            onCallConnected(callSession, null);
+            if (!(boolean) bundle.get("isDial")) {
+                //已经有用户接听
+                onCallConnected(callSession, null);
+            } else {
+                //无用户接听
+                updateRemoteVideoViews(callSession);
+                FrameLayout bottomButtonLayout = (FrameLayout) inflater.inflate(R.layout.rc_voip_multi_video_calling_bottom_view, null);
+                bottomButtonLayout.findViewById(R.id.rc_voip_call_mute).setVisibility(View.GONE);
+                bottomButtonLayout.findViewById(R.id.rc_voip_disable_camera).setVisibility(View.GONE);
+                bottomButtonLayout.findViewById(R.id.rc_voip_handfree).setVisibility(View.GONE);
+                bottomButtonContainer.addView(bottomButtonLayout);
+                topContainer.setVisibility(View.GONE);
+                waitingContainer.setVisibility(View.VISIBLE);
+                remoteViewContainer.setVisibility(View.VISIBLE);
+                participantPortraitContainer.setVisibility(View.GONE);
+                bottomButtonContainer.setVisibility(View.VISIBLE);
+                rc_voip_multiVideoCall_minimize.setVisibility(View.VISIBLE);
+
+                onOutgoingCallRinging();
+            }
         }
     }
 
+    /**
+     * 电话已拨出。
+     * 主叫端拨出电话后
+     *
+     * @param callSession 通话实体。
+     * @param localVideo  本地 camera 信息。
+     */
     @Override
     public void onCallOutgoing(final RongCallSession callSession, SurfaceView localVideo) {
         super.onCallOutgoing(callSession, localVideo);
         this.callSession = callSession;
+
+        //拨通电话显示高斯模糊效果
+//        UserInfo userInfo = RongContext.getInstance().getUserInfoFromCache(callSession.getSelfUserId());
+//        GlideUtils.showBlurTransformation(MultiVideoCallActivity.this,iv_large_preview_mutilvideo,null!=userInfo?userInfo.getPortraitUri():null);
+//        iv_large_preview_mutilvideo.setVisibility(View.VISIBLE);
+
         RongCallClient.getInstance().setEnableLocalAudio(true);
         RongCallClient.getInstance().setEnableLocalVideo(true);
         localView = localVideo;
@@ -283,6 +329,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         ((BlinkVideoView) localView).setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_BALANCED);
         localViewContainer.addView(localView);
 
+        //加载观察者布局 默认不显示
         observerLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_observer_hint, null);
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         observerLayout.setGravity(Gravity.CENTER);
@@ -293,9 +340,27 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         localView.setTag(localViewUserId);
     }
 
+    /**
+     * 被叫端加入通话。
+     * 主叫端拨出电话，被叫端收到请求后，加入通话
+     *
+     * @param userId      加入用户的 id。
+     * @param mediaType   加入用户的媒体类型，audio or video。
+     * @param mediaType   加入用户的类型，正常用户或者观察者。
+     * @param remoteVideo 加入用户者的 camera 信息。
+     */
     @Override
     public void onRemoteUserJoined(String userId, RongCallCommon.CallMediaType mediaType, int userType, SurfaceView remoteVideo) {
         stopRing();
+        if (localViewContainer != null && localViewContainer.getVisibility() != View.VISIBLE) {
+            localViewContainer.setVisibility(View.VISIBLE);
+            if (null != iv_large_preview_mutilvideo) {
+                iv_large_preview_mutilvideo.setVisibility(View.GONE);
+            }
+            if (null != iv_large_preview_Mask) {
+                iv_large_preview_Mask.setVisibility(View.GONE);
+            }
+        }
         if (localViewUserId != null && localViewUserId.equals(userId)) {
             return;
         }
@@ -320,13 +385,13 @@ public class MultiVideoCallActivity extends BaseCallActivity {
             如果第一排删除了一个头像(第一排不足4个头像了)，且第二排还有头像
             则把第二排最左边的头像移动到第一排最右边
             */
-            if (portraitContainer.equals(portraitContainer1)) {
-                if (portraitContainer2.getChildCount() > 0) {
-                    View childPortraitView = portraitContainer2.getChildAt(0);
-                    portraitContainer2.removeView(childPortraitView);
-                    portraitContainer1.addView(childPortraitView);
-                }
-            }
+//            if (portraitContainer.equals(portraitContainer1)) {
+//                if (portraitContainer2.getChildCount() > 0) {
+//                    View childPortraitView = portraitContainer2.getChildAt(0);
+//                    portraitContainer2.removeView(childPortraitView);
+//                    portraitContainer1.addView(childPortraitView);
+//                }
+//            }
         }
         //incoming状态，localViewUserId为空
         if (localViewUserId == null)
@@ -362,13 +427,13 @@ public class MultiVideoCallActivity extends BaseCallActivity {
 
         LinearLayout container = (LinearLayout) singleRemoteView.getParent();
         container.removeView(singleRemoteView);
-        if (container.equals(remoteViewContainer2)) {
-            if (remoteViewContainer1.getChildCount() > 0) {
-                View childView = remoteViewContainer1.getChildAt(0);
-                remoteViewContainer1.removeView(childView);
-                remoteViewContainer2.addView(childView);
-            }
-        }
+//        if (container.equals(remoteViewContainer2)) {
+//            if (remoteViewContainer1.getChildCount() > 0) {
+//                View childView = remoteViewContainer1.getChildAt(0);
+//                remoteViewContainer1.removeView(childView);
+//                remoteViewContainer2.addView(childView);
+//            }
+//        }
     }
 
     @Override
@@ -386,11 +451,27 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         }
     }
 
+    /**
+     * 已建立通话。
+     * 通话接通时，通过回调 onCallConnected 通知当前 call 的详细信息。
+     *
+     * @param callSession 通话实体。
+     * @param localVideo  本地 camera 信息。
+     */
     @SuppressLint("NewApi")
     @Override
     public void onCallConnected(RongCallSession callSession, SurfaceView localVideo) {
         super.onCallConnected(callSession, localVideo);
         this.callSession = callSession;
+        if (null != rc_voip_multiVideoCall_minimize) {
+            rc_voip_multiVideoCall_minimize.setVisibility(View.GONE);
+        }
+        if (iv_large_preview_mutilvideo != null && iv_large_preview_mutilvideo.getVisibility() == View.VISIBLE) {
+            iv_large_preview_mutilvideo.setVisibility(View.GONE);
+        }
+        if (null != iv_large_preview_Mask) {
+            iv_large_preview_Mask.setVisibility(View.GONE);
+        }
         AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (audioManager.isWiredHeadsetOn()) {
             RongCallClient.getInstance().setEnableSpeakerphone(false);
@@ -435,6 +516,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         disableCameraButtion.setSelected(isMuteCamera);
         topContainer.setVisibility(View.VISIBLE);
         minimizeButton.setVisibility(View.VISIBLE);
+        rc_voip_multiVideoCall_minimize.setVisibility(View.VISIBLE);
         userPortrait.setVisibility(View.GONE);
         moreButton.setVisibility(View.VISIBLE);
         switchCameraButton.setVisibility(View.VISIBLE);
@@ -443,7 +525,8 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         participantPortraitContainer.setVisibility(View.GONE);
 
         userNameView = topContainer.findViewById(R.id.rc_voip_user_name);
-        userNameView.setShadowLayer(16F, 0F, 2F, getResources().getColor(R.color.rc_voip_reminder_shadow));
+        CallKitUtils.textViewShadowLayer(userNameView, MultiVideoCallActivity.this);
+
         String currentUserId = RongIMClient.getInstance().getCurrentUserId();
         userNameView.setTag(currentUserId + "name");
         UserInfo userInfo = RongContext.getInstance().getUserInfoFromCache(currentUserId);
@@ -452,20 +535,21 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         } else {
             userNameView.setText(currentUserId);
         }
-        RelativeLayout.LayoutParams parm = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        parm.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        RelativeLayout.LayoutParams parm =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        parm.addRule(RelativeLayout.CENTER_HORIZONTAL);//ALIGN_PARENT_LEFT
         parm.setMarginEnd(10);
         parm.setMarginStart(20);
         parm.setMargins(20, 40, 0, 0);
         userNameView.setLayoutParams(parm);
 
         TextView remindInfo = topContainer.findViewById(R.id.rc_voip_call_remind_info);
-        remindInfo.setShadowLayer(16F, 0F, 2F, getResources().getColor(R.color.rc_voip_reminder_shadow));
+        CallKitUtils.textViewShadowLayer(remindInfo, MultiVideoCallActivity.this);
         setupTime(remindInfo);
 
         infoLayout = topContainer.findViewById(R.id.rc_voip_call_info_layout);
         parm = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        parm.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        parm.addRule(RelativeLayout.CENTER_HORIZONTAL);
         parm.addRule(RelativeLayout.BELOW, userNameView.getId());
         parm.setMargins(0, 8, 0, 0);
         infoLayout.setLayoutParams(parm);
@@ -497,6 +581,9 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         }
     }
 
+    /**
+     * 添加 远端视频流 至singleRemoteView 的FrameLayout中，并缓存最新的远端用户头像
+     */
     void addRemoteVideo(View singleRemoteView, SurfaceView video, String userId) {
         if (singleRemoteView == null)
             return;
@@ -517,9 +604,11 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         video.setTag(userId + "video");
         ((BlinkVideoView) video).setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
         remoteVideoView.addView(video, new FrameLayout.LayoutParams(remoteUserViewWidth, remoteUserViewWidth));
+
         TextView remoteNameTextView = new TextView(this);
         TextView tv = singleRemoteView.findViewById(R.id.user_name);
-        remoteNameTextView.setShadowLayer(16F, 0F, 2F, getResources().getColor(R.color.rc_voip_reminder_shadow));
+        CallKitUtils.textViewShadowLayer(remoteNameTextView, MultiVideoCallActivity.this);
+
         ViewGroup.LayoutParams params = tv.getLayoutParams();
         remoteNameTextView.setLayoutParams(params);
         remoteNameTextView.setTextAppearance(this, R.style.rc_voip_text_style_style);
@@ -533,12 +622,16 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         remoteVideoView.setTag(userId);
     }
 
+    /**
+     * 根据userid创建RemoteView显示头像，并添加至远端View容器
+     */
     View addSingleRemoteView(String userId) {
         View singleRemoteView = inflater.inflate(R.layout.rc_voip_viewlet_remote_user, null);
         UserInfo userInfo = RongContext.getInstance().getUserInfoFromCache(userId);
         singleRemoteView.setTag(userId + "view");
         TextView userStatus = singleRemoteView.findViewById(R.id.user_status);
-        userStatus.setShadowLayer(16F, 0F, 2F, getResources().getColor(R.color.rc_voip_reminder_shadow));
+        CallKitUtils.textViewShadowLayer(userStatus, MultiVideoCallActivity.this);
+
         AsyncImageView userPortraitView = singleRemoteView.findViewById(R.id.user_portrait);
         if (userInfo != null) {
             if (userInfo.getPortraitUri() != null) {
@@ -547,13 +640,36 @@ public class MultiVideoCallActivity extends BaseCallActivity {
             }
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(remoteUserViewWidth, remoteUserViewWidth);
-        params.setMargins(4, 4, 4, 4);
-        if (remoteViewContainer2.getChildCount() < 4) {
-            remoteViewContainer2.addView(singleRemoteView, params);
-        } else if (remoteViewContainer1.getChildCount() < 4) {
-            remoteViewContainer1.addView(singleRemoteView, params);
-        }
+        params.setMargins(0, 0, CallKitUtils.dp2px(remoteUserViewMarginsRight, MultiVideoCallActivity.this), 0);
+        remoteViewContainer2.addView(singleRemoteView, params);
         return singleRemoteView;
+    }
+
+
+    /**
+     * 根据userid创建RemoteView显示头像，并添加至远端View容器
+     * for
+     */
+    private void createAddSingleRemoteView(String userId, int i) {
+        View singleRemoteView = inflater.inflate(R.layout.rc_voip_viewlet_remote_user, null);
+        UserInfo userInfo = RongContext.getInstance().getUserInfoFromCache(userId);
+        singleRemoteView.setTag(userId + "view");
+        TextView userStatus = singleRemoteView.findViewById(R.id.user_status);
+        CallKitUtils.textViewShadowLayer(userStatus, MultiVideoCallActivity.this);
+
+        AsyncImageView userPortraitView = singleRemoteView.findViewById(R.id.user_portrait);
+        if (userInfo != null) {
+            if (userInfo.getPortraitUri() != null) {
+                userPortraitView.setAvatar(userInfo.getPortraitUri().toString(), R.drawable.rc_default_portrait);
+            }
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(remoteUserViewWidth, remoteUserViewWidth);
+        if (i == 0) {
+            params.setMargins(CallKitUtils.dp2px(remoteUserViewMarginsLeft, MultiVideoCallActivity.this), 0, CallKitUtils.dp2px(remoteUserViewMarginsRight, MultiVideoCallActivity.this), 0);
+        } else {
+            params.setMargins(0, 0, CallKitUtils.dp2px(remoteUserViewMarginsRight, MultiVideoCallActivity.this), 0);
+        }
+        remoteViewContainer2.addView(singleRemoteView, params);
     }
 
     @Override
@@ -652,6 +768,18 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                 RongCallClient.getInstance().answerUpgradeObserverToNormalUser(callSession.getSelfUserId(), true);
                 callSession.setUserType(RongCallCommon.CallUserType.NORMAL);
                 observerLayout.setVisibility(View.GONE);
+
+                /** 从观察者升级成正常用户,打开音视频ui和能力 **/
+                if (null != disableCameraButtion) {
+                    isMuteCamera = true;
+                    disableCameraButtion.setSelected(isMuteCamera);
+                    onDisableCameraBtnClick(disableCameraButtion);
+                }
+                if (null != muteButtion) {
+                    isMuteMIC = true;
+                    muteButtion.setSelected(isMuteMIC);
+                    onMuteButtonClick(muteButtion);
+                }
             }
 
             @Override
@@ -722,13 +850,14 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         inflater = LayoutInflater.from(this);
         localViewContainer = findViewById(R.id.rc_local_user_view);
         remoteViewContainer = findViewById(R.id.rc_remote_user_container);
-        remoteViewContainer1 = findViewById(R.id.rc_remote_user_container_1);
+//        remoteViewContainer1 = (LinearLayout) findViewById(R.id.rc_remote_user_container_1);
         remoteViewContainer2 = findViewById(R.id.rc_remote_user_container_2);
         topContainer = findViewById(R.id.rc_top_container);
         waitingContainer = findViewById(R.id.rc_waiting_container);
         bottomButtonContainer = findViewById(R.id.rc_bottom_button_container);
         participantPortraitContainer = findViewById(R.id.rc_participant_portait_container);
         minimizeButton = findViewById(R.id.rc_voip_call_minimize);
+        rc_voip_multiVideoCall_minimize = findViewById(R.id.rc_voip_multiVideoCall_minimize);
         userPortrait = findViewById(R.id.rc_voip_user_portrait);
         moreButton = findViewById(R.id.rc_voip_call_more);
         switchCameraButton = findViewById(R.id.rc_voip_switch_camera);
@@ -740,7 +869,8 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         whiteboardView.setLayoutParams(params);
         mRelativeWebView.addView(whiteboardView);
-
+        iv_large_preview_mutilvideo = findViewById(R.id.iv_large_preview_mutilvideo);
+        iv_large_preview_Mask = findViewById(R.id.iv_large_preview_Mask);
 //         btnWhiteBoard.setVisibility(View.GONE);
         WebSettings settings = whiteboardView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -755,9 +885,12 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         remoteUserViewWidth = (metrics.widthPixels - 50) / 4;
+//        remoteUserViewWidth=CallKitUtils.dp2px(84,MultiVideoCallActivity.this);
+//        remoteUserViewHeight=CallKitUtils.dp2px(112,MultiVideoCallActivity.this);
+
         localView = null;
         localViewContainer.removeAllViews();
-        remoteViewContainer1.removeAllViews();
+//        remoteViewContainer1.removeAllViews();
         remoteViewContainer2.removeAllViews();
 
         minimizeButton.setOnClickListener(new View.OnClickListener() {
@@ -766,8 +899,15 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                 MultiVideoCallActivity.super.onMinimizeClick(v);
             }
         });
+        rc_voip_multiVideoCall_minimize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MultiVideoCallActivity.super.onMinimizeClick(v);
+            }
+        });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected void setupIntent() {
         Intent intent = getIntent();
         RongCallAction callAction = RongCallAction.valueOf(intent.getStringExtra("callAction"));
@@ -790,7 +930,11 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     userNameView.setText(userInfo.getName());
                     if (userInfo.getPortraitUri() != null) {
                         userPortrait.setAvatar(userInfo.getPortraitUri());
+                        userPortrait.setVisibility(View.VISIBLE);
                     }
+//                    GlideUtils.showBlurTransformation(MultiVideoCallActivity.this,iv_large_preview_mutilvideo,null!=userInfo?userInfo.getPortraitUri():null);
+//                    iv_large_preview_mutilvideo.setVisibility(View.VISIBLE);
+//                    iv_large_preview_Mask.setVisibility(View.VISIBLE);
                 } else {
                     userNameView.setText(callSession.getInviterUserId());
                 }
@@ -801,36 +945,38 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     }
                 }
 
-                FrameLayout bottomButtonLayout = (FrameLayout) inflater.inflate(R.layout.rc_voip_call_bottom_incoming_button_layout, null);
+                RelativeLayout bottomButtonLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_call_bottom_incoming_button_layout, null);
                 ImageView answerV = bottomButtonLayout.findViewById(R.id.rc_voip_call_answer_btn);
                 answerV.setImageResource(R.drawable.rc_voip_vedio_answer_selector);
                 bottomButtonContainer.addView(bottomButtonLayout);
+
                 for (int i = 0; i < invitedList.size(); i++) {
-                    if (invitedList.get(i).equals(callSession.getCallerUserId()))
+                    boolean bool = invitedList.get(i).equals(callSession.getCallerUserId());
+                    if (bool) {
                         continue;
+                    }
                     View userPortraitView = inflater.inflate(R.layout.rc_voip_user_portrait, null);
                     AsyncImageView portraitView = userPortraitView.findViewById(R.id.rc_user_portrait);
                     userInfo = RongContext.getInstance().getUserInfoFromCache(invitedList.get(i));
                     if (userInfo != null && userInfo.getPortraitUri() != null) {
                         portraitView.setAvatar(userInfo.getPortraitUri().toString(), R.drawable.rc_default_portrait);
                     }
-
                     portraitContainer1 = participantPortraitContainer.findViewById(R.id.rc_participant_portait_container_1);
-                    portraitContainer2 = participantPortraitContainer.findViewById(R.id.rc_participant_portait_container_2);
+//                    portraitContainer2 = (LinearLayout) participantPortraitContainer.findViewById(R.id.rc_participant_portait_container_2);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(10, 0, 0, 0);
-                    if (i < 4) {
-                        portraitContainer1.addView(userPortraitView, params);
-                        userPortraitView.setTag(invitedList.get(i) + "participantPortraitView");
+                    if (i == 0 && !bool) {
+                        params.setMargins(CallKitUtils.dp2px(remoteUserViewMarginsLeft, MultiVideoCallActivity.this), 0, CallKitUtils.dp2px(remoteUserViewMarginsRight, MultiVideoCallActivity.this), 0);
                     } else {
-                        portraitContainer2.addView(userPortraitView, params);
-                        userPortraitView.setTag(invitedList.get(i) + "participantPortraitView");
+                        params.setMargins(0, 0, CallKitUtils.dp2px(remoteUserViewMarginsRight, MultiVideoCallActivity.this), 0);
                     }
+                    portraitContainer1.addView(userPortraitView, params);
+                    userPortraitView.setTag(invitedList.get(i) + "participantPortraitView");
                 }
             }
 
             topContainer.setVisibility(View.VISIBLE);
             minimizeButton.setVisibility(View.GONE);
+            rc_voip_multiVideoCall_minimize.setVisibility(View.GONE);
             moreButton.setVisibility(View.GONE);
             switchCameraButton.setVisibility(View.GONE);
             waitingContainer.setVisibility(View.GONE);
@@ -851,7 +997,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     invitedList.add(userIds.get(i));
                     String userId = userIds.get(i);
                     if (observerList.size() == 0 || !observerList.contains(userId)) {
-                        addSingleRemoteView(userId);
+                        createAddSingleRemoteView(userId, i);
                     }
                 }
             }
@@ -859,15 +1005,21 @@ public class MultiVideoCallActivity extends BaseCallActivity {
             FrameLayout bottomButtonLayout = (FrameLayout) inflater.inflate(R.layout.rc_voip_multi_video_calling_bottom_view, null);
             bottomButtonLayout.findViewById(R.id.rc_voip_call_mute).setVisibility(View.GONE);
             bottomButtonLayout.findViewById(R.id.rc_voip_disable_camera).setVisibility(View.GONE);
+            bottomButtonLayout.findViewById(R.id.rc_voip_handfree).setVisibility(View.GONE);
             bottomButtonContainer.addView(bottomButtonLayout);
             topContainer.setVisibility(View.GONE);
             waitingContainer.setVisibility(View.VISIBLE);
             remoteViewContainer.setVisibility(View.VISIBLE);
             participantPortraitContainer.setVisibility(View.GONE);
             bottomButtonContainer.setVisibility(View.VISIBLE);
+            rc_voip_multiVideoCall_minimize.setVisibility(View.VISIBLE);
         }
     }
 
+
+    /**
+     * 挂断通话
+     **/
     public void onHangupBtnClick(View view) {
         if (callSession == null || isFinishing) {
             return;
@@ -876,6 +1028,9 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         RongCallClient.getInstance().hangUpCall(callSession.getCallId());
     }
 
+    /**
+     * 接听通话
+     **/
     public void onReceiveBtnClick(View view) {
         if (callSession == null || isFinishing) {
             return;
@@ -1036,9 +1191,12 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         if (fromView == null || toView == null) {
             return;
         }
+        //大屏删除所有view
         localViewContainer.removeAllViews();
+        //清空小屏装载SurfaceView的FrameLayout
         layout.removeAllViews();
 
+        /**从远端容器中取出被点击的小屏*/
         View singleRemoteView = remoteViewContainer.findViewWithTag(from + "view");
         UserInfo toUserInfo = RongContext.getInstance().getUserInfoFromCache(to);
         UserInfo fromUserInfo = RongContext.getInstance().getUserInfoFromCache(from);
@@ -1058,23 +1216,27 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         singleRemoteView.setTag(to + "view");
         fromView.setZOrderOnTop(false);
         fromView.setZOrderMediaOverlay(false);
-        localViewContainer.addView(fromView);
+        localViewContainer.addView(fromView);//将点击的小屏添加至本地大容器中
+        /**观察者图层加载*/
         observerLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_observer_hint, null);
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         observerLayout.setGravity(Gravity.CENTER);
         observerLayout.setLayoutParams(param);
         localViewContainer.addView(observerLayout);
         observerLayout.setVisibility(View.GONE);
+
         if (callSession.getSelfUserId().equals(fromUserInfo.getUserId())) {
             if (callSession.getUserType() == RongCallCommon.CallUserType.OBSERVER) {
                 observerLayout.setVisibility(View.VISIBLE);
             }
         }
+        /**将原大屏Video添加到小屏的FrameLayout上*/
         toView.setZOrderOnTop(true);
         toView.setZOrderMediaOverlay(true);
         toView.setTag(to + "video");
         ((BlinkVideoView) toView).setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
         layout.addView(toView, new FrameLayout.LayoutParams(remoteUserViewWidth, remoteUserViewWidth));
+
         TextView remoteNameTextView = new TextView(this);
         TextView tv = singleRemoteView.findViewById(R.id.user_name);
         ViewGroup.LayoutParams params = tv.getLayoutParams();
@@ -1085,11 +1247,12 @@ public class MultiVideoCallActivity extends BaseCallActivity {
         } else {
             remoteNameTextView.setText(toUserInfo.getUserId());
         }
-        remoteNameTextView.setShadowLayer(16F, 0F, 2F, getResources().getColor(R.color.rc_voip_reminder_shadow));
+        CallKitUtils.textViewShadowLayer(remoteNameTextView, MultiVideoCallActivity.this);
         layout.addView(remoteNameTextView);
 
         TextView topUserNameView = topContainer.findViewById(R.id.rc_voip_user_name);
-        topUserNameView.setShadowLayer(16F, 0F, 2F, getResources().getColor(R.color.rc_voip_reminder_shadow));
+        CallKitUtils.textViewShadowLayer(topUserNameView, MultiVideoCallActivity.this);
+
         topUserNameView.setTag(from + "name");
         if (fromUserInfo != null) {
             topUserNameView.setText(fromUserInfo.getName());

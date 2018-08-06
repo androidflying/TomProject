@@ -3,6 +3,7 @@ package com.qmuiteam.tom.widget;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowInsetsCompat;
 import android.util.AttributeSet;
@@ -53,14 +54,10 @@ public class QMUIWindowInsetLayout extends FrameLayout implements IWindowInsetLa
         return mQMUIWindowInsetHelper.defaultApplySystemWindowInsets19(this, insets);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
-    public boolean applySystemWindowInsets21(WindowInsetsCompat insets) {
+    public boolean applySystemWindowInsets21(Object insets) {
         return mQMUIWindowInsetHelper.defaultApplySystemWindowInsets21(this, insets);
-    }
-
-    @Override
-    public boolean applySystemWindowInsets(WindowInsets insets) {
-        return mQMUIWindowInsetHelper.defaultApplySystemWindowInsets(this, insets);
     }
 
     @Override
