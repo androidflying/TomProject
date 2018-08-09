@@ -48,7 +48,12 @@
         <!-- 全面屏适配 -->
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1" />
+            android:value="2.34" />
+
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="高德地图的 AppKey" />
