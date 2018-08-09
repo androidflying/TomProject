@@ -31,7 +31,7 @@ dependencies {
     implementation rootProject.ext.dependencies["gson"]
     implementation rootProject.ext.dependencies["greendao"]
     implementation project(':ThirdLibrarys:QMUI')
-    implementation project(':ThirdLibrarys:EasyPhotos')
+    implementation project(':Album:EasyPhotos')
 
     //友盟统计
     implementation project(':Umeng:Analytics')
