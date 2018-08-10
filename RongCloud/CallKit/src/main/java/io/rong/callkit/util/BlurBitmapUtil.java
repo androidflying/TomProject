@@ -30,7 +30,6 @@ public class BlurBitmapUtil {
         }
         return sInstance;
     }
-
     /**
      * @param context   上下文对象
      * @param image     需要模糊的图片

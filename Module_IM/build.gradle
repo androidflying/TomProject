@@ -80,6 +80,9 @@ dependencies {
     //implementation project(':ThirdLibrarys:QMUI')
     //轮播图控件（可选）
     //implementation project(':ThirdLibrarys:Banner')
+
+    implementation project(':Album:EasyPhoto')
+
     if (isBuildModule.toBoolean()) {
         annotationProcessor rootProject.ext.dependencies["arouter-compiler"]
     } else {

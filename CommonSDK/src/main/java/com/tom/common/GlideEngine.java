@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.tom.easyphotos.engine.ImageEngine;
+import com.easy.photo.engine.ImageEngine;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 

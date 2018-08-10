@@ -3,10 +3,9 @@ package com.tom.common.util;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
+import com.easy.photo.EasyPhotos;
+import com.easy.photo.models.album.entity.Photo;
 import com.tom.common.GlideEngine;
-import com.tom.easyphotos.EasyPhotos;
-import com.tom.easyphotos.models.album.entity.Photo;
-
 import java.util.ArrayList;
 
 /**
@@ -22,7 +21,6 @@ public class SelectorUtil {
         EasyPhotos.createAlbum(activity, true, GlideEngine.getInstance())
                 .setFileProviderAuthority("com.tom.common.fileprovider")
                 .setCount(1)
-                .setPuzzleMenu(false)
                 .start(requestCode);
     }
 
@@ -30,7 +28,6 @@ public class SelectorUtil {
         EasyPhotos.createAlbum(fragment, true, GlideEngine.getInstance())
                 .setFileProviderAuthority("com.tom.common.fileprovider")
                 .setCount(1)
-                .setPuzzleMenu(false)
                 .start(requestCode);
     }
 
@@ -39,7 +36,6 @@ public class SelectorUtil {
                 .setFileProviderAuthority("com.tom.common.fileprovider")
                 .setCount(maxCount)
                 .setSelectedPhotos(selectedPhotoList)
-                .setPuzzleMenu(false)
                 .start(requestCode);
     }
 
@@ -48,7 +44,6 @@ public class SelectorUtil {
                 .setFileProviderAuthority("com.tom.common.fileprovider")
                 .setCount(maxCount)
                 .setSelectedPhotos(selectedPhotoList)
-                .setPuzzleMenu(false)
                 .start(requestCode);
     }
 
@@ -58,7 +53,6 @@ public class SelectorUtil {
                 .setFileProviderAuthority("com.tom.common.fileprovider")
                 .setCount(maxCount)
                 .setSelectedPhotoPaths(selectedPhotoPathList)
-                .setPuzzleMenu(false)
                 .start(requestCode);
     }
 
@@ -67,7 +61,6 @@ public class SelectorUtil {
                 .setFileProviderAuthority("com.tom.common.fileprovider")
                 .setCount(maxCount)
                 .setSelectedPhotoPaths(selectedPhotoPathList)
-                .setPuzzleMenu(false)
                 .start(requestCode);
     }
 

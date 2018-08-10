@@ -92,6 +92,7 @@ public class MultiAudioCallActivity extends BaseCallActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onNewIntent(Intent intent) {
         startForCheckPermissions = getIntent().getBooleanExtra("checkPermissions", false);
@@ -178,8 +179,7 @@ public class MultiAudioCallActivity extends BaseCallActivity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void initView() {
         Intent intent = getIntent();
         callAction = RongCallAction.valueOf(intent.getStringExtra("callAction"));
@@ -552,6 +552,7 @@ public class MultiAudioCallActivity extends BaseCallActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

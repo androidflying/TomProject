@@ -33,5 +33,12 @@ android {
 dependencies {
     api fileTree(dir: 'src/main/libs', include: ['*.jar'])
     implementation rootProject.ext.dependencies["support-v4"]
-    api project (':RongCloud:IMLib')
+    implementation project(':RongCloud:IMLib')
+}
+
+repositories {
+    maven {
+        url 'https://maven.google.com/'
+        name 'Google'
+    }
 }

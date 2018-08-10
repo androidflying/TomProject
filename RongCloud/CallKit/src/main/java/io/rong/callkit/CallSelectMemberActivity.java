@@ -43,7 +43,7 @@ public class CallSelectMemberActivity extends BaseNoActionBarActivity {
     ArrayList<String> selectedMember;
     private ArrayList<String> observerMember;
     TextView txtvStart, callkit_conference_selected_number;
-    ListAdapter mAdapter;
+    CallSelectMemberActivity.ListAdapter mAdapter;
     ListView mList;
     RongCallCommon.CallMediaType mMediaType;
     private Conversation.ConversationType conversationType;
@@ -145,7 +145,7 @@ public class CallSelectMemberActivity extends BaseNoActionBarActivity {
 
         mList = findViewById(R.id.calkit_list_view_select_member);
         if (invitedMembers != null && invitedMembers.size() > 0) {
-            mAdapter = new ListAdapter(allMembers, invitedMembers);
+            mAdapter = new CallSelectMemberActivity.ListAdapter(allMembers, invitedMembers);
             mList.setAdapter(mAdapter);
             mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -258,7 +258,7 @@ public class CallSelectMemberActivity extends BaseNoActionBarActivity {
 
     private void setData() {
         if (null != tempMembers && tempMembers.size() > 0) {
-            ListAdapter adapter = new ListAdapter(tempMembers, invitedMembers);
+            CallSelectMemberActivity.ListAdapter adapter = new CallSelectMemberActivity.ListAdapter(tempMembers, invitedMembers);
             mList.setAdapter(adapter);
             mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -352,9 +352,9 @@ public class CallSelectMemberActivity extends BaseNoActionBarActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            CallSelectMemberActivity.ViewHolder holder;
             if (convertView == null) {
-                holder = new ViewHolder();
+                holder = new CallSelectMemberActivity.ViewHolder();
                 convertView = LayoutInflater.from(CallSelectMemberActivity.this).inflate(R.layout.rc_voip_listitem_select_member, null);
                 holder.checkbox = convertView.findViewById(R.id.rc_checkbox);
                 holder.portrait = convertView.findViewById(R.id.rc_user_portrait);
@@ -362,7 +362,7 @@ public class CallSelectMemberActivity extends BaseNoActionBarActivity {
                 convertView.setTag(holder);
             }
 
-            holder = (ViewHolder) convertView.getTag();
+            holder = (CallSelectMemberActivity.ViewHolder) convertView.getTag();
             holder.checkbox.setTag(mallMembers.get(position));
             if (invitedMembers.contains(mallMembers.get(position))) {
                 holder.checkbox.setClickable(false);

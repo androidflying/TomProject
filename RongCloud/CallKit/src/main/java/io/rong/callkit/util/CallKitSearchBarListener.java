@@ -4,7 +4,6 @@ public interface CallKitSearchBarListener {
     /**
      * 开始搜索
      * EditText 中输入内容后，会触发此回调
-     *
      * @param keyword 搜索关键字
      */
     void onSearchStart(String keyword);
