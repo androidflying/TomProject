@@ -2,7 +2,6 @@ package com.tom.baselib.utils;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
-import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -14,7 +13,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.Window;
@@ -30,7 +28,6 @@ import static android.Manifest.permission.WRITE_SETTINGS;
  * 描述：屏幕相关工具类
  */
 public class ScreenUtils {
-
 
     private ScreenUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -141,24 +138,6 @@ public class ScreenUtils {
     }
 
     /**
-     * Set the screen to landscape.
-     *
-     * @param activity The activity.
-     */
-    public static void setLandscape(@NonNull final Activity activity) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    }
-
-    /**
-     * Set the screen to portrait.
-     *
-     * @param activity The activity.
-     */
-    public static void setPortrait(@NonNull final Activity activity) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-    /**
      * Return whether screen is landscape.
      *
      * @return {@code true}: yes<br>{@code false}: no
@@ -169,6 +148,15 @@ public class ScreenUtils {
     }
 
     /**
+     * Set the screen to landscape.
+     *
+     * @param activity The activity.
+     */
+    public static void setLandscape(@NonNull final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    /**
      * Return whether screen is portrait.
      *
      * @return {@code true}: yes<br>{@code false}: no
@@ -176,6 +164,15 @@ public class ScreenUtils {
     public static boolean isPortrait() {
         return Utils.getApp().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT;
+    }
+
+    /**
+     * Set the screen to portrait.
+     *
+     * @param activity The activity.
+     */
+    public static void setPortrait(@NonNull final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
@@ -257,21 +254,6 @@ public class ScreenUtils {
     }
 
     /**
-     * Set the duration of sleep.
-     * <p>Must hold {@code <uses-permission android:name="android.permission.WRITE_SETTINGS" />}</p>
-     *
-     * @param duration The duration.
-     */
-    @RequiresPermission(WRITE_SETTINGS)
-    public static void setSleepDuration(final int duration) {
-        Settings.System.putInt(
-                Utils.getApp().getContentResolver(),
-                Settings.System.SCREEN_OFF_TIMEOUT,
-                duration
-        );
-    }
-
-    /**
      * Return the duration of sleep.
      *
      * @return the duration of sleep.
@@ -289,6 +271,21 @@ public class ScreenUtils {
     }
 
     /**
+     * Set the duration of sleep.
+     * <p>Must hold {@code <uses-permission android:name="android.permission.WRITE_SETTINGS" />}</p>
+     *
+     * @param duration The duration.
+     */
+    @RequiresPermission(WRITE_SETTINGS)
+    public static void setSleepDuration(final int duration) {
+        Settings.System.putInt(
+                Utils.getApp().getContentResolver(),
+                Settings.System.SCREEN_OFF_TIMEOUT,
+                duration
+        );
+    }
+
+    /**
      * Return whether device is tablet.
      *
      * @return {@code true}: yes<br>{@code false}: no
@@ -299,11 +296,10 @@ public class ScreenUtils {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    private static final UtilDisplayMetrics UDM = new UtilDisplayMetrics();
-
     /**
      * Adapt the screen for vertical slide.
      *
+     * @param activity        The activity.
      * @param designWidthInPx The size of design diagram's width, in pixel.
      */
     public static void adaptScreen4VerticalSlide(final Activity activity,
@@ -312,46 +308,20 @@ public class ScreenUtils {
     }
 
     /**
-     * Adapt the screen for horizontal slide.
-     *
-     * @param designHeightInPx The size of design diagram's height, in pixel.
-     */
-    public static void adaptScreen4HorizontalSlide(final Activity activity,
-                                                   final int designHeightInPx) {
-        adaptScreen(activity, designHeightInPx, false);
-    }
-
-    /**
      * Reference from: https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA
      */
-    public static void adaptScreen(final Activity activity,
-                                   final int sizeInPx,
-                                   final boolean isVerticalSlide) {
+    private static void adaptScreen(final Activity activity,
+                                    final int sizeInPx,
+                                    final boolean isVerticalSlide) {
+        final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
         final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
         final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
-        if (UDM.densityDpi == -1) {
-            UDM.density = activityDm.density;
-            UDM.scaledDensity = activityDm.scaledDensity;
-            UDM.densityDpi = activityDm.densityDpi;
-            Utils.getApp().registerComponentCallbacks(new ComponentCallbacks() {
-                @Override
-                public void onConfigurationChanged(Configuration newConfig) {
-                    if (newConfig != null && newConfig.fontScale > 0) {
-                        UDM.scaledDensity =
-                                Utils.getApp().getResources().getDisplayMetrics().scaledDensity;
-                    }
-                }
-
-                @Override
-                public void onLowMemory() {/**/}
-            });
-        }
         if (isVerticalSlide) {
             activityDm.density = activityDm.widthPixels / (float) sizeInPx;
         } else {
             activityDm.density = activityDm.heightPixels / (float) sizeInPx;
         }
-        activityDm.scaledDensity = activityDm.density * (UDM.scaledDensity / UDM.density);
+        activityDm.scaledDensity = activityDm.density * (systemDm.scaledDensity / systemDm.density);
         activityDm.densityDpi = (int) (160 * activityDm.density);
 
         appDm.density = activityDm.density;
@@ -360,29 +330,42 @@ public class ScreenUtils {
     }
 
     /**
+     * Adapt the screen for horizontal slide.
+     *
+     * @param activity         The activity.
+     * @param designHeightInPx The size of design diagram's height, in pixel.
+     */
+    public static void adaptScreen4HorizontalSlide(final Activity activity,
+                                                   final int designHeightInPx) {
+        adaptScreen(activity, designHeightInPx, false);
+    }
+
+    /**
      * Cancel adapt the screen.
      *
      * @param activity The activity.
      */
     public static void cancelAdaptScreen(final Activity activity) {
+        final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
         final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
         final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
-        if (UDM.densityDpi != -1) {
-            activityDm.density = UDM.density;
-            activityDm.scaledDensity = UDM.scaledDensity;
-            activityDm.densityDpi = UDM.densityDpi;
+        activityDm.density = systemDm.density;
+        activityDm.scaledDensity = systemDm.scaledDensity;
+        activityDm.densityDpi = systemDm.densityDpi;
 
-            appDm.density = UDM.density;
-            appDm.scaledDensity = UDM.scaledDensity;
-            appDm.densityDpi = UDM.densityDpi;
-        } else {
-            Log.i("ScreenUtils", "U should adapt screen first.");
-        }
+        appDm.density = systemDm.density;
+        appDm.scaledDensity = systemDm.scaledDensity;
+        appDm.densityDpi = systemDm.densityDpi;
     }
 
-    private static class UtilDisplayMetrics {
-        float density;
-        float scaledDensity;
-        int densityDpi = -1;
+    /**
+     * Return whether adapt screen.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAdaptScreen() {
+        final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
+        final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
+        return systemDm.density != appDm.density;
     }
 }

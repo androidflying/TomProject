@@ -39,9 +39,6 @@ public class IntentUtils {
         return Utils.getApp().getPackageManager().queryIntentActivities(intent, 0).size() > 0;
     }
 
-
-
-
     /**
      * Return the intent of install app.
      * <p>Target APIs greater than 25 must hold

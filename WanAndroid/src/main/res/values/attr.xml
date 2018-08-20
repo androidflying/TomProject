@@ -2,5 +2,8 @@
 <resources>
     <attr name="app_primary_color" format="color" /> <!-- topbar -->
     <attr name="app_content_bg_color" format="color" /> <!-- content-->
-
+    <!-- 标点转换 -->
+    <declare-styleable name="AlignTextView">
+        <attr name="punctuationConvert" format="boolean" />
+    </declare-styleable>
 </resources>

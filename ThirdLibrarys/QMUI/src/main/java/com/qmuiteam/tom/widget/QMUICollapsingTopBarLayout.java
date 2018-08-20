@@ -48,14 +48,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
 import com.qmuiteam.tom.QMUIInterpolatorStaticHolder;
 import com.qmuiteam.tom.R;
 import com.qmuiteam.tom.util.QMUICollapsingTextHelper;
 import com.qmuiteam.tom.util.QMUILangHelper;
-import com.qmuiteam.tom.util.QMUINotchHelper;
 import com.qmuiteam.tom.util.QMUIViewHelper;
 import com.qmuiteam.tom.util.QMUIViewOffsetHelper;
 
@@ -72,7 +70,6 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
  */
 
 public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowInsetLayout {
-
     private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;
 
     private boolean mRefreshToolbar = true;
@@ -234,7 +231,6 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
@@ -264,12 +260,9 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     private int getWindowInsetTop() {
         if (mLastInsets != null) {
-            if (QMUINotchHelper.isNotchOfficialSupport()) {
-                return ((WindowInsets) mLastInsets).getSystemWindowInsetTop();
-            } else if (mLastInsets instanceof WindowInsetsCompat) {
+            if (mLastInsets instanceof WindowInsetsCompat) {
                 return ((WindowInsetsCompat) mLastInsets).getSystemWindowInsetTop();
             } else if (mLastInsets instanceof Rect) {
                 return ((Rect) mLastInsets).top;
@@ -359,7 +352,6 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -960,7 +952,6 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
      *
      * @param height value in pixels used to define when to trigger a scrim visibility change
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     public void setScrimVisibleHeightTrigger(@IntRange(from = 0) final int height) {
         if (mScrimVisibleHeightTrigger != height) {
             mScrimVisibleHeightTrigger = height;
@@ -975,7 +966,6 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
      *
      * @see #setScrimVisibleHeightTrigger(int)
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     public int getScrimVisibleHeightTrigger() {
         if (mScrimVisibleHeightTrigger >= 0) {
             // If we have one explicitly set, return it
@@ -1191,7 +1181,6 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
     /**
      * Show or hide the scrims if needed
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     final void updateScrimVisibility() {
         if (mContentScrim != null || mStatusBarScrim != null) {
             setScrimsShown(getHeight() + mCurrentOffset < getScrimVisibleHeightTrigger());
@@ -1211,7 +1200,6 @@ public class QMUICollapsingTopBarLayout extends FrameLayout implements IWindowIn
         OffsetUpdateListener() {
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
         @Override
         public void onOffsetChanged(AppBarLayout layout, int verticalOffset) {
             mCurrentOffset = verticalOffset;

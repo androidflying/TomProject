@@ -12,6 +12,7 @@ import com.android.tomflying.R;
 import com.android.tomflying.base.MyActivity;
 import com.android.tomflying.bean.MeiwenBean;
 import com.android.tomflying.util.OkHttpUtil;
+import com.android.tomflying.widget.AlignTextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.RequestOptions;
@@ -31,7 +32,7 @@ public class MeiwenActivity extends MyActivity {
     private QMUITopBar mTopBar;
     private ImageView iv_meitu;
     private TextView tv_author;
-    private TextView tv_content;
+    private AlignTextView tv_content;
 
     @Override
     public boolean isNeedRegister() {

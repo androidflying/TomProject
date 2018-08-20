@@ -74,22 +74,7 @@ public class SizeUtils {
      * metrics depending on its unit.
      */
     public static float applyDimension(final float value, final int unit) {
-        return applyDimension(Utils.getApp(), value, unit);
-    }
-
-    /**
-     * Converts an unpacked complex data value holding a dimension to its final floating
-     * point value. The two parameters <var>unit</var> and <var>value</var>
-     * are as in {@link TypedValue#TYPE_DIMENSION}.
-     *
-     * @param context The context.
-     * @param value   The value to apply the unit to.
-     * @param unit    The unit to convert from.
-     * @return The complex floating point value multiplied by the appropriate
-     * metrics depending on its unit.
-     */
-    public static float applyDimension(final Context context, final float value, final int unit) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        DisplayMetrics metrics = Utils.getApp().getResources().getDisplayMetrics();
         switch (unit) {
             case TypedValue.COMPLEX_UNIT_PX:
                 return value;

@@ -1,7 +1,6 @@
 package com.tom.baselib.utils;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tom.baselib.constant.MemoryConstants;
@@ -215,9 +213,7 @@ public final class ConvertUtils {
      */
     public static double byte2MemorySize(final long byteSize,
                                          @MemoryConstants.Unit final int unit) {
-        if (byteSize < 0) {
-            return -1;
-        }
+        if (byteSize < 0) return -1;
         return (double) byteSize / unit;
     }
 
@@ -364,7 +360,9 @@ public final class ConvertUtils {
      * @return bytes
      */
     public static byte[] inputStream2Bytes(final InputStream is) {
-        if (is == null) return null;
+        if (is == null) {
+            return null;
+        }
         return input2OutputStream(is).toByteArray();
     }
 

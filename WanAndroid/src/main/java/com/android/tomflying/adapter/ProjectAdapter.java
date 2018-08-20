@@ -35,7 +35,7 @@ public class ProjectAdapter extends BaseQuickAdapter<ArticlesBean.Data, BaseView
 
         helper.setText(R.id.tv_date, TimeUtils.getFriendlyTimeSpanByNow(item.getPublishTime()));
         helper.setText(R.id.tv_title, Html.fromHtml(item.getTitle()));
-        helper.setText(R.id.tv_desc, item.getDesc());
+        helper.setText(R.id.tv_desc, Html.fromHtml(item.getDesc()));
         iv_pic = helper.itemView.findViewById(R.id.iv_pic);
         RequestOptions requestOptions = new RequestOptions()
                 .centerCrop()
