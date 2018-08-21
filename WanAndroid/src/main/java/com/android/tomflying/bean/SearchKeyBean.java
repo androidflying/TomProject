@@ -1,10 +1,5 @@
 package com.android.tomflying.bean;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-
-import java.util.List;
-
 /**
  * 作者：tom_flying
  * 邮箱：tom_flying@163.com

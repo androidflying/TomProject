@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> extends BaseQuickAdapter<T, K> {
-
     private static final int NO_TOGGLE_VIEW = 0;
     protected int mToggleViewId = NO_TOGGLE_VIEW;
     protected ItemTouchHelper mItemTouchHelper;
@@ -240,6 +239,8 @@ public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> exte
             mData.remove(pos);
             notifyItemRemoved(viewHolder.getAdapterPosition());
         }
+
+
         if (mOnItemSwipeListener != null && itemSwipeEnabled) {
             mOnItemSwipeListener.onItemSwiped(viewHolder, getViewHolderPosition(viewHolder));
         }

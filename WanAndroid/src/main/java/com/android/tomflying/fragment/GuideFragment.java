@@ -16,12 +16,9 @@ import com.android.tomflying.bean.LzyResponse;
 import com.android.tomflying.ui.SearchActivity;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
-import com.google.gson.Gson;
 import com.tom.baselib.utils.ActivityUtils;
-import com.tom.baselib.utils.ToastUtils;
 import com.tom.brvah.entity.MultiItemEntity;
 import com.tom.network.OkGo;
-import com.tom.network.callback.StringCallback;
 import com.tom.network.model.Response;
 import com.tom.network.request.base.Request;
 

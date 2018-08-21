@@ -2,7 +2,6 @@ package com.android.tomflying.adapter;
 
 import com.android.tomflying.R;
 import com.android.tomflying.bean.SearchBean;
-import com.android.tomflying.bean.SearchKeyBean;
 import com.android.tomflying.bean.SearchKeySectionBean;
 import com.tom.brvah.BaseSectionQuickAdapter;
 import com.tom.brvah.BaseViewHolder;

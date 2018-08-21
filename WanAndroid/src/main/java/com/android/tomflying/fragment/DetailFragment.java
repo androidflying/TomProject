@@ -19,14 +19,12 @@ import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.android.tomflying.valid.CollectAction;
 import com.android.tomflying.valid.LoginValid;
-import com.google.gson.Gson;
 import com.qmuiteam.tom.widget.QMUIEmptyView;
 import com.tom.baselib.delay.SingleCall;
 import com.tom.baselib.utils.ActivityUtils;
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.itemdecoration.RecyclerViewDecoration;
 import com.tom.network.OkGo;
-import com.tom.network.callback.StringCallback;
 import com.tom.network.model.Response;
 import com.tom.network.request.base.Request;
 

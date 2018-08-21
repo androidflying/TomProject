@@ -26,7 +26,6 @@ import com.android.tomflying.dao.DBHelper;
 import com.android.tomflying.dao.SearchBeanDao;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
-import com.google.gson.Gson;
 import com.qmuiteam.tom.util.QMUIDisplayHelper;
 import com.qmuiteam.tom.widget.QMUITopBar;
 import com.qmuiteam.tom.widget.dialog.QMUIDialog;
@@ -38,7 +37,6 @@ import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.itemdecoration.SpaceItemDecoration;
 import com.tom.brvah.manager.FlowLayoutManager;
 import com.tom.network.OkGo;
-import com.tom.network.callback.StringCallback;
 import com.tom.network.model.Response;
 
 import java.util.ArrayList;

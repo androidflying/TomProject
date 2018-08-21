@@ -8,11 +8,8 @@ import com.android.tomflying.bean.ArticlesBean;
 import com.android.tomflying.bean.SimpleResponse;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
-import com.google.gson.Gson;
 import com.qmuiteam.tom.widget.dialog.QMUITipDialog;
 import com.tom.baselib.delay.Action;
-import com.tom.network.OkGo;
-import com.tom.network.callback.StringCallback;
 import com.tom.network.model.Response;
 
 /**

@@ -1,14 +1,12 @@
 package com.android.tomflying.util;
 
 import com.android.tomflying.bean.ActiviteBean;
-import com.tom.baselib.utils.StringUtils;
 import com.tom.baselib.utils.TimeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;

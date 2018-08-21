@@ -28,11 +28,9 @@ import com.tencent.bugly.beta.Beta;
 import com.tom.baselib.delay.SingleCall;
 import com.tom.baselib.utils.ActivityUtils;
 import com.tom.baselib.utils.AppUtils;
-import com.tom.baselib.utils.CacheDoubleUtils;
 import com.tom.baselib.utils.ImageUtils;
 import com.tom.baselib.utils.SPUtils;
 import com.tom.baselib.utils.ToastUtils;
-import com.tom.baselib.utils.Utils;
 import com.tom.network.OkGo;
 
 import org.greenrobot.eventbus.EventBus;

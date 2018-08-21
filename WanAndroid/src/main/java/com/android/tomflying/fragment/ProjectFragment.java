@@ -12,11 +12,9 @@ import com.android.tomflying.bean.LzyResponse;
 import com.android.tomflying.bean.ProjectCateBean;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
-import com.google.gson.Gson;
 import com.qmuiteam.tom.widget.QMUITabSegment;
 import com.qmuiteam.tom.widget.QMUIViewPager;
 import com.tom.network.OkGo;
-import com.tom.network.callback.StringCallback;
 import com.tom.network.model.Response;
 
 import java.util.ArrayList;
