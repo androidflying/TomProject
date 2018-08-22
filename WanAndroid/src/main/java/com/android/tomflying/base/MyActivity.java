@@ -23,6 +23,23 @@ public abstract class MyActivity extends BaseActivity {
         return false;
     }
 
+
+    @Override
+    public boolean isNeedAdapt() {
+        return true;
+    }
+
+    @Override
+    public int setAdaptHorizontalScreen() {
+        return 360;
+    }
+
+
+    @Override
+    public int setAdaptVerticalScreen() {
+        return 360;
+    }
+
     public void showLoadingDialog() {
         if (tipDialog == null) {
             tipDialog = new QMUITipDialog.Builder(mActivity)

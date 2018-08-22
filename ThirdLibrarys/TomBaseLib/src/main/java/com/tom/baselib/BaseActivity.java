@@ -37,13 +37,16 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         mActivity = this;
         //默认实现沉浸式状态栏
         BarUtils.setStatusBarAlpha(this);
-        //今日头条屏幕适配方案解决方式
-        if (ScreenUtils.isPortrait()) {
-            ScreenUtils.adaptScreen4VerticalSlide(this, 360);
-        } else {
-            ScreenUtils.adaptScreen4HorizontalSlide(this, 360);
+        if (isNeedAdapt()) {
+            //今日头条屏幕适配方案
+            if (ScreenUtils.isPortrait()) {
+                //以宽度为基准，竖屏
+                ScreenUtils.adaptScreen4VerticalSlide(this, setAdaptVerticalScreen());
+            } else {
+                //以高度为基准，横屏
+                ScreenUtils.adaptScreen4HorizontalSlide(this, setAdaptHorizontalScreen());
+            }
         }
-
         if (BarUtils.isNavBarVisible(this)) {
             if (isTransparent()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -65,12 +68,36 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         doBusiness();
     }
 
+    /**
+     * 是否进行屏幕适配
+     *
+     * @return true：进行；false：不进行
+     */
+    protected abstract boolean isNeedAdapt();
+
+    /**
+     * 设置竖屏时设计图的宽度（dp）
+     *
+     * @return
+     */
+    protected abstract int setAdaptVerticalScreen();
+
+    /**
+     * 设置横屏时设计图的宽度（dp）
+     *
+     * @return
+     */
+    protected abstract int setAdaptHorizontalScreen();
+
     protected void setBaseView(@LayoutRes int layoutId) {
         setContentView(mContentView = LayoutInflater.from(this).inflate(layoutId, null));
     }
 
     @Override
     protected void onDestroy() {
+        if (!isNeedAdapt() && ScreenUtils.isAdaptScreen()) {
+            ScreenUtils.cancelAdaptScreen(this);
+        }
         super.onDestroy();
     }
 

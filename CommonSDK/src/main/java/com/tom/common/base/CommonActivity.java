@@ -22,6 +22,22 @@ public abstract class CommonActivity extends BaseActivity {
         return true;
     }
 
+
+    @Override
+    protected boolean isNeedAdapt() {
+        return true;
+    }
+
+    @Override
+    public int setAdaptVerticalScreen() {
+        return 720;
+    }
+
+    @Override
+    public int setAdaptHorizontalScreen() {
+        return 480;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
