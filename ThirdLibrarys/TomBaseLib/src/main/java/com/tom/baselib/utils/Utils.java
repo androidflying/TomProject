@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -23,9 +25,11 @@ import java.util.Map;
  * 描述：初始化的工具类
  */
 public class Utils {
-    static final ActivityLifecycleImpl ACTIVITY_LIFECYCLE = new ActivityLifecycleImpl();
+
     @SuppressLint("StaticFieldLeak")
     private static Application sApplication;
+
+    private static final ActivityLifecycleImpl ACTIVITY_LIFECYCLE = new ActivityLifecycleImpl();
 
     private Utils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -37,7 +41,11 @@ public class Utils {
      *
      * @param context context
      */
-    public static void init(@NonNull final Context context) {
+    public static void init(final Context context) {
+        if (context == null) {
+            init(getApplicationByReflect());
+            return;
+        }
         init((Application) context.getApplicationContext());
     }
 
@@ -47,9 +55,13 @@ public class Utils {
      *
      * @param app application
      */
-    public static void init(@NonNull final Application app) {
+    public static void init(final Application app) {
         if (sApplication == null) {
-            Utils.sApplication = app;
+            if (app == null) {
+                Utils.sApplication = getApplicationByReflect();
+            } else {
+                Utils.sApplication = app;
+            }
             Utils.sApplication.registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
         }
     }
@@ -63,6 +75,10 @@ public class Utils {
         if (sApplication != null) {
             return sApplication;
         }
+        return getApplicationByReflect();
+    }
+
+    private static Application getApplicationByReflect() {
         try {
             @SuppressLint("PrivateApi")
             Class<?> activityThread = Class.forName("android.app.ActivityThread");
@@ -120,15 +136,38 @@ public class Utils {
         return false;
     }
 
-    public interface OnAppStatusChangedListener {
-        void onForeground();
-
-        void onBackground();
+    static void adaptScreen() {
+        final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
+        final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
+        if (ADAPT_SCREEN_ARGS.isVerticalSlide) {
+            appDm.density = appDm.widthPixels / (float) ADAPT_SCREEN_ARGS.sizeInPx;
+        } else {
+            appDm.density = appDm.heightPixels / (float) ADAPT_SCREEN_ARGS.sizeInPx;
+        }
+        appDm.scaledDensity = appDm.density * (systemDm.scaledDensity / systemDm.density);
+        appDm.densityDpi = (int) (160 * appDm.density);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // interface
-    ///////////////////////////////////////////////////////////////////////////
+    static void cancelAdaptScreen() {
+        final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
+        final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
+        appDm.density = systemDm.density;
+        appDm.scaledDensity = systemDm.scaledDensity;
+        appDm.densityDpi = systemDm.densityDpi;
+    }
+
+    static boolean isAdaptScreen() {
+        final DisplayMetrics systemDm = Resources.getSystem().getDisplayMetrics();
+        final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
+        return systemDm.density != appDm.density;
+    }
+
+    static final AdaptScreenArgs ADAPT_SCREEN_ARGS = new AdaptScreenArgs();
+
+    static class AdaptScreenArgs {
+        int sizeInPx;
+        boolean isVerticalSlide;
+    }
 
     static class ActivityLifecycleImpl implements Application.ActivityLifecycleCallbacks {
 
@@ -137,61 +176,6 @@ public class Utils {
 
         private int mForegroundCount = 0;
         private int mConfigCount = 0;
-
-        Activity getTopActivity() {
-            if (!mActivityList.isEmpty()) {
-                final Activity topActivity = mActivityList.getLast();
-                if (topActivity != null) {
-                    return topActivity;
-                }
-            }
-            // using reflect to get top activity
-            try {
-                @SuppressLint("PrivateApi")
-                Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-                Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-                Field activitiesField = activityThreadClass.getDeclaredField("mActivityList");
-                activitiesField.setAccessible(true);
-                Map activities = (Map) activitiesField.get(activityThread);
-                if (activities == null) {
-                    return null;
-                }
-                for (Object activityRecord : activities.values()) {
-                    Class activityRecordClass = activityRecord.getClass();
-                    Field pausedField = activityRecordClass.getDeclaredField("paused");
-                    pausedField.setAccessible(true);
-                    if (!pausedField.getBoolean(activityRecord)) {
-                        Field activityField = activityRecordClass.getDeclaredField("activity");
-                        activityField.setAccessible(true);
-                        Activity activity = (Activity) activityField.get(activityRecord);
-                        setTopActivity(activity);
-                        return activity;
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        private void setTopActivity(final Activity activity) {
-            if (mActivityList.contains(activity)) {
-                if (!mActivityList.getLast().equals(activity)) {
-                    mActivityList.remove(activity);
-                    mActivityList.addLast(activity);
-                }
-            } else {
-                mActivityList.addLast(activity);
-            }
-        }
 
         void addListener(final Object object, final OnAppStatusChangedListener listener) {
             mStatusListenerMap.put(object, listener);
@@ -262,5 +246,83 @@ public class Utils {
                 }
             }
         }
+
+        private void setTopActivity(final Activity activity) {
+            if (activity.getClass() == PermissionUtils.PermissionActivity.class) {
+                return;
+            }
+            if (mActivityList.contains(activity)) {
+                if (!mActivityList.getLast().equals(activity)) {
+                    mActivityList.remove(activity);
+                    mActivityList.addLast(activity);
+                }
+            } else {
+                mActivityList.addLast(activity);
+            }
+        }
+
+        Activity getTopActivity() {
+            if (!mActivityList.isEmpty()) {
+                final Activity topActivity = mActivityList.getLast();
+                if (topActivity != null) {
+                    return topActivity;
+                }
+            }
+            // using reflect to get top activity
+            try {
+                @SuppressLint("PrivateApi")
+                Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+                Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
+                Field activitiesField = activityThreadClass.getDeclaredField("mActivityList");
+                activitiesField.setAccessible(true);
+                Map activities = (Map) activitiesField.get(activityThread);
+                if (activities == null) {
+                    return null;
+                }
+                for (Object activityRecord : activities.values()) {
+                    Class activityRecordClass = activityRecord.getClass();
+                    Field pausedField = activityRecordClass.getDeclaredField("paused");
+                    pausedField.setAccessible(true);
+                    if (!pausedField.getBoolean(activityRecord)) {
+                        Field activityField = activityRecordClass.getDeclaredField("activity");
+                        activityField.setAccessible(true);
+                        Activity activity = (Activity) activityField.get(activityRecord);
+                        setTopActivity(activity);
+                        return activity;
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
+    public static final class FileProvider4Util extends FileProvider {
+
+        @Override
+        public boolean onCreate() {
+            Utils.init(getContext());
+            return true;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
+
+    public interface OnAppStatusChangedListener {
+        void onForeground();
+
+        void onBackground();
     }
 }

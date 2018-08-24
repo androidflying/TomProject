@@ -29,6 +29,7 @@ import static android.Manifest.permission.WRITE_SETTINGS;
  */
 public class ScreenUtils {
 
+
     private ScreenUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
@@ -138,6 +139,24 @@ public class ScreenUtils {
     }
 
     /**
+     * Set the screen to landscape.
+     *
+     * @param activity The activity.
+     */
+    public static void setLandscape(@NonNull final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    /**
+     * Set the screen to portrait.
+     *
+     * @param activity The activity.
+     */
+    public static void setPortrait(@NonNull final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    /**
      * Return whether screen is landscape.
      *
      * @return {@code true}: yes<br>{@code false}: no
@@ -148,15 +167,6 @@ public class ScreenUtils {
     }
 
     /**
-     * Set the screen to landscape.
-     *
-     * @param activity The activity.
-     */
-    public static void setLandscape(@NonNull final Activity activity) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    }
-
-    /**
      * Return whether screen is portrait.
      *
      * @return {@code true}: yes<br>{@code false}: no
@@ -164,15 +174,6 @@ public class ScreenUtils {
     public static boolean isPortrait() {
         return Utils.getApp().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT;
-    }
-
-    /**
-     * Set the screen to portrait.
-     *
-     * @param activity The activity.
-     */
-    public static void setPortrait(@NonNull final Activity activity) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
@@ -254,6 +255,21 @@ public class ScreenUtils {
     }
 
     /**
+     * Set the duration of sleep.
+     * <p>Must hold {@code <uses-permission android:name="android.permission.WRITE_SETTINGS" />}</p>
+     *
+     * @param duration The duration.
+     */
+    @RequiresPermission(WRITE_SETTINGS)
+    public static void setSleepDuration(final int duration) {
+        Settings.System.putInt(
+                Utils.getApp().getContentResolver(),
+                Settings.System.SCREEN_OFF_TIMEOUT,
+                duration
+        );
+    }
+
+    /**
      * Return the duration of sleep.
      *
      * @return the duration of sleep.
@@ -268,21 +284,6 @@ public class ScreenUtils {
             e.printStackTrace();
             return -123;
         }
-    }
-
-    /**
-     * Set the duration of sleep.
-     * <p>Must hold {@code <uses-permission android:name="android.permission.WRITE_SETTINGS" />}</p>
-     *
-     * @param duration The duration.
-     */
-    @RequiresPermission(WRITE_SETTINGS)
-    public static void setSleepDuration(final int duration) {
-        Settings.System.putInt(
-                Utils.getApp().getContentResolver(),
-                Settings.System.SCREEN_OFF_TIMEOUT,
-                duration
-        );
     }
 
     /**
@@ -308,6 +309,17 @@ public class ScreenUtils {
     }
 
     /**
+     * Adapt the screen for horizontal slide.
+     *
+     * @param activity         The activity.
+     * @param designHeightInPx The size of design diagram's height, in pixel.
+     */
+    public static void adaptScreen4HorizontalSlide(final Activity activity,
+                                                   final int designHeightInPx) {
+        adaptScreen(activity, designHeightInPx, false);
+    }
+
+    /**
      * Reference from: https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA
      */
     private static void adaptScreen(final Activity activity,
@@ -327,17 +339,9 @@ public class ScreenUtils {
         appDm.density = activityDm.density;
         appDm.scaledDensity = activityDm.scaledDensity;
         appDm.densityDpi = activityDm.densityDpi;
-    }
 
-    /**
-     * Adapt the screen for horizontal slide.
-     *
-     * @param activity         The activity.
-     * @param designHeightInPx The size of design diagram's height, in pixel.
-     */
-    public static void adaptScreen4HorizontalSlide(final Activity activity,
-                                                   final int designHeightInPx) {
-        adaptScreen(activity, designHeightInPx, false);
+        Utils.ADAPT_SCREEN_ARGS.sizeInPx = sizeInPx;
+        Utils.ADAPT_SCREEN_ARGS.isVerticalSlide = isVerticalSlide;
     }
 
     /**

@@ -237,8 +237,8 @@ public class KeyboardUtils {
         if (imm == null) {
             return;
         }
-        String[] strArr = new String[]{"mCurRootView", "mServedView", "mNextServedView"};
-        for (int i = 0; i < 3; i++) {
+        String[] strArr = new String[]{"mCurRootView", "mServedView", "mNextServedView", "mLastSrvView"};
+        for (int i = 0; i < 4; i++) {
             try {
                 Field declaredField = imm.getClass().getDeclaredField(strArr[i]);
                 if (declaredField == null) {

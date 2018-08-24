@@ -37,6 +37,7 @@ import java.lang.reflect.Field;
  * 描述：吐司工具类
  */
 public class ToastUtils {
+
     private static final int COLOR_DEFAULT = 0xFEFFFFFF;
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
     private static final String NULL = "null";
@@ -237,7 +238,13 @@ public class ToastUtils {
             @Override
             public void run() {
                 cancel();
-                sToast = Toast.makeText(Utils.getApp(), text, duration);
+                if (Utils.isAdaptScreen()) {
+                    Utils.cancelAdaptScreen();
+                    sToast = Toast.makeText(Utils.getApp(), text, duration);
+                    Utils.adaptScreen();
+                } else {
+                    sToast = Toast.makeText(Utils.getApp(), text, duration);
+                }
                 final TextView tvMessage = sToast.getView().findViewById(android.R.id.message);
                 if (sMsgColor != COLOR_DEFAULT) {
                     tvMessage.setTextColor(sMsgColor);

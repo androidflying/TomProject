@@ -98,9 +98,7 @@ public final class CacheDiskUtils implements CacheConstants {
      * @return the single {@link CacheDiskUtils} instance
      */
     public static CacheDiskUtils getInstance(String cacheName, final long maxSize, final int maxCount) {
-        if (isSpace(cacheName)) {
-            cacheName = "cacheUtils";
-        }
+        if (isSpace(cacheName)) cacheName = "cacheUtils";
         File file = new File(Utils.getApp().getCacheDir(), cacheName);
         return getInstance(file, maxSize, maxCount);
     }
@@ -129,15 +127,21 @@ public final class CacheDiskUtils implements CacheConstants {
                                              final long maxSize,
                                              final int maxCount) {
         final String cacheKey = cacheDir.getAbsoluteFile() + "_" + maxSize + "_" + maxCount;
-        CacheDiskUtils cache = CACHE_MAP.get(cacheKey);
-        if (cache == null) {
-            if (!cacheDir.exists() && !cacheDir.mkdirs()) {
-                throw new RuntimeException("can't make dirs in " + cacheDir.getAbsolutePath());
+        if (cacheDir.exists()) {
+            CacheDiskUtils cache = CACHE_MAP.get(cacheKey);
+            if (cache == null) {
+                DiskCacheManager cacheManager = new DiskCacheManager(cacheDir, maxSize, maxCount);
+                cache = new CacheDiskUtils(cacheKey, cacheManager);
+                CACHE_MAP.put(cacheKey, cache);
             }
-            cache = new CacheDiskUtils(cacheKey, new DiskCacheManager(cacheDir, maxSize, maxCount));
-            CACHE_MAP.put(cacheKey, cache);
+            return cache;
         }
-        return cache;
+        if (cacheDir.mkdirs()) {
+            DiskCacheManager cacheManager = new DiskCacheManager(cacheDir, maxSize, maxCount);
+            return CACHE_MAP.put(cacheKey, new CacheDiskUtils(cacheKey, cacheManager));
+        } else {
+            throw new RuntimeException("can't make dirs in " + cacheDir.getAbsolutePath());
+        }
     }
 
     private CacheDiskUtils(final String cacheKey, final DiskCacheManager cacheManager) {
@@ -172,12 +176,8 @@ public final class CacheDiskUtils implements CacheConstants {
      * @param saveTime The save time of cache, in seconds.
      */
     public void put(@NonNull final String key, byte[] value, final int saveTime) {
-        if (value == null) {
-            return;
-        }
-        if (saveTime >= 0) {
-            value = DiskCacheHelper.newByteArrayWithTime(saveTime, value);
-        }
+        if (value == null) return;
+        if (saveTime >= 0) value = DiskCacheHelper.newByteArrayWithTime(saveTime, value);
         File file = mDiskCacheManager.getFileBeforePut(key);
         writeFileFromBytes(file, value);
         mDiskCacheManager.updateModify(file);
@@ -867,7 +867,6 @@ public final class CacheDiskUtils implements CacheConstants {
         if (bytes == null) {
             return null;
         }
-
         try {
             return new JSONObject(new String(bytes));
         } catch (Exception e) {

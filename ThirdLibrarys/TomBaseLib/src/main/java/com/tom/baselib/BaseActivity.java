@@ -25,7 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     protected View mContentView;
     protected Activity mActivity;
-
+    private int fastTime = 200;
     /**
      * 上次点击时间
      */
@@ -95,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     protected void onDestroy() {
-        if (!isNeedAdapt() && ScreenUtils.isAdaptScreen()) {
+        if (!isNeedAdapt() && !ScreenUtils.isAdaptScreen()) {
             ScreenUtils.cancelAdaptScreen(this);
         }
         super.onDestroy();
@@ -115,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
      */
     private boolean isFastClick() {
         long now = System.currentTimeMillis();
-        if (now - lastClick >= 200) {
+        if (now - lastClick >= fastTime) {
             lastClick = now;
             return false;
         }

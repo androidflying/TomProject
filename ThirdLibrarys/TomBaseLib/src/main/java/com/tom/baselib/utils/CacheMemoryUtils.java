@@ -6,8 +6,6 @@ import android.support.v4.util.SimpleArrayMap;
 
 import com.tom.baselib.constant.CacheConstants;
 
-import java.lang.reflect.Array;
-
 /**
  * 作者：tom_flying
  * 邮箱：tom_flying@163.com
@@ -40,7 +38,17 @@ public final class CacheMemoryUtils implements CacheConstants {
      * @return the single {@link CacheMemoryUtils} instance
      */
     public static CacheMemoryUtils getInstance(final int maxCount) {
-        final String cacheKey = String.valueOf(maxCount);
+        return getInstance(String.valueOf(maxCount), maxCount);
+    }
+
+    /**
+     * Return the single {@link CacheMemoryUtils} instance.
+     *
+     * @param cacheKey The key of cache.
+     * @param maxCount The max count of cache.
+     * @return the single {@link CacheMemoryUtils} instance
+     */
+    public static CacheMemoryUtils getInstance(final String cacheKey, final int maxCount) {
         CacheMemoryUtils cache = CACHE_MAP.get(cacheKey);
         if (cache == null) {
             cache = new CacheMemoryUtils(cacheKey, new LruCache<String, CacheValue>(maxCount));
@@ -78,9 +86,6 @@ public final class CacheMemoryUtils implements CacheConstants {
      */
     public void put(@NonNull final String key, final Object value, int saveTime) {
         if (value == null) {
-            return;
-        }
-        if (value.getClass().isArray() && Array.getLength(value) <= 0) {
             return;
         }
         long dueTime = saveTime < 0 ? -1 : System.currentTimeMillis() + saveTime * 1000;
@@ -133,7 +138,9 @@ public final class CacheMemoryUtils implements CacheConstants {
      */
     public Object remove(@NonNull final String key) {
         CacheValue remove = mMemoryCache.remove(key);
-        if (remove == null) return null;
+        if (remove == null) {
+            return null;
+        }
         return remove.value;
     }
 
@@ -148,7 +155,7 @@ public final class CacheMemoryUtils implements CacheConstants {
         long dueTime;
         Object value;
 
-        private CacheValue(long dueTime, Object value) {
+        CacheValue(long dueTime, Object value) {
             this.dueTime = dueTime;
             this.value = value;
         }

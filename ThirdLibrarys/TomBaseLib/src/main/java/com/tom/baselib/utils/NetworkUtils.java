@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.support.annotation.RequiresPermission;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
@@ -36,6 +37,7 @@ import static android.content.Context.WIFI_SERVICE;
  * 描述：网络相关工具类
  */
 public class NetworkUtils {
+
 
     private NetworkUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -121,11 +123,15 @@ public class NetworkUtils {
             if (tm == null) {
                 return false;
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                return tm.isDataEnabled();
+            }
             @SuppressLint("PrivateApi")
             Method getMobileDataEnabledMethod = tm.getClass().getDeclaredMethod("getDataEnabled");
             if (null != getMobileDataEnabledMethod) {
                 return (boolean) getMobileDataEnabledMethod.invoke(tm);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -444,7 +450,7 @@ public class NetworkUtils {
     @RequiresPermission(ACCESS_WIFI_STATE)
     public static String getIpAddressByWifi() {
         @SuppressLint("WifiManagerLeak")
-        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(WIFI_SERVICE);
+        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(Context.WIFI_SERVICE);
         if (wm == null) {
             return "";
         }
@@ -459,7 +465,7 @@ public class NetworkUtils {
     @RequiresPermission(ACCESS_WIFI_STATE)
     public static String getGatewayByWifi() {
         @SuppressLint("WifiManagerLeak")
-        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(WIFI_SERVICE);
+        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(Context.WIFI_SERVICE);
         if (wm == null) {
             return "";
         }
@@ -474,7 +480,7 @@ public class NetworkUtils {
     @RequiresPermission(ACCESS_WIFI_STATE)
     public static String getNetMaskByWifi() {
         @SuppressLint("WifiManagerLeak")
-        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(WIFI_SERVICE);
+        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(Context.WIFI_SERVICE);
         if (wm == null) {
             return "";
         }
@@ -489,7 +495,7 @@ public class NetworkUtils {
     @RequiresPermission(ACCESS_WIFI_STATE)
     public static String getServerAddressByWifi() {
         @SuppressLint("WifiManagerLeak")
-        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(WIFI_SERVICE);
+        WifiManager wm = (WifiManager) Utils.getApp().getSystemService(Context.WIFI_SERVICE);
         if (wm == null) {
             return "";
         }

@@ -8,7 +8,6 @@ android {
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
         versionCode 1
         versionName "1.0.0"
-
     }
 
     buildTypes {
