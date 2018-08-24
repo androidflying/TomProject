@@ -1,6 +1,7 @@
 package com.tom.im.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,17 +10,31 @@ import android.view.View;
 
 import com.easy.photo.EasyPhotos;
 import com.tom.common.GlideEngine;
+import com.tom.common.base.CommonActivity;
 import com.tom.common.util.SelectorUtil;
 import com.tom.im.R;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends CommonActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public boolean isNeedRegister() {
+        return false;
+    }
+
+    @Override
+    public void initData(@NonNull Bundle bundle) {
+
+    }
+
+    @Override
+    public int bindLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    public void initView(Bundle savedInstanceState, View contentView) {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -56,4 +71,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void doBusiness() {
+
+    }
+
+    @Override
+    public void onWidgetClick(View view) {
+
+    }
 }

@@ -9,10 +9,14 @@ android {
         minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
         versionCode 1
-        versionName "1.17.1"
+        versionName "1.19.1"
 
         multiDexEnabled true
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
 
     }
 

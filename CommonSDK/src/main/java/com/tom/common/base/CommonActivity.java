@@ -30,7 +30,7 @@ public abstract class CommonActivity extends BaseActivity {
 
     @Override
     public int setAdaptVerticalScreen() {
-        return 720;
+        return 360;
     }
 
     @Override

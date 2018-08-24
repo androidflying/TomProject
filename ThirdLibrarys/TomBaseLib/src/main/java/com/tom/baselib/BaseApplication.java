@@ -44,7 +44,9 @@ public abstract class BaseApplication extends MultiDexApplication {
             initLog();
             initCrash();
             modulesApplicationInit();
+
         }
+
     }
 
     private void initARouter() {

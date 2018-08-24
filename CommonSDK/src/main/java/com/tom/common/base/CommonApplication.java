@@ -1,5 +1,8 @@
 package com.tom.common.base;
 
+import android.app.Activity;
+import android.os.Bundle;
+
 import com.tom.baselib.ApplicationImpl;
 import com.tom.baselib.BaseApplication;
 import com.tom.baselib.utils.Utils;
