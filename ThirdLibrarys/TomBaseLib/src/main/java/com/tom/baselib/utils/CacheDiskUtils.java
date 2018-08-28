@@ -98,7 +98,9 @@ public final class CacheDiskUtils implements CacheConstants {
      * @return the single {@link CacheDiskUtils} instance
      */
     public static CacheDiskUtils getInstance(String cacheName, final long maxSize, final int maxCount) {
-        if (isSpace(cacheName)) cacheName = "cacheUtils";
+        if (isSpace(cacheName)) {
+            cacheName = "cacheUtils";
+        }
         File file = new File(Utils.getApp().getCacheDir(), cacheName);
         return getInstance(file, maxSize, maxCount);
     }
@@ -138,7 +140,9 @@ public final class CacheDiskUtils implements CacheConstants {
         }
         if (cacheDir.mkdirs()) {
             DiskCacheManager cacheManager = new DiskCacheManager(cacheDir, maxSize, maxCount);
-            return CACHE_MAP.put(cacheKey, new CacheDiskUtils(cacheKey, cacheManager));
+            CacheDiskUtils cacheDiskUtils = new CacheDiskUtils(cacheKey, cacheManager);
+            CACHE_MAP.put(cacheKey, cacheDiskUtils);
+            return cacheDiskUtils;
         } else {
             throw new RuntimeException("can't make dirs in " + cacheDir.getAbsolutePath());
         }
@@ -176,8 +180,12 @@ public final class CacheDiskUtils implements CacheConstants {
      * @param saveTime The save time of cache, in seconds.
      */
     public void put(@NonNull final String key, byte[] value, final int saveTime) {
-        if (value == null) return;
-        if (saveTime >= 0) value = DiskCacheHelper.newByteArrayWithTime(saveTime, value);
+        if (value == null) {
+            return;
+        }
+        if (saveTime >= 0) {
+            value = DiskCacheHelper.newByteArrayWithTime(saveTime, value);
+        }
         File file = mDiskCacheManager.getFileBeforePut(key);
         writeFileFromBytes(file, value);
         mDiskCacheManager.updateModify(file);
@@ -678,9 +686,7 @@ public final class CacheDiskUtils implements CacheConstants {
 
         private File getFileIfExists(final String key) {
             File file = new File(cacheDir, String.valueOf(key.hashCode()));
-            if (!file.exists()) {
-                return null;
-            }
+            if (!file.exists()) return null;
             return file;
         }
 

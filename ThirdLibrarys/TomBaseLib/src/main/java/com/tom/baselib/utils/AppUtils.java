@@ -114,7 +114,9 @@ public class AppUtils {
     public static void installApp(final Activity activity,
                                   final File file,
                                   final int requestCode) {
-        if (!isFileExists(file)) return;
+        if (!isFileExists(file)) {
+            return;
+        }
         activity.startActivityForResult(getInstallAppIntent(file), requestCode);
     }
 
@@ -182,7 +184,9 @@ public class AppUtils {
     public static boolean installAppSilent(final File file,
                                            final String params,
                                            final boolean isRooted) {
-        if (!isFileExists(file)) return false;
+        if (!isFileExists(file)) {
+            return false;
+        }
         String filePath = '"' + file.getAbsolutePath() + '"';
         String command = "LD_LIBRARY_PATH=/vendor/lib*:/system/lib* pm install " +
                 (params == null ? "" : params + " ")
@@ -204,7 +208,9 @@ public class AppUtils {
      * @param packageName The name of the package.
      */
     public static void uninstallApp(final String packageName) {
-        if (isSpace(packageName)) return;
+        if (isSpace(packageName)) {
+            return;
+        }
         Utils.getApp().startActivity(getUninstallAppIntent(packageName, true));
     }
 
@@ -219,7 +225,9 @@ public class AppUtils {
     public static void uninstallApp(final Activity activity,
                                     final String packageName,
                                     final int requestCode) {
-        if (isSpace(packageName)) return;
+        if (isSpace(packageName)) {
+            return;
+        }
         activity.startActivityForResult(getUninstallAppIntent(packageName), requestCode);
     }
 
@@ -261,7 +269,9 @@ public class AppUtils {
     public static boolean uninstallAppSilent(final String packageName,
                                              final boolean isKeepData,
                                              final boolean isRooted) {
-        if (isSpace(packageName)) return false;
+        if (isSpace(packageName)) {
+            return false;
+        }
         String command = "LD_LIBRARY_PATH=/vendor/lib*:/system/lib* pm uninstall "
                 + (isKeepData ? "-k " : "")
                 + packageName;
@@ -404,7 +414,9 @@ public class AppUtils {
      * @param packageName The name of the package.
      */
     public static void launchApp(final String packageName) {
-        if (isSpace(packageName)) return;
+        if (isSpace(packageName)) {
+            return;
+        }
         Utils.getApp().startActivity(getLaunchAppIntent(packageName, true));
     }
 
@@ -466,8 +478,7 @@ public class AppUtils {
      */
     public static void exitApp() {
         List<Activity> activityList = Utils.getActivityList();
-        for (int i = activityList.size() - 1; i >= 0; --i) {
-            // remove from top
+        for (int i = activityList.size() - 1; i >= 0; --i) {// remove from top
             Activity activity = activityList.get(i);
             // sActivityList remove the index activity at onActivityDestroyed
             activity.finish();
@@ -491,7 +502,9 @@ public class AppUtils {
      * @return the application's icon
      */
     public static Drawable getAppIcon(final String packageName) {
-        if (isSpace(packageName)) return null;
+        if (isSpace(packageName)) {
+            return null;
+        }
         try {
             PackageManager pm = Utils.getApp().getPackageManager();
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
@@ -527,7 +540,9 @@ public class AppUtils {
      * @return the application's name
      */
     public static String getAppName(final String packageName) {
-        if (isSpace(packageName)) return "";
+        if (isSpace(packageName)) {
+            return "";
+        }
         try {
             PackageManager pm = Utils.getApp().getPackageManager();
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
@@ -554,7 +569,9 @@ public class AppUtils {
      * @return the application's path
      */
     public static String getAppPath(final String packageName) {
-        if (isSpace(packageName)) return "";
+        if (isSpace(packageName)) {
+            return "";
+        }
         try {
             PackageManager pm = Utils.getApp().getPackageManager();
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
@@ -581,7 +598,9 @@ public class AppUtils {
      * @return the application's version name
      */
     public static String getAppVersionName(final String packageName) {
-        if (isSpace(packageName)) return "";
+        if (isSpace(packageName)) {
+            return "";
+        }
         try {
             PackageManager pm = Utils.getApp().getPackageManager();
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
@@ -608,7 +627,9 @@ public class AppUtils {
      * @return the application's version code
      */
     public static int getAppVersionCode(final String packageName) {
-        if (isSpace(packageName)) return -1;
+        if (isSpace(packageName)) {
+            return -1;
+        }
         try {
             PackageManager pm = Utils.getApp().getPackageManager();
             PackageInfo pi = pm.getPackageInfo(packageName, 0);
@@ -635,7 +656,9 @@ public class AppUtils {
      * @return the application's signature
      */
     public static Signature[] getAppSignature(final String packageName) {
-        if (isSpace(packageName)) return null;
+        if (isSpace(packageName)) {
+            return null;
+        }
         try {
             PackageManager pm = Utils.getApp().getPackageManager();
             @SuppressLint("PackageManagerGetSignatures")
@@ -663,11 +686,57 @@ public class AppUtils {
      * @return the application's signature for SHA1 value
      */
     public static String getAppSignatureSHA1(final String packageName) {
-        if (isSpace(packageName)) return "";
+        return getAppSignatureHash(packageName, "SHA1");
+    }
+
+    /**
+     * Return the application's signature for SHA256 value.
+     *
+     * @return the application's signature for SHA256 value
+     */
+    public static String getAppSignatureSHA256() {
+        return getAppSignatureSHA256(Utils.getApp().getPackageName());
+    }
+
+    /**
+     * Return the application's signature for SHA256 value.
+     *
+     * @param packageName The name of the package.
+     * @return the application's signature for SHA256 value
+     */
+    public static String getAppSignatureSHA256(final String packageName) {
+        return getAppSignatureHash(packageName, "SHA256");
+    }
+
+    /**
+     * Return the application's signature for MD5 value.
+     *
+     * @return the application's signature for MD5 value
+     */
+    public static String getAppSignatureMD5() {
+        return getAppSignatureMD5(Utils.getApp().getPackageName());
+    }
+
+    /**
+     * Return the application's signature for MD5 value.
+     *
+     * @param packageName The name of the package.
+     * @return the application's signature for MD5 value
+     */
+    public static String getAppSignatureMD5(final String packageName) {
+        return getAppSignatureHash(packageName, "MD5");
+    }
+
+    private static String getAppSignatureHash(final String packageName, final String algorithm) {
+        if (isSpace(packageName)) {
+            return "";
+        }
         Signature[] signature = getAppSignature(packageName);
-        if (signature == null || signature.length <= 0) return "";
-        return encryptSHA1ToString(signature[0].toByteArray()).
-                replaceAll("(?<=[0-9A-F]{2})[0-9A-F]{2}", ":$0");
+        if (signature == null || signature.length <= 0) {
+            return "";
+        }
+        return bytes2HexString(hashTemplate(signature[0].toByteArray(), algorithm))
+                .replaceAll("(?<=[0-9A-F]{2})[0-9A-F]{2}", ":$0");
     }
 
     /**
@@ -879,16 +948,12 @@ public class AppUtils {
     private static final char HEX_DIGITS[] =
             {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    private static String encryptSHA1ToString(final byte[] data) {
-        return bytes2HexString(encryptSHA1(data));
-    }
-
-    private static byte[] encryptSHA1(final byte[] data) {
+    private static byte[] hashTemplate(final byte[] data, final String algorithm) {
         if (data == null || data.length <= 0) {
             return null;
         }
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA1");
+            MessageDigest md = MessageDigest.getInstance(algorithm);
             md.update(data);
             return md.digest();
         } catch (NoSuchAlgorithmException e) {

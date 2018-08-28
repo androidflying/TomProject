@@ -1,10 +1,12 @@
 package com.tom.baselib;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.tom.baselib.utils.AppUtils;
 import com.tom.baselib.utils.CrashUtils;
 import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.ProcessUtils;
@@ -17,6 +19,7 @@ import com.tom.network.interceptor.HttpLoggingInterceptor;
 import com.tom.network.model.HttpHeaders;
 import com.tom.network.model.HttpParams;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -36,9 +39,6 @@ public abstract class BaseApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         if (ProcessUtils.isMainProcess(this)) {
-            //设置屏幕适配
-            MultiDex.install(this);
-            Utils.init(this);
             initARouter();
             initNetWork();
             initLog();
@@ -47,6 +47,12 @@ public abstract class BaseApplication extends MultiDexApplication {
 
         }
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void initARouter() {
@@ -111,16 +117,16 @@ public abstract class BaseApplication extends MultiDexApplication {
                 // 设置是否输出到控制台开关，默认开
                 .setConsoleSwitch(BuildConfig.DEBUG)
                 // 设置 log 全局标签，默认为空
+                .setGlobalTag(null)
                 // 当全局标签不为空时，我们输出的 log 全部为该 tag，
                 // 为空时，如果传入的 tag 为空那就显示类名，否则显示 tag
-                .setGlobalTag(null)
                 // 设置 log 头信息开关，默认为开
                 .setLogHeadSwitch(true)
                 // 打印 log 时是否存到文件的开关，默认关
                 .setLog2FileSwitch(false)
                 // 当自定义路径为空时，写入应用的/cache/log/目录中
                 .setDir("")
-                // 当文件前缀为空时，默认为"util"，即写入文件为"util-MM-dd.txt"
+                // 当文件前缀为空时，默认为"util"，即写入文件为"util-yyyy-MM-dd.txt"
                 .setFilePrefix("")
                 // 输出日志是否带边框开关，默认开
                 .setBorderSwitch(true)
@@ -131,8 +137,18 @@ public abstract class BaseApplication extends MultiDexApplication {
                 // log 文件过滤器，和 logcat 过滤器同理，默认 Verbose
                 .setFileFilter(LogUtils.V)
                 // log 栈深度，默认为 1
-                .setStackDeep(1);
-
+                .setStackDeep(1)
+                // 设置栈偏移，比如二次封装的话就需要设置，默认为 0
+                .setStackOffset(0)
+                // 设置日志可保留天数，默认为 -1 表示无限时长
+                .setSaveDays(3)
+                // 新增 ArrayList 格式化器，默认已支持 Array, Throwable, Bundle, Intent 的格式化输出
+                .addFormatter(new LogUtils.IFormatter<ArrayList>() {
+                    @Override
+                    public String format(ArrayList list) {
+                        return "LogUtils Formatter ArrayList { " + list.toString() + " }";
+                    }
+                });
         LogUtils.d(config.toString());
     }
 
