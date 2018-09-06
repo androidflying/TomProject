@@ -140,7 +140,9 @@ public class HomeFragment extends MyFragment {
             @Override
             public void onError(Response<LzyResponse<ArticlesBean>> response) {
                 emptyView.setTitleText("网络错误");
-                emptyView.setDetailText(response.body().errorMsg);
+                if (response != null) {
+                    emptyView.setDetailText(response.body().errorMsg);
+                }
                 emptyView.setButton("重试", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

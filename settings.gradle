@@ -1,5 +1,5 @@
 include ':CommonSDK', ':WanAndroid', ':Module_IM'
 include ':Umeng:Share', ':Umeng:Push', ':Umeng:Analytics', ':Umeng:Common'
-include ':ThirdLibrarys:BRVAH', ':ThirdLibrarys:QMUI', ':ThirdLibrarys:AgentWeb', ':ThirdLibrarys:PhotoView', ':ThirdLibrarys:QRScan', ':ThirdLibrarys:Banner', ':ThirdLibrarys:TomNetwork', ':ThirdLibrarys:TomBaseLib'
+include ':ThirdLibrarys:BRVAH', ':ThirdLibrarys:QMUI', ':ThirdLibrarys:AgentWeb', ':ThirdLibrarys:PhotoView', ':ThirdLibrarys:QRScan', ':ThirdLibrarys:Banner', ':ThirdLibrarys:TomNetwork', ':ThirdLibrarys:TomBaseLib', ':ThirdLibrarys:Kalle'
 include ':RongCloud:IMLib', ':RongCloud:IMKit', ':RongCloud:CallLib', ':RongCloud:CallKit'
 include ':Album:EasyPhoto'

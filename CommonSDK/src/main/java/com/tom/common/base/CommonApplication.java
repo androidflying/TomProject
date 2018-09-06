@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.tom.baselib.ApplicationImpl;
 import com.tom.baselib.BaseApplication;
+import com.tom.baselib.utils.ProcessUtils;
 import com.tom.baselib.utils.Utils;
 import com.tom.common.ManifestParser;
 

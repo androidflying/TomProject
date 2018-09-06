@@ -2,12 +2,11 @@ package com.qmuiteam.tom.util;
 
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Display;
 import android.view.DisplayCutout;
@@ -40,7 +39,6 @@ public class QMUINotchHelper {
     private static Rect sRotation270SafeInset = null;
     private static int[] sNotchSizeInHawei = null;
     private static Boolean sHuaweiIsNotchSetToShow = null;
-    private static Boolean sXiaomiIsNotchSetToShow = null;
 
     public static boolean hasNotchInVivo(Context context) {
         boolean ret = false;
@@ -88,30 +86,26 @@ public class QMUINotchHelper {
                 .hasSystemFeature("com.oppo.feature.screen.heteromorphism");
     }
 
+    @SuppressLint("PrivateApi")
     public static boolean hasNotchInXiaomi(Context context) {
         try {
-            @SuppressLint("PrivateApi") Class spClass = Class.forName("android.os.SystemProperties");
-            Method getMethod = spClass.getDeclaredMethod("getInt", String.class, Integer.class);
+            Class spClass = Class.forName("android.os.SystemProperties");
+            Method getMethod = spClass.getDeclaredMethod("getInt", String.class, int.class);
+            getMethod.setAccessible(true);
             int hasNotch = (int) getMethod.invoke(null, MIUI_NOTCH, 0);
             return hasNotch == 1;
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean hasNotch(View view) {
         if (sHasNotch == null) {
             if (isNotchOfficialSupport()) {
-                WindowInsets windowInsets = view.getRootWindowInsets();
-                if (windowInsets != null) {
-                    DisplayCutout displayCutout = windowInsets.getDisplayCutout();
-                    sHasNotch = displayCutout != null;
-                } else {
-                    // view not attached
+                if (!attachHasOfficialNotch(view)) {
                     return false;
                 }
-
             } else {
                 sHasNotch = has3rdNotch(view.getContext());
             }
@@ -119,7 +113,7 @@ public class QMUINotchHelper {
         return sHasNotch;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     public static boolean hasNotch(Activity activity) {
         if (sHasNotch == null) {
             if (isNotchOfficialSupport()) {
@@ -131,13 +125,31 @@ public class QMUINotchHelper {
                 if (decorView == null) {
                     return false;
                 }
-                DisplayCutout displayCutout = decorView.getRootWindowInsets().getDisplayCutout();
-                sHasNotch = displayCutout != null;
+                if (!attachHasOfficialNotch(decorView)) {
+                    return false;
+                }
             } else {
                 sHasNotch = has3rdNotch(activity);
             }
         }
         return sHasNotch;
+    }
+
+    /**
+     * @param view
+     * @return false indicates the failure to get the result
+     */
+    @TargetApi(28)
+    private static boolean attachHasOfficialNotch(View view) {
+        WindowInsets windowInsets = view.getRootWindowInsets();
+        if (windowInsets != null) {
+            DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+            sHasNotch = displayCutout != null;
+            return true;
+        } else {
+            // view not attached, do nothing
+            return false;
+        }
     }
 
     public static boolean has3rdNotch(Context context) {
@@ -153,7 +165,6 @@ public class QMUINotchHelper {
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetTop(Activity activity) {
         if (!hasNotch(activity)) {
             return 0;
@@ -161,7 +172,6 @@ public class QMUINotchHelper {
         return getSafeInsetRect(activity).top;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetBottom(Activity activity) {
         if (!hasNotch(activity)) {
             return 0;
@@ -169,7 +179,6 @@ public class QMUINotchHelper {
         return getSafeInsetRect(activity).bottom;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetLeft(Activity activity) {
         if (!hasNotch(activity)) {
             return 0;
@@ -177,7 +186,6 @@ public class QMUINotchHelper {
         return getSafeInsetRect(activity).left;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetRight(Activity activity) {
         if (!hasNotch(activity)) {
             return 0;
@@ -186,7 +194,6 @@ public class QMUINotchHelper {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetTop(View view) {
         if (!hasNotch(view)) {
             return 0;
@@ -194,7 +201,6 @@ public class QMUINotchHelper {
         return getSafeInsetRect(view).top;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetBottom(View view) {
         if (!hasNotch(view)) {
             return 0;
@@ -202,7 +208,6 @@ public class QMUINotchHelper {
         return getSafeInsetRect(view).bottom;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetLeft(View view) {
         if (!hasNotch(view)) {
             return 0;
@@ -210,7 +215,6 @@ public class QMUINotchHelper {
         return getSafeInsetRect(view).left;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static int getSafeInsetRight(View view) {
         if (!hasNotch(view)) {
             return 0;
@@ -236,33 +240,39 @@ public class QMUINotchHelper {
         sRotation270SafeInset = null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private static Rect getSafeInsetRect(Activity activity) {
         if (isNotchOfficialSupport()) {
             Rect rect = new Rect();
-            DisplayCutout displayCutout = activity.getWindow().getDecorView()
-                    .getRootWindowInsets().getDisplayCutout();
-            if (displayCutout != null) {
-                rect.set(displayCutout.getSafeInsetLeft(), displayCutout.getSafeInsetTop(),
-                        displayCutout.getSafeInsetRight(), displayCutout.getSafeInsetBottom());
-            }
+            View decorView = activity.getWindow().getDecorView();
+            getOfficialSafeInsetRect(decorView, rect);
             return rect;
         }
         return get3rdSafeInsetRect(activity);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private static Rect getSafeInsetRect(View view) {
         if (isNotchOfficialSupport()) {
             Rect rect = new Rect();
-            DisplayCutout displayCutout = view.getRootWindowInsets().getDisplayCutout();
-            if (displayCutout != null) {
-                rect.set(displayCutout.getSafeInsetLeft(), displayCutout.getSafeInsetTop(),
-                        displayCutout.getSafeInsetRight(), displayCutout.getSafeInsetBottom());
-            }
+            getOfficialSafeInsetRect(view, rect);
             return rect;
         }
         return get3rdSafeInsetRect(view.getContext());
+    }
+
+    @TargetApi(28)
+    private static void getOfficialSafeInsetRect(View view, Rect out) {
+        if (view == null) {
+            return;
+        }
+        WindowInsets rootWindowInsets = view.getRootWindowInsets();
+        if (rootWindowInsets == null) {
+            return;
+        }
+        DisplayCutout displayCutout = rootWindowInsets.getDisplayCutout();
+        if (displayCutout != null) {
+            out.set(displayCutout.getSafeInsetLeft(), displayCutout.getSafeInsetTop(),
+                    displayCutout.getSafeInsetRight(), displayCutout.getSafeInsetBottom());
+        }
     }
 
     private static Rect get3rdSafeInsetRect(Context context) {
@@ -273,12 +283,6 @@ public class QMUINotchHelper {
                 clearLandscapeRectInfo();
             }
             sHuaweiIsNotchSetToShow = isHuaweiNotchSetToShow;
-        } else if (QMUIDeviceHelper.isXiaomi()) {
-            boolean isXiaomiNotchSetToShow = QMUIDisplayHelper.xiaomiIsNotchSetToShowInSetting(context);
-            if (sXiaomiIsNotchSetToShow != null && sXiaomiIsNotchSetToShow != isXiaomiNotchSetToShow) {
-                clearAllRectInfo();
-            }
-            sXiaomiIsNotchSetToShow = isXiaomiNotchSetToShow;
         }
         int screenRotation = getScreenRotation(context);
         if (screenRotation == Surface.ROTATION_90) {
@@ -341,11 +345,7 @@ public class QMUINotchHelper {
             }
             rect.right = 0;
         } else if (QMUIDeviceHelper.isXiaomi()) {
-            if (sXiaomiIsNotchSetToShow) {
-                rect.left = getNotchHeightInXiaomi(context);
-            } else {
-                rect.left = 0;
-            }
+            rect.left = getNotchHeightInXiaomi(context);
             rect.right = 0;
         }
         return rect;
@@ -386,11 +386,7 @@ public class QMUINotchHelper {
             }
             rect.left = 0;
         } else if (QMUIDeviceHelper.isXiaomi()) {
-            if (sXiaomiIsNotchSetToShow) {
-                rect.right = getNotchHeightInXiaomi(context);
-            } else {
-                rect.right = 0;
-            }
+            rect.right = getNotchHeightInXiaomi(context);
             rect.left = 0;
         }
         return rect;
@@ -430,7 +426,7 @@ public class QMUINotchHelper {
         if (resourceId > 0) {
             return context.getResources().getDimensionPixelSize(resourceId);
         }
-        return -1;
+        return QMUIDisplayHelper.getStatusBarHeight(context);
     }
 
     public static int getNotchWidthInVivo(Context context) {
@@ -463,4 +459,15 @@ public class QMUINotchHelper {
     public static boolean isNotchOfficialSupport() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
     }
+
+    /**
+     * fitSystemWindows 对小米挖孔屏横屏挖孔区域无效
+     *
+     * @param view
+     * @return
+     */
+    public static boolean needFixLandscapeNotchAreaFitSystemWindow(View view) {
+        return QMUIDeviceHelper.isXiaomi() && QMUINotchHelper.hasNotch(view);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.android.tomflying.util;
 
 import com.tom.network.callback.AbsCallback;
+import com.tom.network.model.Response;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -43,4 +44,5 @@ public abstract class JsonCallback<T> extends AbsCallback<T> {
         JsonConvert<T> convert = new JsonConvert<>(type);
         return convert.convertResponse(response);
     }
+
 }

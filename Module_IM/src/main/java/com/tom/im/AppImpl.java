@@ -1,14 +1,11 @@
 package com.tom.im;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tom.baselib.ApplicationImpl;
-import com.tom.baselib.utils.LogUtils;
+import com.tom.baselib.utils.ProcessUtils;
 import com.tom.im.util.ChatUtil;
-
-import io.rong.imkit.RongIM;
 
 /**
  * 作者：tom_flying
@@ -21,7 +18,9 @@ public class AppImpl implements ApplicationImpl {
 
     @Override
     public void onCreate(@NonNull Application application) {
-        initIM();
+        if (ProcessUtils.isMainProcess(application)) {
+            initIM();
+        }
     }
 
     private void initIM() {

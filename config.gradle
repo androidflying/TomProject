@@ -5,7 +5,7 @@ ext {
             COMPILE_SDK_VERSION : 28,
 
             // 最低支持Android版本
-            MIN_SDK_VERSION : 16,
+            MIN_SDK_VERSION : 17,
 
             // 目标版本
             TARGET_SDK_VERSION : 28,
@@ -55,6 +55,7 @@ ext {
             "greendao"                 : "org.greenrobot:greendao:${version["GREENDAO_VERSION"]}",
             "zxing"                    : "com.google.zxing:core:${version["ZXING_VERSION"]}",
             "okhttp"                   : "com.squareup.okhttp3:okhttp:${version["OKHTTP_VERSION"]}",
+            "okhttp-urlconnection"     : "com.squareup.okhttp3:okhttp-urlconnection:${version["OKHTTP_VERSION"]}",
             "gson"                     : "com.google.code.gson:gson:${version["GSON_VERSION"]}",
 
 

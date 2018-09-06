@@ -422,6 +422,7 @@ public class QMUIQQFaceView extends View {
 
     /**
      * make sense only work after draw
+     *
      * @return
      */
     public Rect getMoreHitRect() {
@@ -752,7 +753,7 @@ public class QMUIQQFaceView extends View {
                 break;
             case MeasureSpec.EXACTLY:
                 height = heightSize;
-                int maxLine = (height + mLineSpace) / (mFontHeight + mLineSpace);
+                int maxLine = (height - getPaddingTop() - getPaddingBottom() + mLineSpace) / (mFontHeight + mLineSpace);
                 calculateNeedDrawLine(maxLine);
                 break;
         }
@@ -888,18 +889,14 @@ public class QMUIQQFaceView extends View {
             } else {
                 mCurrentDrawBaseLine += mFontHeight + addOn;
             }
-            if (mCurrentDrawBaseLine > getHeight() - getPaddingBottom()) {
+            if (mEllipsize != TextUtils.TruncateAt.END && mCurrentDrawBaseLine > getHeight() - getPaddingBottom()) {
                 QMUILog.d(TAG, "draw outside the visible height, the ellipsize is inaccurate: " +
-                        "mEllipsize = " + mEllipsize.name() +
-                        "mCurrentDrawLine = " + mCurrentDrawLine + "" +
-                        "mNeedDrawLine = " + mNeedDrawLine +
-                        "viewWidth = " + getWidth() +
-                        "viewHeight = " + getHeight() +
-                        "paddingLeft = " + getPaddingLeft() +
-                        "paddingRight = " + getPaddingRight() +
-                        "paddingTop = " + getPaddingTop() +
-                        "paddingBottom = " + getPaddingBottom() +
-                        "text = " + mOriginText);
+                                "mEllipsize = %s; mCurrentDrawLine = %d; mNeedDrawLine = %d;" +
+                                "viewWidth = %d; viewHeight = %d; paddingLeft = %d; " +
+                                "paddingRight = %d; paddingTop = %d; paddingBottom = %d; text = %s",
+                        mEllipsize.name(), mCurrentDrawLine, mNeedDrawLine,
+                        getWidth(), getHeight(), getPaddingLeft(), getPaddingRight(),
+                        getPaddingTop(), getPaddingBottom(), mOriginText);
             }
         } else {
             mCurrentDrawBaseLine += mFontHeight + addOn;
@@ -1003,14 +1000,9 @@ public class QMUIQQFaceView extends View {
                                 drawText(canvas, text, offset, i, targetDrawWidth - mCurrentDrawUsedWidth);
                                 mCurrentDrawUsedWidth = targetDrawWidth;
                                 drawText(canvas, mEllipsizeText, 0, mEllipsizeText.length(), mEllipsizeTextLength);
-                                mCurrentDrawUsedWidth += mEllipsizeTextLength;
-                                mMiddleEllipsizeWidthRecord = mCurrentDrawUsedWidth;
+                                mMiddleEllipsizeWidthRecord = mCurrentDrawUsedWidth + mEllipsizeTextLength;
                                 mIsExecutedMiddleEllipsize = true;
-                                int newStart = i + 1;
-                                if (targetDrawWidth >= needStop) {
-                                    newStart = i;
-                                }
-                                handleTextAfterMiddleEllipsize(canvas, text, fontWidths, newStart,
+                                handleTextAfterMiddleEllipsize(canvas, text, fontWidths, i,
                                         ellipsizeLine, widthStart, widthEnd);
                                 return;
                             }
@@ -1162,21 +1154,14 @@ public class QMUIQQFaceView extends View {
                     int needStop = getWidth() / 2 - mEllipsizeTextLength / 2;
                     if (mIsExecutedMiddleEllipsize) {
                         handleQQFaceAfterMiddleEllipsize(canvas, res, specialDrawable, widthStart, widthEnd, ellipsizeLine, isFirst, isLast);
-                    } else if (size + mCurrentDrawUsedWidth < needStop) {
+                    } else if (size + mCurrentDrawUsedWidth <= needStop) {
                         drawQQFace(canvas, res, specialDrawable, mCurrentDrawLine, isFirst, isLast);
                         mCurrentDrawUsedWidth += size;
-                    } else if (size + mCurrentDrawUsedWidth == needStop) {
-                        drawQQFace(canvas, res, specialDrawable, mCurrentDrawLine, isFirst, isLast);
-                        mCurrentDrawUsedWidth += size;
-                        drawText(canvas, mEllipsizeText, 0, mEllipsizeText.length(), mEllipsizeTextLength);
-                        mCurrentDrawUsedWidth += mEllipsizeTextLength;
-                        mMiddleEllipsizeWidthRecord = mCurrentDrawUsedWidth;
-                        mIsExecutedMiddleEllipsize = true;
                     } else {
                         drawText(canvas, mEllipsizeText, 0, mEllipsizeText.length(), mEllipsizeTextLength);
-                        mCurrentDrawUsedWidth += mEllipsizeTextLength;
-                        mMiddleEllipsizeWidthRecord = mCurrentDrawUsedWidth;
+                        mMiddleEllipsizeWidthRecord = mCurrentDrawUsedWidth + mEllipsizeTextLength;
                         mIsExecutedMiddleEllipsize = true;
+                        handleQQFaceAfterMiddleEllipsize(canvas, res, specialDrawable, widthStart, widthEnd, ellipsizeLine, isFirst, isLast);
                     }
                 } else {
                     handleQQFaceAfterMiddleEllipsize(canvas, res, specialDrawable, widthStart, widthEnd, ellipsizeLine, isFirst, isLast);

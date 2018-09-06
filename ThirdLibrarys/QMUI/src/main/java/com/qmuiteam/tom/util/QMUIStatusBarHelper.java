@@ -26,17 +26,9 @@ public class QMUIStatusBarHelper {
     private final static int STATUSBAR_TYPE_DEFAULT = 0;
     private final static int STATUSBAR_TYPE_MIUI = 1;
     private final static int STATUSBAR_TYPE_FLYME = 2;
-    /**
-     * Android 6.0
-     */
-    private final static int STATUSBAR_TYPE_ANDROID6 = 3;
-    /**
-     * 大部分状态栏都是25dp
-     */
-    private final static int STATUS_BAR_DEFAULT_HEIGHT_DP = 25;
-    /**
-     * 在某些机子上存在不同的density值，所以增加两个虚拟值
-     */
+    private final static int STATUSBAR_TYPE_ANDROID6 = 3; // Android 6.0
+    private final static int STATUS_BAR_DEFAULT_HEIGHT_DP = 25; // 大部分状态栏都是25dp
+    // 在某些机子上存在不同的density值，所以增加两个虚拟值
     public static float sVirtualDensity = -1;
     public static float sVirtualDensityDpi = -1;
     private static int sStatusbarHeight = -1;
@@ -50,6 +42,23 @@ public class QMUIStatusBarHelper {
 
     public static void translucent(Window window) {
         translucent(window, 0x40000000);
+    }
+
+    private static boolean supportTranslucent() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                // Essential Phone 在 Android 8 之前沉浸式做得不全，系统不从状态栏顶部开始布局却会下发 WindowInsets
+                && !(QMUIDeviceHelper.isEssentialPhone() && Build.VERSION.SDK_INT < 26);
+    }
+
+    /**
+     * 沉浸式状态栏。
+     * 支持 4.4 以上版本的 MIUI 和 Flyme，以及 5.0 以上版本的其他 Android。
+     *
+     * @param activity 需要被设置沉浸式状态栏的 Activity。
+     */
+    public static void translucent(Activity activity, @ColorInt int colorOn5x) {
+        Window window = activity.getWindow();
+        translucent(window, colorOn5x);
     }
 
     @TargetApi(19)
@@ -101,12 +110,6 @@ public class QMUIStatusBarHelper {
         }
     }
 
-    private static boolean supportTranslucent() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                // Essential Phone 在 Android 8 之前沉浸式做得不全，系统不从状态栏顶部开始布局却会下发 WindowInsets
-                && !(QMUIDeviceHelper.isEssentialPhone() && Build.VERSION.SDK_INT < Build.VERSION_CODES.O);
-    }
-
     @TargetApi(28)
     private static void handleDisplayCutoutMode(final Window window) {
         View decorView = window.getDecorView();
@@ -130,13 +133,6 @@ public class QMUIStatusBarHelper {
         }
     }
 
-    /**
-     * 检测 Android 6.0 是否可以启用 window.setStatusBarColor(Color.TRANSPARENT)。
-     */
-    public static boolean supportTransclentStatusBar6() {
-        return !(QMUIDeviceHelper.isZUKZ1() || QMUIDeviceHelper.isZTKC2016());
-    }
-
     @TargetApi(28)
     private static void realHandleDisplayCutoutMode(Window window, View decorView) {
         if (decorView.getRootWindowInsets() != null &&
@@ -146,16 +142,6 @@ public class QMUIStatusBarHelper {
                     .LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             window.setAttributes(params);
         }
-    }
-
-    /**
-     * 沉浸式状态栏。
-     * 支持 4.4 以上版本的 MIUI 和 Flyme，以及 5.0 以上版本的其他 Android。
-     *
-     * @param activity 需要被设置沉浸式状态栏的 Activity。
-     */
-    public static void translucent(Activity activity, @ColorInt int colorOn5x) {
-        translucent(activity.getWindow(), colorOn5x);
     }
 
     /**
@@ -208,6 +194,7 @@ public class QMUIStatusBarHelper {
         return false;
     }
 
+
     /**
      * 设置状态栏白色字体图标
      * 支持 4.4 以上版本 MIUI 和 Flyme，以及 6.0 以上版本的其他 Android
@@ -247,6 +234,7 @@ public class QMUIStatusBarHelper {
         }
         return out;
     }
+
 
     /**
      * 设置状态栏字体图标为深色，Android 6
@@ -402,6 +390,13 @@ public class QMUIStatusBarHelper {
     }
 
     /**
+     * 检测 Android 6.0 是否可以启用 window.setStatusBarColor(Color.TRANSPARENT)。
+     */
+    public static boolean supportTransclentStatusBar6() {
+        return !(QMUIDeviceHelper.isZUKZ1() || QMUIDeviceHelper.isZTKC2016());
+    }
+
+    /**
      * 获取状态栏的高度。
      */
     public static int getStatusbarHeight(Context context) {
@@ -466,4 +461,5 @@ public class QMUIStatusBarHelper {
     @Retention(RetentionPolicy.SOURCE)
     private @interface StatusBarType {
     }
+
 }

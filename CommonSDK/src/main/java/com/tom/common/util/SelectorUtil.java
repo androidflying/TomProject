@@ -1,11 +1,14 @@
 package com.tom.common.util;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.easy.photo.EasyPhotos;
+import com.easy.photo.builder.AlbumBuilder;
 import com.easy.photo.models.album.entity.Photo;
 import com.tom.common.GlideEngine;
+
 import java.util.ArrayList;
 
 /**
@@ -31,37 +34,62 @@ public class SelectorUtil {
                 .start(requestCode);
     }
 
-    public static void selectMultiplePhoto(Activity activity, int maxCount, ArrayList<Photo> selectedPhotoList, int requestCode) {
-        EasyPhotos.createAlbum(activity, true, GlideEngine.getInstance())
+    public static void selectMultiplePhoto(Activity activity, int maxCount, @Nullable ArrayList<Photo> selectedPhotoList, int requestCode) {
+        AlbumBuilder builder = EasyPhotos.createAlbum(activity, true, GlideEngine.getInstance())
                 .setFileProviderAuthority("com.tom.common.fileprovider")
-                .setCount(maxCount)
-                .setSelectedPhotos(selectedPhotoList)
-                .start(requestCode);
+                .setCount(maxCount);
+        if (selectedPhotoList == null || selectedPhotoList.size() == 0) {
+
+        } else {
+            builder.setSelectedPhotos(selectedPhotoList);
+        }
+
+        builder.start(requestCode);
     }
 
     public static void selectMultiplePhoto(Fragment fragment, int maxCount, ArrayList<Photo> selectedPhotoList, int requestCode) {
-        EasyPhotos.createAlbum(fragment, true, GlideEngine.getInstance())
+
+        AlbumBuilder builder = EasyPhotos.createAlbum(fragment, true, GlideEngine.getInstance())
                 .setFileProviderAuthority("com.tom.common.fileprovider")
-                .setCount(maxCount)
-                .setSelectedPhotos(selectedPhotoList)
-                .start(requestCode);
+                .setCount(maxCount);
+        if (selectedPhotoList == null || selectedPhotoList.size() == 0) {
+
+        } else {
+            builder.setSelectedPhotos(selectedPhotoList);
+        }
+
+        builder.start(requestCode);
     }
 
 
     public static void selectMultipleString(Activity activity, int maxCount, ArrayList<String> selectedPhotoPathList, int requestCode) {
-        EasyPhotos.createAlbum(activity, true, GlideEngine.getInstance())
+        AlbumBuilder builder = EasyPhotos.createAlbum(activity, true, GlideEngine.getInstance())
                 .setFileProviderAuthority("com.tom.common.fileprovider")
-                .setCount(maxCount)
-                .setSelectedPhotoPaths(selectedPhotoPathList)
-                .start(requestCode);
+                .setCount(maxCount);
+
+
+        if (selectedPhotoPathList == null || selectedPhotoPathList.size() == 0) {
+
+        } else {
+            builder.setSelectedPhotoPaths(selectedPhotoPathList);
+        }
+
+        builder.start(requestCode);
     }
 
     public static void selectMultipleString(Fragment fragment, int maxCount, ArrayList<String> selectedPhotoPathList, int requestCode) {
-        EasyPhotos.createAlbum(fragment, true, GlideEngine.getInstance())
+        AlbumBuilder builder = EasyPhotos.createAlbum(fragment, true, GlideEngine.getInstance())
                 .setFileProviderAuthority("com.tom.common.fileprovider")
-                .setCount(maxCount)
-                .setSelectedPhotoPaths(selectedPhotoPathList)
-                .start(requestCode);
+                .setCount(maxCount);
+
+
+        if (selectedPhotoPathList == null || selectedPhotoPathList.size() == 0) {
+
+        } else {
+            builder.setSelectedPhotoPaths(selectedPhotoPathList);
+        }
+
+        builder.start(requestCode);
     }
 
 

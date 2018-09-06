@@ -51,7 +51,7 @@ public class MainActivity extends CommonActivity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SelectorUtil.selectSingle(MainActivity.this, 101);
+                SelectorUtil.selectMultiplePhoto(MainActivity.this, 9, null, 101);
             }
         });
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {

@@ -47,8 +47,6 @@ public abstract class CommonActivity extends BaseActivity {
                 EventBus.getDefault().register(this);
             }
         }
-        //统计应用启动数据
-        PushAgent.getInstance(this).onAppStart();
 
     }
 
@@ -60,20 +58,6 @@ public abstract class CommonActivity extends BaseActivity {
             EventBus.getDefault().unregister(this);
         }
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        //Session启动、App使用时长等基础数据统计
-        MobclickAgent.onPause(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //Session启动、App使用时长等基础数据统计
-        MobclickAgent.onResume(this);
     }
 
 

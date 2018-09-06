@@ -17,6 +17,7 @@ import com.android.tomflying.event.LoginEvent;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.tom.baselib.utils.ActivityUtils;
+import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.SPUtils;
 import com.tom.baselib.utils.TimeUtils;
 import com.tom.baselib.utils.ToastUtils;
@@ -63,53 +64,9 @@ public class SplashActivity extends MyActivity {
         }
     }
 
-    private void login(String name, String password) {
-        HttpParams params = new HttpParams();
-        params.put("username", name);
-        params.put("password", password);
-        OkHttpUtil.postRequest(ApiConstant.User.LOGIN_URL, this, params, new JsonCallback<LzyResponse<LoginBean>>() {
-
-            @Override
-            public void onStart(Request<LzyResponse<LoginBean>, ? extends Request> request) {
-                currentTime = TimeUtils.getNowMills();
-            }
-
-            @Override
-            public void onSuccess(Response<LzyResponse<LoginBean>> response) {
-                SPUtils.getInstance().put(ConstantValues.NIKE_NAME, response.body().data.getUsername());
-                SPUtils.getInstance().put(ConstantValues.PASSWORD, response.body().data.getPassword());
-                GlobalParams.setIsLogin(true);
-                EventBus.getDefault().post(new LoginEvent());
-            }
-
-            @Override
-            public void onError(Response<LzyResponse<LoginBean>> response) {
-                ToastUtils.showShort(response.body().errorMsg);
-            }
-
-            @Override
-            public void onFinish() {
-                long time = TimeUtils.getNowMills() - currentTime;
-                if (time < 1500) {
-                    delayStart();
-                } else {
-                    ActivityUtils.finishActivity(SplashActivity.this);
-                    ActivityUtils.startActivity(MainActivity.class);
-                }
-            }
-        });
-
-    }
-
     @Override
     public void onWidgetClick(View view) {
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        OkGo.getInstance().cancelTag(this);
     }
 
     private void delayStart() {
@@ -122,8 +79,56 @@ public class SplashActivity extends MyActivity {
         }, 2000);
     }
 
+    private void login(String name, String password) {
+        HttpParams params = new HttpParams();
+        params.put("username", name);
+        params.put("password", password);
+        OkHttpUtil.postRequest(ApiConstant.User.LOGIN_URL, this, params, new JsonCallback<LzyResponse<LoginBean>>() {
+
+            @Override
+            public void onStart(Request<LzyResponse<LoginBean>, ? extends Request> request) {
+                currentTime = TimeUtils.getNowMills();
+            }
+
+            @Override
+            public void onError(Response<LzyResponse<LoginBean>> response) {
+                if (response.code() > 0) {
+                    ToastUtils.showShort(response.body().errorMsg);
+                }
+
+
+            }
+
+            @Override
+            public void onFinish() {
+                long time = TimeUtils.getNowMills() - currentTime;
+                if (time < 1500) {
+                    delayStart();
+                } else {
+                    ActivityUtils.finishActivity(SplashActivity.this);
+                    ActivityUtils.startActivity(MainActivity.class);
+                }
+            }
+
+            @Override
+            public void onSuccess(Response<LzyResponse<LoginBean>> response) {
+                SPUtils.getInstance().put(ConstantValues.NIKE_NAME, response.body().data.getUsername());
+                SPUtils.getInstance().put(ConstantValues.PASSWORD, response.body().data.getPassword());
+                GlobalParams.setIsLogin(true);
+                EventBus.getDefault().post(new LoginEvent());
+            }
+        });
+
+    }
+
     @Override
     public boolean isTransparent() {
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkGo.getInstance().cancelTag(this);
     }
 }

@@ -1,13 +1,20 @@
 package com.tom.common.util;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.easy.photo.EasyPhotos;
 import com.tom.baselib.utils.Utils;
+import com.tom.common.GlideEngine;
 import com.tom.common.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 作者：tom_flying
@@ -28,7 +35,7 @@ public class DisplayUtil {
 
         RequestOptions requestOptions = new RequestOptions()
                 .centerCrop()
-//                .error()
+                .error(R.drawable.error_pic)
                 .priority(Priority.HIGH)
                 .placeholder(R.drawable.default_pic);
         Glide.with(Utils.getApp())
@@ -47,7 +54,7 @@ public class DisplayUtil {
     public static void showSimpleNormal(ImageView iv, String url) {
         RequestOptions requestOptions = new RequestOptions()
                 .centerCrop()
-//                .error()
+                .error(R.drawable.error_pic)
                 .priority(Priority.NORMAL)
                 .placeholder(R.drawable.default_pic);
         Glide.with(Utils.getApp())
@@ -67,7 +74,7 @@ public class DisplayUtil {
                 .centerCrop()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .error()
+                .error(R.drawable.error_pic)
                 .priority(Priority.IMMEDIATE)
                 .placeholder(R.drawable.default_pic);
 
@@ -77,5 +84,51 @@ public class DisplayUtil {
                 .into(iv);
     }
 
+
+    /**
+     * 打开预览图集
+     *
+     * @param activity
+     * @param images
+     */
+    public static void showPreview(Activity activity, ArrayList<String> images) {
+        EasyPhotos.createPreview(activity, GlideEngine.getInstance()).setSelectedPhotoPaths(images)
+                .start(0);
+    }
+
+    /**
+     * 打开预览图集
+     *
+     * @param fragment
+     * @param images
+     */
+    public static void showPreview(Fragment fragment, ArrayList<String> images) {
+        EasyPhotos.createPreview(fragment, GlideEngine.getInstance()).setSelectedPhotoPaths(images)
+                .start(0);
+    }
+
+    /**
+     * 打开预览图集
+     *
+     * @param activity
+     * @param images
+     * @param currentIndex
+     */
+    public static void showPreview(Activity activity, ArrayList<String> images, int currentIndex) {
+        EasyPhotos.createPreview(activity, GlideEngine.getInstance()).setSelectedPhotoPaths(images)
+                .start(currentIndex);
+    }
+
+    /**
+     * 打开预览图集
+     *
+     * @param fragment
+     * @param images
+     * @param currentIndex
+     */
+    public static void showPreview(Fragment fragment, ArrayList<String> images, int currentIndex) {
+        EasyPhotos.createPreview(fragment, GlideEngine.getInstance()).setSelectedPhotoPaths(images)
+                .start(currentIndex);
+    }
 
 }

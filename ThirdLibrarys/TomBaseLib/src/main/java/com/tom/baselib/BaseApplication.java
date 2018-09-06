@@ -1,7 +1,9 @@
 package com.tom.baselib;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
@@ -43,9 +45,8 @@ public abstract class BaseApplication extends MultiDexApplication {
             initNetWork();
             initLog();
             initCrash();
-            modulesApplicationInit();
-
         }
+        modulesApplicationInit();
 
     }
 

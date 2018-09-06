@@ -1,12 +1,17 @@
 package com.tom.common;
 
+import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tom.baselib.ApplicationImpl;
+import com.tom.baselib.utils.ProcessUtils;
 import com.tom.baselib.utils.Utils;
 import com.tom.common.util.PushUtil;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.umeng.message.PushAgent;
 import com.umeng.socialize.PlatformConfig;
 
 /**
@@ -14,18 +19,61 @@ import com.umeng.socialize.PlatformConfig;
  * 邮箱：tom_flying@163.com
  * 博客: www.tianfeifei.com
  * 创建日期: 2018/6/25
- * 描述：
+ * 描述：模块中实现初始化的方法
  */
 public class AppImpl implements ApplicationImpl {
 
     @Override
     public void onCreate(@NonNull Application application) {
 
-        //TODO 修改各个平台的配置信息
-        PlatformConfig.setWeixin("wxdc1e388c3822c80b", "3baf1193c85774b3fd9d18447d76cab0");
-        PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad", "http://sns.whalecloud.com");
-        PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");
+        if (ProcessUtils.isMainProcess(application)) {
 
+            application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                @Override
+                public void onActivityCreated(Activity activity, Bundle bundle) {
+                    //统计应用启动数据
+                    PushAgent.getInstance(activity).onAppStart();
+                }
+
+                @Override
+                public void onActivityStarted(Activity activity) {
+
+                }
+
+                @Override
+                public void onActivityResumed(Activity activity) {
+                    //Session启动、App使用时长等基础数据统计
+                    MobclickAgent.onResume(activity);
+                }
+
+                @Override
+                public void onActivityPaused(Activity activity) {
+                    //Session启动、App使用时长等基础数据统计
+                    MobclickAgent.onPause(activity);
+                }
+
+                @Override
+                public void onActivityStopped(Activity activity) {
+
+                }
+
+                @Override
+                public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+
+                }
+            });
+
+            //TODO 修改各个平台的配置信息
+            PlatformConfig.setWeixin("wxdc1e388c3822c80b", "3baf1193c85774b3fd9d18447d76cab0");
+            PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad", "http://sns.whalecloud.com");
+            PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");
+
+        }
         //友盟组件初始化
         initUmeng();
     }

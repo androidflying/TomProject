@@ -29,6 +29,8 @@ public class PushUtil {
 
             }
         });
+
+        PushAgent.getInstance(Utils.getApp()).setPushCheck(true);
     }
 
 

@@ -2,9 +2,9 @@ package com.qmuiteam.tom.util;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowInsetsCompat;
@@ -110,7 +110,7 @@ public class QMUIWindowInsetHelper {
         return consumed;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
+    @TargetApi(21)
     public boolean defaultApplySystemWindowInsets21(ViewGroup viewGroup, Object insets) {
         if (QMUINotchHelper.isNotchOfficialSupport()) {
             return defaultApplySystemWindowInsets(viewGroup, (WindowInsets) insets);
@@ -140,10 +140,18 @@ public class QMUIWindowInsetHelper {
                 continue;
             }
 
+            int insetLeft = insets.getSystemWindowInsetLeft();
+            int insetRight = insets.getSystemWindowInsetRight();
+            if (QMUINotchHelper.needFixLandscapeNotchAreaFitSystemWindow(viewGroup) &&
+                    viewGroup.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                insetLeft = Math.max(insetLeft, QMUINotchHelper.getSafeInsetLeft(viewGroup));
+                insetRight = Math.max(insetRight, QMUINotchHelper.getSafeInsetRight(viewGroup));
+            }
+
             Rect childInsets = new Rect(
-                    insets.getSystemWindowInsetLeft(),
+                    insetLeft,
                     insets.getSystemWindowInsetTop(),
-                    insets.getSystemWindowInsetRight(),
+                    insetRight,
                     showKeyboard ? 0 : insets.getSystemWindowInsetBottom());
 
             computeInsetsWithGravity(child, childInsets);
@@ -162,10 +170,8 @@ public class QMUIWindowInsetHelper {
                 // avoid dispatching multiple times
                 dispatchNotchInsetChange(viewGroup);
             }
-            DisplayCutout displayCutout = insets.getDisplayCutout();
-            if (displayCutout != null) {
-                insets = insets.consumeDisplayCutout();
-            }
+            // always consume display cutout!!
+            insets = insets.consumeDisplayCutout();
         }
 
         boolean consumed = false;
