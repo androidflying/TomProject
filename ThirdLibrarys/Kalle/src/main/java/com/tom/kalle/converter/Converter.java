@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
  * 邮箱：tom_flying@163.com
  * 博客: www.tianfeifei.com
  * 创建日期: 2018/9/6
- * 描述：
+ * 描述：转换器
  */
 public interface Converter {
 
@@ -22,7 +22,9 @@ public interface Converter {
         public <S, F> SimpleResponse<S, F> convert(Type succeed, Type failed, Response response, boolean fromCache) throws Exception {
             S succeedData = null;
 
-            if (succeed == String.class) succeedData = (S) response.body().string();
+            if (succeed == String.class) {
+                succeedData = (S) response.body().string();
+            }
 
             return SimpleResponse.<S, F>newBuilder()
                     .code(response.code())
