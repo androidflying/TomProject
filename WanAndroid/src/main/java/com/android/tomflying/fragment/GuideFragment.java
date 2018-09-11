@@ -16,6 +16,7 @@ import com.android.tomflying.bean.LzyResponse;
 import com.android.tomflying.ui.SearchActivity;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
+import com.qmuiteam.tom.widget.QMUIEmptyView;
 import com.tom.baselib.utils.ActivityUtils;
 import com.tom.brvah.entity.MultiItemEntity;
 import com.tom.network.OkGo;
@@ -37,6 +38,7 @@ public class GuideFragment extends MyFragment {
     ArrayList<MultiItemEntity> datas = new ArrayList<>();
     private RecyclerView recyclerView;
     private GuideAdapter adapter;
+    private QMUIEmptyView emptyView;
 
     @Override
     protected void onFirstUserVisible() {
@@ -70,6 +72,22 @@ public class GuideFragment extends MyFragment {
             public void onSuccess(Response<LzyResponse<List<GuideBean>>> response) {
                 setDatas(response.body().data);
                 adapter.setNewData(datas);
+            }
+
+            @Override
+            public void onError(Response<LzyResponse<List<GuideBean>>> response) {
+                emptyView.setTitleText("网络错误");
+                if (response != null) {
+                    emptyView.setDetailText(response.message());
+                }
+                emptyView.setButton("重试", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getGuide();
+                    }
+                });
+                adapter.notifyDataSetChanged();
+                adapter.setEmptyView(emptyView);
             }
 
             @Override
@@ -110,7 +128,7 @@ public class GuideFragment extends MyFragment {
     @Override
     public void initView(Bundle savedInstanceState, View contentView) {
         recyclerView = contentView.findViewById(R.id.rv_guide);
-
+        emptyView = new QMUIEmptyView(mActivity);
 
         initAdapter();
         addHeader();

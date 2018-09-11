@@ -12,6 +12,7 @@ import com.android.tomflying.bean.LzyResponse;
 import com.android.tomflying.bean.ProjectCateBean;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
+import com.qmuiteam.tom.widget.QMUIEmptyView;
 import com.qmuiteam.tom.widget.QMUITabSegment;
 import com.qmuiteam.tom.widget.QMUIViewPager;
 import com.tom.network.OkGo;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ProjectFragment extends MyFragment {
     private QMUITabSegment tabSegment;
     private QMUIViewPager viewPager;
+    private QMUIEmptyView emptyView;
 
     @Override
     public boolean isNeedRegister() {
@@ -50,6 +52,7 @@ public class ProjectFragment extends MyFragment {
     public void initView(Bundle savedInstanceState, View contentView) {
         tabSegment = contentView.findViewById(R.id.tabSegment);
         viewPager = contentView.findViewById(R.id.viewPager);
+        emptyView = contentView.findViewById(R.id.mEmptyView);
     }
 
     @Override
@@ -73,7 +76,27 @@ public class ProjectFragment extends MyFragment {
         OkHttpUtil.getRequets(ApiConstant.Project.TREE_URL, this, null, new JsonCallback<LzyResponse<List<ProjectCateBean>>>() {
             @Override
             public void onSuccess(Response<LzyResponse<List<ProjectCateBean>>> response) {
+                tabSegment.setVisibility(View.VISIBLE);
+                viewPager.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
                 setTab(response.body().data);
+            }
+
+            @Override
+            public void onError(Response<LzyResponse<List<ProjectCateBean>>> response) {
+                tabSegment.setVisibility(View.GONE);
+                viewPager.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+                emptyView.setTitleText("网络错误");
+                if (response != null) {
+                    emptyView.setDetailText(response.message());
+                }
+                emptyView.setButton("重试", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getCate();
+                    }
+                });
             }
         });
     }

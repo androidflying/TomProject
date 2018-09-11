@@ -67,7 +67,6 @@ public class MeiziActivity extends MyActivity {
                 ActivityUtils.finishActivity(MeiziActivity.class, true);
             }
         });
-        emptyView.setLoadingShowing(true);
 
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.app_color_blue));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -109,17 +108,26 @@ public class MeiziActivity extends MyActivity {
 
             @Override
             public void onStart(Request<String, ? extends Request> request) {
-                super.onStart(request);
+                emptyView.setLoadingShowing(true);
             }
 
             @Override
             public void onError(Response<String> response) {
-                super.onError(response);
+                emptyView.setTitleText("网络错误");
+                emptyView.setDetailText(response.message());
+                emptyView.setButton("重试", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        doBusiness();
+                    }
+                });
+                meiziAdapter.setEmptyView(emptyView);
             }
 
             @Override
             public void onFinish() {
                 super.onFinish();
+                emptyView.setLoadingShowing(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
 

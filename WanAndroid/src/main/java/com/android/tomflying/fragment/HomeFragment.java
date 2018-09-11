@@ -106,18 +106,19 @@ public class HomeFragment extends MyFragment {
                 banners.clear();
                 banners.addAll(response.body().data);
                 for (int i = 0; i < banners.size(); i++) {
-
                     if (banners.get(i).getIsVisible() == 1) {
                         images.add(banners.get(i).getImagePath());
                         titles.add(banners.get(i).getTitle());
                         targets.add(banners.get(i).getUrl());
                     }
                 }
-
                 banner.setImages(images);
                 banner.setBannerTitles(titles);
                 banner.start();
+
+
             }
+
         });
 
     }
@@ -141,7 +142,7 @@ public class HomeFragment extends MyFragment {
             public void onError(Response<LzyResponse<ArticlesBean>> response) {
                 emptyView.setTitleText("网络错误");
                 if (response != null) {
-                    emptyView.setDetailText(response.body().errorMsg);
+                    emptyView.setDetailText(response.message());
                 }
                 emptyView.setButton("重试", new View.OnClickListener() {
                     @Override
@@ -149,6 +150,7 @@ public class HomeFragment extends MyFragment {
                         getArticles(true);
                     }
                 });
+                articleAdapter.notifyDataSetChanged();
                 articleAdapter.setEmptyView(emptyView);
             }
 

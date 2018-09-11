@@ -3,6 +3,7 @@ package com.android.tomflying.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,10 @@ public class MeiwenActivity extends MyActivity {
     private ImageView iv_meitu;
     private TextView tv_author;
     private AlignTextView tv_content;
+
+    String title;
+    String author;
+    SpannableStringBuilder content;
 
     @Override
     public boolean isNeedRegister() {
@@ -94,21 +99,25 @@ public class MeiwenActivity extends MyActivity {
 
             @Override
             public void onError(Response<String> response) {
-                super.onError(response);
+                title = "网络错误";
+                author = response.message();
+                content = new SpanUtils().appendLine("网络错误").create();
             }
 
             @Override
             public void onFinish() {
                 missLoadingDialog();
+                mCollapsingTopBarLayout.setTitle(title);
+                tv_author.setText(author);
+                tv_content.setText(content);
             }
 
             @Override
             public void onSuccess(Response<String> response) {
                 MeiwenBean bean = new Gson().fromJson(response.body(), MeiwenBean.class);
-                mCollapsingTopBarLayout.setTitle(bean.getData().getTitle());
-                tv_author.setText("作者：" + bean.getData().getAuthor() + "\n\n包含字数：" + bean.getData().getWc() + "字");
-
-                tv_content.setText(new SpanUtils().appendLine(Html.fromHtml(bean.getData().getContent())).setLeadingMargin((int) tv_content.getTextSize() * 2, 10).create());
+                title = bean.getData().getTitle();
+                author = "作者：" + bean.getData().getAuthor() + "\n\n包含字数：" + bean.getData().getWc() + "字";
+                content = new SpanUtils().appendLine(Html.fromHtml(bean.getData().getContent())).setLeadingMargin((int) tv_content.getTextSize() * 2, 10).create();
             }
         });
     }

@@ -204,7 +204,7 @@ public class ArticleCollectedActivity extends MyActivity {
             @Override
             public void onError(Response<LzyResponse<CollectArticleBean>> response) {
                 emptyView.setTitleText("网络错误");
-                emptyView.setDetailText(response.body().errorMsg);
+                emptyView.setDetailText(response.message());
                 emptyView.setButton("重试", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

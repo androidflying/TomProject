@@ -28,6 +28,9 @@ import com.tencent.bugly.beta.Beta;
 import com.tom.baselib.delay.SingleCall;
 import com.tom.baselib.utils.ActivityUtils;
 import com.tom.baselib.utils.AppUtils;
+import com.tom.baselib.utils.CacheDiskUtils;
+import com.tom.baselib.utils.CacheDoubleUtils;
+import com.tom.baselib.utils.CacheMemoryUtils;
 import com.tom.baselib.utils.ImageUtils;
 import com.tom.baselib.utils.SPUtils;
 import com.tom.baselib.utils.ToastUtils;
@@ -150,7 +153,7 @@ public class UserFragment extends MyFragment {
         QMUICommonListItemView update = mGroupListView.createItemView("检查更新");
         update.setDetailText(AppUtils.getAppVersionName());
         QMUICommonListItemView clean = mGroupListView.createItemView("清除缓存");
-        clean.setDetailText(AppUtils.getAppVersionName());
+        clean.setDetailText(CacheDiskUtils.getInstance().getCacheSize() + " M");
 
         QMUICommonListItemView about = mGroupListView.createItemView("关于我们");
         about.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
