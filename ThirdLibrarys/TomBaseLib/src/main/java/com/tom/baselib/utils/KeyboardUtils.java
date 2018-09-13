@@ -61,12 +61,10 @@ public class KeyboardUtils {
     public static void showSoftInput(final View view) {
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm == null) {
-            return;
-        }
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.requestFocus();
+        //noinspection ConstantConditions
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
@@ -108,9 +106,7 @@ public class KeyboardUtils {
     public static void hideSoftInput(final View view) {
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm == null) {
-            return;
-        }
+        //noinspection ConstantConditions
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
@@ -132,9 +128,7 @@ public class KeyboardUtils {
     public static void toggleSoftInput() {
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm == null) {
-            return;
-        }
+        //noinspection ConstantConditions
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
@@ -148,20 +142,23 @@ public class KeyboardUtils {
         return getDecorViewInvisibleHeight(activity) > 0;
     }
 
-    private static int sDelta = 0;
+    private static int sDecorViewDelta = 0;
 
     private static int getDecorViewInvisibleHeight(final Activity activity) {
         final View decorView = activity.getWindow().getDecorView();
+        if (decorView == null) {
+            return sDecorViewInvisibleHeightPre;
+        }
         final Rect outRect = new Rect();
         decorView.getWindowVisibleDisplayFrame(outRect);
-        LogUtils.d("KeyboardUtils", "getDecorViewInvisibleHeight: "
+        Log.d("KeyboardUtils", "getDecorViewInvisibleHeight: "
                 + (decorView.getBottom() - outRect.bottom));
         int delta = Math.abs(decorView.getBottom() - outRect.bottom);
         if (delta <= getNavBarHeight()) {
-            sDelta = delta;
+            sDecorViewDelta = delta;
             return 0;
         }
-        return delta - sDelta;
+        return delta - sDecorViewDelta;
     }
 
     /**
@@ -228,7 +225,7 @@ public class KeyboardUtils {
                                     contentViewChild.getPaddingLeft(),
                                     contentViewChild.getPaddingTop(),
                                     contentViewChild.getPaddingRight(),
-                                    paddingBottom + height
+                                    paddingBottom + getDecorViewInvisibleHeight(activity)
                             );
                             sContentViewInvisibleHeightPre5497 = height;
                         }
@@ -237,13 +234,16 @@ public class KeyboardUtils {
     }
 
     private static int getContentViewInvisibleHeight(final Activity activity) {
-        final FrameLayout contentView = activity.findViewById(android.R.id.content);
+        final View contentView = activity.findViewById(android.R.id.content);
+        if (contentView == null) {
+            return sContentViewInvisibleHeightPre5497;
+        }
         final Rect outRect = new Rect();
         contentView.getWindowVisibleDisplayFrame(outRect);
-        LogUtils.d("KeyboardUtils", "getContentViewInvisibleHeight: "
+        Log.d("KeyboardUtils", "getContentViewInvisibleHeight: "
                 + (contentView.getBottom() - outRect.bottom));
         int delta = Math.abs(contentView.getBottom() - outRect.bottom);
-        if (delta <= getStatusBarHeight()) {
+        if (delta <= getStatusBarHeight() + getNavBarHeight()) {
             return 0;
         }
         return delta;
@@ -261,12 +261,10 @@ public class KeyboardUtils {
         }
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm == null) {
-            return;
-        }
         String[] strArr = new String[]{"mCurRootView", "mServedView", "mNextServedView", "mLastSrvView"};
         for (int i = 0; i < 4; i++) {
             try {
+                //noinspection ConstantConditions
                 Field declaredField = imm.getClass().getDeclaredField(strArr[i]);
                 if (declaredField == null) {
                     continue;

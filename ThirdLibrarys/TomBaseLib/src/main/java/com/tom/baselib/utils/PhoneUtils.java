@@ -37,7 +37,8 @@ public class PhoneUtils {
     public static boolean isPhone() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null && tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
+        //noinspection ConstantConditions
+        return tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
     }
 
     /**
@@ -53,9 +54,7 @@ public class PhoneUtils {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (tm == null) {
-                return "";
-            }
+            //noinspection ConstantConditions
             String imei = tm.getImei();
             if (!TextUtils.isEmpty(imei)) {
                 return imei;
@@ -64,7 +63,8 @@ public class PhoneUtils {
             return TextUtils.isEmpty(meid) ? "" : meid;
 
         }
-        return tm != null ? tm.getDeviceId() : "";
+        //noinspection ConstantConditions
+        return tm.getDeviceId();
     }
 
     /**
@@ -91,9 +91,11 @@ public class PhoneUtils {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return tm != null ? tm.getImei() : "";
+            //noinspection ConstantConditions
+            return tm.getImei();
         }
-        return tm != null ? tm.getDeviceId() : "";
+        //noinspection ConstantConditions
+        return tm.getDeviceId();
     }
 
     /**
@@ -109,10 +111,11 @@ public class PhoneUtils {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return tm != null ? tm.getMeid() : "";
-        } else {
-            return tm != null ? tm.getDeviceId() : "";
+            //noinspection ConstantConditions
+            return tm.getMeid();
         }
+        //noinspection ConstantConditions
+        return tm.getDeviceId();
     }
 
     /**
@@ -127,7 +130,8 @@ public class PhoneUtils {
     public static String getIMSI() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getSubscriberId() : "";
+        //noinspection ConstantConditions
+        return tm.getSubscriberId();
     }
 
     /**
@@ -144,7 +148,8 @@ public class PhoneUtils {
     public static int getPhoneType() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getPhoneType() : -1;
+        //noinspection ConstantConditions
+        return tm.getPhoneType();
     }
 
     /**
@@ -155,7 +160,8 @@ public class PhoneUtils {
     public static boolean isSimCardReady() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null && tm.getSimState() == TelephonyManager.SIM_STATE_READY;
+        //noinspection ConstantConditions
+        return tm.getSimState() == TelephonyManager.SIM_STATE_READY;
     }
 
     /**
@@ -166,7 +172,8 @@ public class PhoneUtils {
     public static String getSimOperatorName() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getSimOperatorName() : "";
+        //noinspection ConstantConditions
+        return tm.getSimOperatorName();
     }
 
     /**
@@ -177,9 +184,10 @@ public class PhoneUtils {
     public static String getSimOperatorByMnc() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        String operator = tm != null ? tm.getSimOperator() : null;
+        //noinspection ConstantConditions
+        String operator = tm.getSimOperator();
         if (operator == null) {
-            return null;
+            return "";
         }
         switch (operator) {
             case "46000":
@@ -226,10 +234,8 @@ public class PhoneUtils {
     public static String getPhoneStatus() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        if (tm == null) {
-            return "";
-        }
         String str = "";
+        //noinspection ConstantConditions
         str += "DeviceId(IMEI) = " + tm.getDeviceId() + "\n";
         str += "DeviceSoftwareVersion = " + tm.getDeviceSoftwareVersion() + "\n";
         str += "Line1Number = " + tm.getLine1Number() + "\n";

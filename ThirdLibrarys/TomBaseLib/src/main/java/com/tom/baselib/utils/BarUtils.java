@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -13,7 +14,11 @@ import android.support.annotation.RequiresApi;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
@@ -32,8 +37,7 @@ import static android.Manifest.permission.EXPAND_STATUS_BAR;
  * 描述：系统状态栏操作工具类
  */
 public class BarUtils {
-
-    ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
     // status bar
     ///////////////////////////////////////////////////////////////////////////
 
@@ -178,7 +182,7 @@ public class BarUtils {
         view.setTag(KEY_OFFSET, false);
     }
 
-    public static void addMarginTopEqualStatusBarHeight(final Window window) {
+    private static void addMarginTopEqualStatusBarHeight(final Window window) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return;
         }
@@ -649,6 +653,7 @@ public class BarUtils {
      * @param activity  The activity.
      * @param isVisible True to set navigation bar visible, false otherwise.
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static void setNavBarVisibility(@NonNull final Activity activity, boolean isVisible) {
         setNavBarVisibility(activity.getWindow(), isVisible);
     }
@@ -659,42 +664,39 @@ public class BarUtils {
      * @param window    The window.
      * @param isVisible True to set navigation bar visible, false otherwise.
      */
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     public static void setNavBarVisibility(@NonNull final Window window, boolean isVisible) {
+        final int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        final View decorView = window.getDecorView();
         if (isVisible) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~uiOptions);
         } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            View decorView = window.getDecorView();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                int visibility = decorView.getSystemUiVisibility();
-                decorView.setSystemUiVisibility(visibility & ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            }
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | uiOptions);
         }
     }
 
     /**
-     * Set the navigation bar immersive.
+     * Return whether the navigation bar visible.
      *
      * @param activity The activity.
+     * @return {@code true}: yes<br>{@code false}: no
      */
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    public static void setNavBarImmersive(@NonNull final Activity activity) {
-        setNavBarImmersive(activity.getWindow());
+    public static boolean isNavBarVisible(@NonNull final Activity activity) {
+        return isNavBarVisible(activity.getWindow());
     }
 
     /**
-     * Set the navigation bar immersive.
+     * Return whether the navigation bar visible.
      *
      * @param window The window.
+     * @return {@code true}: yes<br>{@code false}: no
      */
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    public static void setNavBarImmersive(@NonNull final Window window) {
+    public static boolean isNavBarVisible(@NonNull final Window window) {
         View decorView = window.getDecorView();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        decorView.setSystemUiVisibility(uiOptions);
+        int visibility = decorView.getSystemUiVisibility();
+        return (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
     }
 
     /**
@@ -744,27 +746,21 @@ public class BarUtils {
     /**
      * Return whether the navigation bar visible.
      *
-     * @param activity The activity.
      * @return {@code true}: yes<br>{@code false}: no
      */
-    public static boolean isNavBarVisible(@NonNull final Activity activity) {
-        return isNavBarVisible(activity.getWindow());
-    }
-
-    /**
-     * Return whether the navigation bar visible.
-     *
-     * @param window The window.
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isNavBarVisible(@NonNull final Window window) {
-        boolean isNoLimits = (window.getAttributes().flags
-                & WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) != 0;
-        if (isNoLimits) {
-            return false;
+    public static boolean isSupportNavBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            WindowManager wm = (WindowManager) Utils.getApp().getSystemService(Context.WINDOW_SERVICE);
+            //noinspection ConstantConditions
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            Point realSize = new Point();
+            display.getSize(size);
+            display.getRealSize(realSize);
+            return realSize.y != size.y || realSize.x != size.x;
         }
-        View decorView = window.getDecorView();
-        int visibility = decorView.getSystemUiVisibility();
-        return (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+        boolean menu = ViewConfiguration.get(Utils.getApp()).hasPermanentMenuKey();
+        boolean back = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        return !menu && !back;
     }
 }

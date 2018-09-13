@@ -122,9 +122,7 @@ public class Utils {
     static boolean isAppForeground() {
         ActivityManager am =
                 (ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE);
-        if (am == null) {
-            return false;
-        }
+        //noinspection ConstantConditions
         List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
         if (info == null || info.size() == 0) {
             return false;
