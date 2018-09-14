@@ -30,6 +30,7 @@ import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.android.tomflying.valid.CollectAction;
 import com.android.tomflying.valid.LoginValid;
+import com.qmuiteam.tom.widget.QMUIAppBarLayout;
 import com.qmuiteam.tom.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.tom.widget.QMUIEmptyView;
 import com.qmuiteam.tom.widget.QMUITopBar;
@@ -68,6 +69,7 @@ public class HomeFragment extends MyFragment {
     private RecyclerView recyclerView;
     private QMUIEmptyView emptyView;
     private QMUICollapsingTopBarLayout mCollapsingTopBarLayout;
+    private QMUIAppBarLayout mAppBarLayout;
     private QMUITopBar mTopBar;
 
     private MainArticleAdapter articleAdapter;
@@ -115,10 +117,14 @@ public class HomeFragment extends MyFragment {
                 banner.setImages(images);
                 banner.setBannerTitles(titles);
                 banner.start();
-
+                mAppBarLayout.setExpanded(true);
 
             }
 
+            @Override
+            public void onError(Response<LzyResponse<List<BannerBean>>> response) {
+                mAppBarLayout.setExpanded(false);
+            }
         });
 
     }
@@ -147,6 +153,7 @@ public class HomeFragment extends MyFragment {
                 emptyView.setButton("重试", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        getBanner();
                         getArticles(true);
                     }
                 });
@@ -210,6 +217,7 @@ public class HomeFragment extends MyFragment {
     public void initView(Bundle savedInstanceState, View contentView) {
         emptyView = new QMUIEmptyView(mActivity);
         recyclerView = contentView.findViewById(R.id.rv_home);
+        mAppBarLayout = contentView.findViewById(R.id.appbar_layout);
         mCollapsingTopBarLayout = contentView.findViewById(R.id.collapsing_topbar_layout);
         mTopBar = contentView.findViewById(R.id.topbar);
         mCollapsingTopBarLayout.setScrimUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

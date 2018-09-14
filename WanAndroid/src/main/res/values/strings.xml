@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WanAndroid</string>
+    <string name="app_name">玩Android</string>
     <string name="about_client">在今年的时候发现了一套全面完整、高度匹配强迫症患者的腾讯团队出品的——“QMUI”，便想着试用一下她。\n恰有鸿洋大神的开放API加持，一个APP便出现了。\n她是一个使用 http://www.wanandroid.com 开放API、QMUI/OkGo/AgentWeb/Banner等开源技术开发的面向初级、中级、以及高级Android开发者的资讯聚合平台。\n内容包含热门文章、开源项目、知识导航体系等内容，还有搜索文章关键字，对文章进行收藏等功能。\n快来下载体验吧！！！</string>
     <string name="about_website">本网站( http://www.wanandroid.com )每天新增20~30篇优质文章，并加入到现有分类中，力求整理出一份优质而又详尽的知识体系，闲暇时间不妨上来学习下知识。\n除此以外，并为大家提供平时开发过程中常用的工具以及常用的网址导航。\n当然这只是我们目前的功能，未来我们将提供更多更加便捷的功能...
 \n\n如果您有任何好的建议:

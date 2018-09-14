@@ -1,11 +1,13 @@
 package com.tom.baselib;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
      */
     private long lastClick = 0;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,17 +52,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             }
         }
         if (BarUtils.isNavBarVisible(this)) {
-            if (isTransparent()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    BarUtils.setNavBarImmersive(this);
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    BarUtils.setNavBarColor(this, getResources().getColor(android.R.color.transparent));
-                }
-            }
+            BarUtils.setNavBarVisibility(this, !isTransparent());
         }
-
+        if (BarUtils.isSupportNavBar()) {
+            BarUtils.setNavBarColor(this, getResources().getColor(android.R.color.transparent));
+        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             initData(bundle);

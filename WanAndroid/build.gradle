@@ -13,8 +13,8 @@ android {
         minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
         applicationId "com.android.tomflying"
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.0.6"
 
     }
 
@@ -44,8 +44,9 @@ android {
 
         release {
             signingConfig signingConfigs.release
+            shrinkResources true
             zipAlignEnabled true
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -68,7 +69,7 @@ dependencies {
     implementation project(':ThirdLibrarys:QMUI')
     implementation project(':ThirdLibrarys:Banner')
     implementation project(':ThirdLibrarys:PhotoView')
-
+    implementation project(':ThirdLibrarys:FreeProGuard')
 
     implementation rootProject.ext.dependencies["appcompat-v7"]
     implementation rootProject.ext.dependencies["design"]

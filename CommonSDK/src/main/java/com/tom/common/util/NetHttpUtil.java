@@ -11,7 +11,7 @@ import com.tom.network.model.HttpParams;
  * 创建日期: 2018/6/6
  * 描述：二次封装的网络请求工具
  */
-public class OkHttpUtil {
+public class NetHttpUtil {
 
     public static <T> void getRequets(String url, Object tag, HttpParams params, JsonCallback<T> callback) {
         OkGo.<T>get(url)

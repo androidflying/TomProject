@@ -6,6 +6,7 @@
     android:background="@color/tab_panel_bg">
 
     <com.qmuiteam.tom.widget.QMUIAppBarLayout
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:fitsSystemWindows="true">
