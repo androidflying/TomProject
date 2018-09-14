@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.android.tomflying.BuildConfig;
 import com.android.tomflying.R;
 
 import java.lang.reflect.Method;
@@ -165,7 +166,9 @@ public class AlignTextView extends AppCompatTextView {
             android.content.ClipData clip = android.content.ClipData.newPlainText(null, sb.toString());
             clipboard.setPrimaryClip(clip);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, e.getMessage());
+            }
         }
     }
 

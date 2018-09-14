@@ -17,7 +17,7 @@ public class LunarUtil {
     private int month;
     private int day;
     private boolean leap;
-    final static String chineseNumber[] = {"一", "二", "三", "四", "五", "六", "七",
+    final static String[] chineseNumber = {"一", "二", "三", "四", "五", "六", "七",
             "八", "九", "十", "十一", "十二"};
     static SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     final static long[] lunarInfo = new long[]{0x04bd8, 0x04ae0, 0x0a570,
@@ -178,7 +178,7 @@ public class LunarUtil {
     }
 
     public static String getChinaDayString(int day) {
-        String chineseTen[] = {"初", "十", "廿", "卅"};
+        String[] chineseTen = {"初", "十", "廿", "卅"};
         int n = day % 10 == 0 ? 9 : day % 10 - 1;
         if (day > 30)
             return "";

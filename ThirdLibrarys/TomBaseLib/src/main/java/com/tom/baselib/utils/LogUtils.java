@@ -16,6 +16,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 
+import com.tom.baselib.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -628,7 +630,9 @@ public class LogUtils {
                     bw.write(input);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.e("LogUtils", "log to " + filePath + " failed!");
+                    if (BuildConfig.DEBUG) {
+                        Log.e("LogUtils", "log to " + filePath + " failed!");
+                    }
                 } finally {
                     try {
                         if (bw != null) {

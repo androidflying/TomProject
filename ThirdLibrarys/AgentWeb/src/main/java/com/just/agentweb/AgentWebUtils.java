@@ -38,6 +38,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.AppOpsManagerCompat;
 import android.support.v4.content.ContextCompat;
@@ -92,6 +93,9 @@ public class AgentWebUtils {
 
     private static final String TAG = AgentWebUtils.class.getSimpleName();
     private static Handler mHandler = null;
+    private static WeakReference<Snackbar> snackbarWeakReference;
+    private static Toast mToast = null;
+
 
     private AgentWebUtils() {
         throw new UnsupportedOperationException("u can't init me");
@@ -102,7 +106,6 @@ public class AgentWebUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
-
 
     static final void clearWebView(WebView m) {
 
@@ -130,44 +133,6 @@ public class AgentWebUtils {
         m = null;
 
 
-    }
-
-    static String getAgentWebFilePath(Context context) {
-        if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH)) {
-            return AGENTWEB_FILE_PATH;
-        }
-        String dir = getDiskExternalCacheDir(context);
-        File mFile = new File(dir, FILE_CACHE_PATH);
-        try {
-            if (!mFile.exists()) {
-                mFile.mkdirs();
-            }
-        } catch (Throwable throwable) {
-            LogUtils.i(TAG, "create dir exception");
-        }
-        LogUtils.i(TAG, "path:" + mFile.getAbsolutePath() + "  path:" + mFile.getPath());
-        return AGENTWEB_FILE_PATH = mFile.getAbsolutePath();
-
-    }
-
-
-    public static File createFileByName(Context context, String name, boolean cover) throws IOException {
-
-        String path = getAgentWebFilePath(context);
-        if (TextUtils.isEmpty(path)) {
-            return null;
-        }
-        File mFile = new File(path, name);
-        if (mFile.exists()) {
-            if (cover) {
-                mFile.delete();
-                mFile.createNewFile();
-            }
-        } else {
-            mFile.createNewFile();
-        }
-
-        return mFile;
     }
 
     public static int checkNetworkType(Context context) {
@@ -227,6 +192,20 @@ public class AgentWebUtils {
         }
     }
 
+    static void setIntentData(Context context,
+                              Intent intent,
+                              File file,
+                              boolean writeAble) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setData(getUriFromFile(context, file));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (writeAble) {
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+        } else {
+            intent.setData(Uri.fromFile(file));
+        }
+    }
 
     static Uri getUriFromFile(Context context, File file) {
         Uri uri = null;
@@ -243,48 +222,6 @@ public class AgentWebUtils {
         return fileUri;
     }
 
-
-    static void setIntentDataAndType(Context context,
-                                     Intent intent,
-                                     String type,
-                                     File file,
-                                     boolean writeAble) {
-        if (Build.VERSION.SDK_INT >= 24) {
-            intent.setDataAndType(getUriFromFile(context, file), type);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            if (writeAble) {
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            }
-        } else {
-            intent.setDataAndType(Uri.fromFile(file), type);
-        }
-    }
-
-
-    static void setIntentData(Context context,
-                              Intent intent,
-                              File file,
-                              boolean writeAble) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setData(getUriFromFile(context, file));
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            if (writeAble) {
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            }
-        } else {
-            intent.setData(Uri.fromFile(file));
-        }
-    }
-
-    static String getDiskExternalCacheDir(Context context) {
-
-        File mFile = context.getExternalCacheDir();
-        if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile))) {
-            return mFile.getAbsolutePath();
-        }
-        return null;
-    }
-
     static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
 
         int flag = Intent.FLAG_GRANT_READ_URI_PERMISSION;
@@ -299,41 +236,6 @@ public class AgentWebUtils {
             context.grantUriPermission(packageName, uri, flag);
         }
     }
-
-
-    private static String getMIMEType(File f) {
-        String type = "";
-        String fName = f.getName();
-        /* 取得扩展名 */
-        String end = fName.substring(fName.lastIndexOf(".") + 1, fName.length()).toLowerCase();
-
-        /* 依扩展名的类型决定MimeType */
-        if (end.equals("pdf")) {
-            type = "application/pdf";//
-        } else if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
-                end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
-            type = "audio/*";
-        } else if (end.equals("3gp") || end.equals("mp4")) {
-            type = "video/*";
-        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png") ||
-                end.equals("jpeg") || end.equals("bmp")) {
-            type = "image/*";
-        } else if (end.equals("apk")) {
-            type = "application/vnd.android.package-archive";
-        } else if (end.equals("pptx") || end.equals("ppt")) {
-            type = "application/vnd.ms-powerpoint";
-        } else if (end.equals("docx") || end.equals("doc")) {
-            type = "application/vnd.ms-word";
-        } else if (end.equals("xlsx") || end.equals("xls")) {
-            type = "application/vnd.ms-excel";
-        } else {
-            type = "*/*";
-        }
-        return type;
-    }
-
-
-    private static WeakReference<Snackbar> snackbarWeakReference;
 
     static void show(View parent,
                      CharSequence text,
@@ -454,7 +356,6 @@ public class AgentWebUtils {
         }
     }
 
-
     static void clearWebViewAllCache(Context context) {
 
         try {
@@ -482,7 +383,7 @@ public class AgentWebUtils {
 
                     //then delete the files and subdirectories in this dir
                     //only empty directories can be deleted, so subdirs have been done first
-                    if (child.lastModified() < new Date().getTime() - numDays * DateUtils.DAY_IN_MILLIS) {
+                    if (child.lastModified() < System.currentTimeMillis() - numDays * DateUtils.DAY_IN_MILLIS) {
                         Log.i(TAG, "file name:" + child.getName());
                         if (child.delete()) {
                             deletedFiles++;
@@ -496,13 +397,11 @@ public class AgentWebUtils {
         return deletedFiles;
     }
 
-
     static void clearCache(final Context context, final int numDays) {
         Log.i("Info", String.format("Starting cache prune, deleting files older than %d days", numDays));
         int numDeletedFiles = clearCacheFolder(context.getCacheDir(), numDays);
         Log.i("Info", String.format("Cache pruning completed, %d files deleted", numDeletedFiles));
     }
-
 
     public static String[] uriToPath(Activity activity, Uri[] uris) {
 
@@ -525,57 +424,6 @@ public class AgentWebUtils {
         return null;
 
     }
-
-    private static String getRealPathBelowVersion(Context context, Uri uri) {
-        String filePath = null;
-        LogUtils.i(TAG, "method -> getRealPathBelowVersion " + uri + "   path:" + uri.getPath() + "    getAuthority:" + uri.getAuthority());
-        String[] projection = {MediaStore.Images.Media.DATA};
-
-        CursorLoader loader = new CursorLoader(context, uri, projection, null,
-                null, null);
-        Cursor cursor = loader.loadInBackground();
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-            filePath = cursor.getString(cursor.getColumnIndex(projection[0]));
-            cursor.close();
-        }
-        if (filePath == null) {
-            filePath = uri.getPath();
-
-        }
-        return filePath;
-    }
-
-
-    static File createImageFile(Context context) {
-        File mFile = null;
-        try {
-
-            String timeStamp =
-                    new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
-            String imageName = String.format("aw_%s.jpg", timeStamp);
-            mFile = createFileByName(context, imageName, true);
-        } catch (Throwable e) {
-
-        }
-        return mFile;
-    }
-
-
-    public static void closeIO(Closeable closeable) {
-        try {
-
-            if (closeable != null) {
-                closeable.close();
-            }
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-
-    }
-
 
     @TargetApi(19)
     static String getFileAbsolutePath(Activity context, Uri fileUri) {
@@ -636,6 +484,43 @@ public class AgentWebUtils {
         return null;
     }
 
+    private static String getRealPathBelowVersion(Context context, Uri uri) {
+        String filePath = null;
+        LogUtils.i(TAG, "method -> getRealPathBelowVersion " + uri + "   path:" + uri.getPath() + "    getAuthority:" + uri.getAuthority());
+        String[] projection = {MediaStore.Images.Media.DATA};
+
+        CursorLoader loader = new CursorLoader(context, uri, projection, null,
+                null, null);
+        Cursor cursor = loader.loadInBackground();
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            filePath = cursor.getString(cursor.getColumnIndex(projection[0]));
+            cursor.close();
+        }
+        if (filePath == null) {
+            filePath = uri.getPath();
+
+        }
+        return filePath;
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
     static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -655,26 +540,28 @@ public class AgentWebUtils {
 
     /**
      * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
      * @return Whether the Uri authority is MediaProvider.
      */
     static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    static String getAgentWebFilePath(Context context) {
+        if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH)) {
+            return AGENTWEB_FILE_PATH;
+        }
+        String dir = getDiskExternalCacheDir(context);
+        File mFile = new File(dir, FILE_CACHE_PATH);
+        try {
+            if (!mFile.exists()) {
+                mFile.mkdirs();
+            }
+        } catch (Throwable throwable) {
+            LogUtils.i(TAG, "create dir exception");
+        }
+        LogUtils.i(TAG, "path:" + mFile.getAbsolutePath() + "  path:" + mFile.getPath());
+        return AGENTWEB_FILE_PATH = mFile.getAbsolutePath();
+
     }
 
     /**
@@ -685,6 +572,61 @@ public class AgentWebUtils {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    static String getDiskExternalCacheDir(Context context) {
+
+        File mFile = context.getExternalCacheDir();
+        if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile))) {
+            return mFile.getAbsolutePath();
+        }
+        return null;
+    }
+
+    static File createImageFile(Context context) {
+        File mFile = null;
+        try {
+
+            String timeStamp =
+                    new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
+            String imageName = String.format("aw_%s.jpg", timeStamp);
+            mFile = createFileByName(context, imageName, true);
+        } catch (Throwable e) {
+
+        }
+        return mFile;
+    }
+
+    public static File createFileByName(Context context, String name, boolean cover) throws IOException {
+
+        String path = getAgentWebFilePath(context);
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
+        File mFile = new File(path, name);
+        if (mFile.exists()) {
+            if (cover) {
+                mFile.delete();
+                mFile.createNewFile();
+            }
+        } else {
+            mFile.createNewFile();
+        }
+
+        return mFile;
+    }
+
+    public static void closeIO(Closeable closeable) {
+        try {
+
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+    }
+
     static Intent getInstallApkIntentCompat(Context context, File file) {
 
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
@@ -692,10 +634,57 @@ public class AgentWebUtils {
         return mIntent;
     }
 
+    static void setIntentDataAndType(Context context,
+                                     Intent intent,
+                                     String type,
+                                     File file,
+                                     boolean writeAble) {
+        if (Build.VERSION.SDK_INT >= 24) {
+            intent.setDataAndType(getUriFromFile(context, file), type);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (writeAble) {
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), type);
+        }
+    }
+
     public static Intent getCommonFileIntentCompat(Context context, File file) {
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
         setIntentDataAndType(context, mIntent, getMIMEType(file), file, false);
         return mIntent;
+    }
+
+    private static String getMIMEType(File f) {
+        String type = "";
+        String fName = f.getName();
+        /* 取得扩展名 */
+        String end = fName.substring(fName.lastIndexOf(".") + 1, fName.length()).toLowerCase();
+
+        /* 依扩展名的类型决定MimeType */
+        if (end.equals("pdf")) {
+            type = "application/pdf";//
+        } else if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
+                end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
+            type = "audio/*";
+        } else if (end.equals("3gp") || end.equals("mp4")) {
+            type = "video/*";
+        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png") ||
+                end.equals("jpeg") || end.equals("bmp")) {
+            type = "image/*";
+        } else if (end.equals("apk")) {
+            type = "application/vnd.android.package-archive";
+        } else if (end.equals("pptx") || end.equals("ppt")) {
+            type = "application/vnd.ms-powerpoint";
+        } else if (end.equals("docx") || end.equals("doc")) {
+            type = "application/vnd.ms-word";
+        } else if (end.equals("xlsx") || end.equals("xls")) {
+            type = "application/vnd.ms-excel";
+        } else {
+            type = "*/*";
+        }
+        return type;
     }
 
     static Intent getIntentCaptureCompat(Context context, File file) {
@@ -705,7 +694,6 @@ public class AgentWebUtils {
         mIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
         return mIntent;
     }
-
 
     static boolean isJson(String target) {
         if (TextUtils.isEmpty(target)) {
@@ -729,7 +717,6 @@ public class AgentWebUtils {
 
     }
 
-
     public static boolean isUIThread() {
         return Looper.myLooper() == Looper.getMainLooper();
     }
@@ -743,8 +730,6 @@ public class AgentWebUtils {
 
         return map == null || map.isEmpty();
     }
-
-    private static Toast mToast = null;
 
     static void toastShowShort(Context context, String msg) {
 
@@ -768,6 +753,22 @@ public class AgentWebUtils {
         if (mAgentWebUIController != null) {
             mAgentWebUIController.onShowMessage(message, from);
         }
+    }
+
+    public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
+
+        if (permissions == null || permissions.length == 0) {
+            return null;
+        }
+        List<String> deniedPermissions = new ArrayList<>();
+        for (int i = 0; i < permissions.length; i++) {
+
+            if (!hasPermission(activity, permissions[i])) {
+                deniedPermissions.add(permissions[i]);
+            }
+        }
+        return deniedPermissions;
+
     }
 
     public static boolean hasPermission(@NonNull Context context, @NonNull String... permissions) {
@@ -797,41 +798,9 @@ public class AgentWebUtils {
         return true;
     }
 
-    public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
-
-        if (permissions == null || permissions.length == 0) {
-            return null;
-        }
-        List<String> deniedPermissions = new ArrayList<>();
-        for (int i = 0; i < permissions.length; i++) {
-
-            if (!hasPermission(activity, permissions[i])) {
-                deniedPermissions.add(permissions[i]);
-            }
-        }
-        return deniedPermissions;
-
-    }
-
-
     public static AbsAgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
         WebParentLayout mWebParentLayout = getWebParentLayoutByWebView(webView);
         return mWebParentLayout.provide();
-    }
-
-    //获取应用的名称
-    public static String getApplicationName(Context context) {
-        PackageManager packageManager = null;
-        ApplicationInfo applicationInfo = null;
-        try {
-            packageManager = context.getApplicationContext().getPackageManager();
-            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            applicationInfo = null;
-        }
-        String applicationName =
-                (String) packageManager.getApplicationLabel(applicationInfo);
-        return applicationName;
     }
 
     static WebParentLayout getWebParentLayoutByWebView(WebView webView) {
@@ -860,6 +829,21 @@ public class AgentWebUtils {
         throw new IllegalStateException("please check webcreator's create method was be called ?");
     }
 
+    //获取应用的名称
+    public static String getApplicationName(Context context) {
+        PackageManager packageManager = null;
+        ApplicationInfo applicationInfo = null;
+        try {
+            packageManager = context.getApplicationContext().getPackageManager();
+            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            applicationInfo = null;
+        }
+        String applicationName =
+                (String) packageManager.getApplicationLabel(applicationInfo);
+        return applicationName;
+    }
+
     public static void runInUiThread(Runnable runnable) {
         if (mHandler == null) {
             mHandler = new Handler(Looper.getMainLooper());
@@ -867,6 +851,7 @@ public class AgentWebUtils {
         mHandler.post(runnable);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     static boolean showFileChooserCompat(Activity activity,
                                          WebView webView,
                                          ValueCallback<Uri[]> valueCallbacks,

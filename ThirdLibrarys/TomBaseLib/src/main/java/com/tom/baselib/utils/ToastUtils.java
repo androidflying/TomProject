@@ -28,6 +28,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tom.baselib.BuildConfig;
+
 import java.lang.reflect.Field;
 
 /**
@@ -338,7 +340,9 @@ public class ToastUtils {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
                 return new ToastWithoutNotification(makeNormalToast(context, text, duration));
             }
-            Log.e("ToastUtils", "Toast is GG. In fact, next step is useless.");
+            if (BuildConfig.DEBUG) {
+                Log.e("ToastUtils", "Toast is GG. In fact, next step is useless.");
+            }
             return new SystemToast(makeNormalToast(context, text, duration));
         }
 
@@ -349,7 +353,9 @@ public class ToastUtils {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
                 return new ToastWithoutNotification(new Toast(context));
             }
-            Log.e("ToastUtils", "Toast is GG. In fact, next step is useless.");
+            if (BuildConfig.DEBUG) {
+                Log.e("ToastUtils", "Toast is GG. In fact, next step is useless.");
+            }
             return new SystemToast(new Toast(context));
         }
 

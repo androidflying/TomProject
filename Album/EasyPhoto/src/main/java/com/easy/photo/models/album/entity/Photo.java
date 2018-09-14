@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.easy.photo.BuildConfig;
+
 /**
  * 图片item实体类
  * Created by huan on 2017/10/20.
@@ -39,7 +41,9 @@ public class Photo implements Parcelable {
             Photo other = (Photo) o;
             return this.path.equalsIgnoreCase(other.path);
         } catch (ClassCastException e) {
-            Log.e(TAG, "equals: " + Log.getStackTraceString(e));
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "equals: " + Log.getStackTraceString(e));
+            }
         }
         return super.equals(o);
     }

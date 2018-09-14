@@ -8,6 +8,7 @@ package com.tom.common;
  * 描述：一些常量的定义
  */
 public class ConstantValues {
+
     /**
      * 从SP中获取IP地址
      */
@@ -23,4 +24,5 @@ public class ConstantValues {
      * 融云登录的token
      */
     public static final String IM_TOKEN = "im_token";
+
 }

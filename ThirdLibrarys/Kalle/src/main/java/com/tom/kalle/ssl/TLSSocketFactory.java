@@ -24,7 +24,7 @@ import javax.net.ssl.X509TrustManager;
  */
 public class TLSSocketFactory extends SSLSocketFactory {
 
-    private static final String PROTOCOL_ARRAY[];
+    private static final String[] PROTOCOL_ARRAY;
 
     static {
         // https://developer.android.com/about/versions/android-5.0-changes.html#ssl
