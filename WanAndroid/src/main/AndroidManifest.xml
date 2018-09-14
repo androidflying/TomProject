@@ -62,7 +62,7 @@
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:screenOrientation="portrait"
+            android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent" />
 
         <provider
