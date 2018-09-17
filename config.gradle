@@ -17,7 +17,7 @@ ext {
     //开源库的版本号说明
     version = [
             APPCOMPAT_VERSION : '27.1.1',
-            CONSTRAINT_VERSION : '1.1.2',
+            CONSTRAINT_VERSION : '1.1.3',
             MULTIDEX_VERSION : '1.0.3',
             EVENTBUS_VERSION : '3.1.1',
             GLIDE_VERSION : '4.8.0',
