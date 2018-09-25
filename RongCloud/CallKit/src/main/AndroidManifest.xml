@@ -3,10 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.rong.callkit">
 
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="20" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission

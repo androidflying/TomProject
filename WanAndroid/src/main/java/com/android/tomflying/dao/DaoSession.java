@@ -36,7 +36,7 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(SearchBean.class, searchBeanDao);
     }
-
+    
     public void clear() {
         searchBeanDaoConfig.clearIdentityScope();
     }

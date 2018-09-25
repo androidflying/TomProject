@@ -115,7 +115,7 @@ public class CalendarActivity extends MyActivity {
     private void setDate() {
         tv_date.setText(TimeUtils.getNowString(new SimpleDateFormat("yyyy年MM月")));
         tv_day.setText(TimeUtils.getNowString(new SimpleDateFormat("dd")));
-        tv_week.setText("星期" + TimeUtils.getChineseWeek(new Date()));
+        tv_week.setText(TimeUtils.getChineseWeek(new Date()));
         tv_nian.setText("【" + TimeUtils.getChineseZodiac(new Date()) + "年】");
         tv_nongli.setText(new LunarUtil(Calendar.getInstance()).toString());
         tv_xingzuo.setText(TimeUtils.getZodiac(new Date()));
