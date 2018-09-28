@@ -70,6 +70,7 @@ dependencies {
     implementation project(':ThirdLibrarys:Banner')
     implementation project(':ThirdLibrarys:PhotoView')
     implementation project(':ThirdLibrarys:FreeProGuard')
+    implementation project(':ThirdLibrarys:Kalle')
 
     implementation rootProject.ext.dependencies["appcompat-v7"]
     implementation rootProject.ext.dependencies["design"]

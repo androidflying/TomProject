@@ -28,5 +28,5 @@ dependencies {
     api files('libs/umeng-share-wechat-simplify-6.9.3.jar')
     api files('libs/umeng-sharetool-6.9.3.jar')
     api files('libs/umeng-share-core-6.9.3.jar')
-    api project(':Umeng:Common')
+    implementation project(':Umeng:Common')
 }

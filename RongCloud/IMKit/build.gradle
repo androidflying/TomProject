@@ -33,7 +33,7 @@ android {
 dependencies {
     api fileTree(dir: 'src/main/libs', include: ['*.jar'])
     implementation rootProject.ext.dependencies["support-v4"]
-    implementation project(':RongCloud:IMLib')
+    api project(':RongCloud:IMLib')
 }
 
 repositories {
