@@ -16,26 +16,25 @@ ext {
 
     //开源库的版本号说明
     version = [
-            APPCOMPAT_VERSION : '27.1.1',
-            CONSTRAINT_VERSION : '1.1.3',
-            MULTIDEX_VERSION : '1.0.3',
-            EVENTBUS_VERSION : '3.1.1',
-            GLIDE_VERSION : '4.8.0',
-            GREENDAO_VERSION : '3.2.2',
-            ZXING_VERSION : '3.3.3',
-            GSON_VERSION : '2.8.5',
-            AROUTER_VERSION : '1.4.0',
-            AROUTER_COMPILER_VERSION : '1.2.1',
-            OKHTTP_VERSION:'3.11.0',
-            BUTTERKNIFE_VERSION:'8.8.1'
+            APPCOMPAT_VERSION          : '27.1.1',
+            CONSTRAINT_VERSION         : '1.1.3',
+            MULTIDEX_VERSION           : '1.0.3',
+            EVENTBUS_VERSION           : '3.1.1',
+            GLIDE_VERSION              : '4.8.0',
+            GREENDAO_VERSION           : '3.2.2',
+            ZXING_VERSION              : '3.3.3',
+            GSON_VERSION               : '2.8.5',
+            AROUTER_VERSION            : '1.4.0',
+            AROUTER_COMPILER_VERSION   : '1.2.1',
+            OKHTTP_VERSION             : '3.11.0',
+            BUTTERKNIFE_VERSION        : '8.8.1'
     ]
 
     greendaoVersion = 1
-
-
+    
     dependencies = [
             "appcompat-v7"             : "com.android.support:appcompat-v7:${version["APPCOMPAT_VERSION"]}",
-            "support-compat"             : "com.android.support:support-compat:${version["APPCOMPAT_VERSION"]}",
+            "support-compat"           : "com.android.support:support-compat:${version["APPCOMPAT_VERSION"]}",
             "design"                   : "com.android.support:design:${version["APPCOMPAT_VERSION"]}",
             "constraint-layout"        : "com.android.support.constraint:constraint-layout:${version["CONSTRAINT_VERSION"]}",
             "support-v4"               : "com.android.support:support-v4:${version["APPCOMPAT_VERSION"]}",
@@ -44,21 +43,22 @@ ext {
             "support-core-utils"       : "com.android.support:support-core-utils:${version["APPCOMPAT_VERSION"]}",
             "multidex"                 : "com.android.support:multidex:${version["MULTIDEX_VERSION"]}",
 
-
             "butterknife"              : "com.jakewharton:butterknife:${version["BUTTERKNIFE_VERSION"]}",
             "butterknife-compiler"     : "com.jakewharton:butterknife-compiler:${version["BUTTERKNIFE_VERSION"]}",
 
             "arouter-api"              : "com.alibaba:arouter-api:${version["AROUTER_VERSION"]}",
             "arouter-compiler"         : "com.alibaba:arouter-compiler:${version["AROUTER_COMPILER_VERSION"]}",
+
             "eventbus"                 : "org.greenrobot:eventbus:${version["EVENTBUS_VERSION"]}",
-            "glide"                    : "com.github.bumptech.glide:glide:${version["GLIDE_VERSION"]}",
             "greendao"                 : "org.greenrobot:greendao:${version["GREENDAO_VERSION"]}",
+
             "zxing"                    : "com.google.zxing:core:${version["ZXING_VERSION"]}",
-            "okhttp"                   : "com.squareup.okhttp3:okhttp:${version["OKHTTP_VERSION"]}",
-            "okhttp-urlconnection"     : "com.squareup.okhttp3:okhttp-urlconnection:${version["OKHTTP_VERSION"]}",
             "gson"                     : "com.google.code.gson:gson:${version["GSON_VERSION"]}",
 
+            "okhttp"                   : "com.squareup.okhttp3:okhttp:${version["OKHTTP_VERSION"]}",
+            "okhttp-urlconnection"     : "com.squareup.okhttp3:okhttp-urlconnection:${version["OKHTTP_VERSION"]}",
 
+            "glide"                    : "com.github.bumptech.glide:glide:${version["GLIDE_VERSION"]}",
 
     ]
 }

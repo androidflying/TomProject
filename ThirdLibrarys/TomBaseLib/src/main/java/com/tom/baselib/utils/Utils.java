@@ -58,11 +58,11 @@ public class Utils {
     public static void init(final Application app) {
         if (sApplication == null) {
             if (app == null) {
-                Utils.sApplication = getApplicationByReflect();
+                sApplication = getApplicationByReflect();
             } else {
-                Utils.sApplication = app;
+                sApplication = app;
             }
-            Utils.sApplication.registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
+            sApplication.registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
         }
     }
 
@@ -187,17 +187,17 @@ public class Utils {
     }
 
     static class AdaptScreenArgs {
-        int sizeInPx;
+        int     sizeInPx;
         boolean isVerticalSlide;
     }
 
     static class ActivityLifecycleImpl implements Application.ActivityLifecycleCallbacks {
 
-        final LinkedList<Activity> mActivityList = new LinkedList<>();
+        final LinkedList<Activity>                        mActivityList      = new LinkedList<>();
         final HashMap<Object, OnAppStatusChangedListener> mStatusListenerMap = new HashMap<>();
 
         private int mForegroundCount = 0;
-        private int mConfigCount = 0;
+        private int mConfigCount     = 0;
 
         void addListener(final Object object, final OnAppStatusChangedListener listener) {
             mStatusListenerMap.put(object, listener);

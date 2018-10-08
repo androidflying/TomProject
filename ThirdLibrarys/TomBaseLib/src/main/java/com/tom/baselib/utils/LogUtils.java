@@ -16,8 +16,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 
-import com.tom.baselib.BuildConfig;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +60,6 @@ import javax.xml.transform.stream.StreamSource;
  * 描述：日志工具类
  */
 public class LogUtils {
-
     public static final int V = Log.VERBOSE;
     public static final int D = Log.DEBUG;
     public static final int I = Log.INFO;
@@ -79,29 +76,29 @@ public class LogUtils {
 
     private static final int FILE = 0x10;
     private static final int JSON = 0x20;
-    private static final int XML = 0x30;
+    private static final int XML  = 0x30;
 
-    private static final String FILE_SEP = System.getProperty("file.separator");
-    private static final String LINE_SEP = System.getProperty("line.separator");
-    private static final String TOP_CORNER = "┌";
-    private static final String MIDDLE_CORNER = "├";
-    private static final String LEFT_BORDER = "│ ";
-    private static final String BOTTOM_CORNER = "└";
-    private static final String SIDE_DIVIDER =
+    private static final String FILE_SEP       = System.getProperty("file.separator");
+    private static final String LINE_SEP       = System.getProperty("line.separator");
+    private static final String TOP_CORNER     = "┌";
+    private static final String MIDDLE_CORNER  = "├";
+    private static final String LEFT_BORDER    = "│ ";
+    private static final String BOTTOM_CORNER  = "└";
+    private static final String SIDE_DIVIDER   =
             "────────────────────────────────────────────────────────";
     private static final String MIDDLE_DIVIDER =
             "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄";
-    private static final String TOP_BORDER = TOP_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
-    private static final String MIDDLE_BORDER = MIDDLE_CORNER + MIDDLE_DIVIDER + MIDDLE_DIVIDER;
-    private static final String BOTTOM_BORDER = BOTTOM_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
-    private static final int MAX_LEN = 3000;
-    private static final Format FORMAT =
+    private static final String TOP_BORDER     = TOP_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
+    private static final String MIDDLE_BORDER  = MIDDLE_CORNER + MIDDLE_DIVIDER + MIDDLE_DIVIDER;
+    private static final String BOTTOM_BORDER  = BOTTOM_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
+    private static final int    MAX_LEN        = 3000;
+    private static final Format FORMAT         =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ", Locale.getDefault());
-    private static final String NOTHING = "log nothing";
-    private static final String NULL = "null";
-    private static final String ARGS = "args";
-    private static final String PLACEHOLDER = " ";
-    private static final Config CONFIG = new Config();
+    private static final String NOTHING        = "log nothing";
+    private static final String NULL           = "null";
+    private static final String ARGS           = "args";
+    private static final String PLACEHOLDER    = " ";
+    private static final Config CONFIG         = new Config();
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
@@ -213,13 +210,9 @@ public class LogUtils {
     }
 
     public static void log(final int type, final String tag, final Object... contents) {
-        if (!CONFIG.mLogSwitch || (!CONFIG.mLog2ConsoleSwitch && !CONFIG.mLog2FileSwitch)) {
-            return;
-        }
+        if (!CONFIG.mLogSwitch || (!CONFIG.mLog2ConsoleSwitch && !CONFIG.mLog2FileSwitch)) return;
         int type_low = type & 0x0f, type_high = type & 0xf0;
-        if (type_low < CONFIG.mConsoleFilter && type_low < CONFIG.mFileFilter) {
-            return;
-        }
+        if (type_low < CONFIG.mConsoleFilter && type_low < CONFIG.mFileFilter) return;
         final TagHead tagHead = processTagAndHead(tag);
         String body = processBody(type_high, contents);
         if (CONFIG.mLog2ConsoleSwitch && type_low >= CONFIG.mConsoleFilter && type_high != FILE) {
@@ -293,9 +286,7 @@ public class LogUtils {
 
     private static String getFileName(final StackTraceElement targetElement) {
         String fileName = targetElement.getFileName();
-        if (fileName != null) {
-            return fileName;
-        }
+        if (fileName != null) return fileName;
         // If name of file is null, should add
         // "-keepattributes SourceFile,LineNumberTable" in proguard file.
         String className = targetElement.getClassName();
@@ -334,22 +325,14 @@ public class LogUtils {
     }
 
     private static String formatObject(int type, Object object) {
-        if (object == null) {
-            return NULL;
-        }
-        if (type == JSON) {
-            return LogFormatter.formatJson(object.toString());
-        }
-        if (type == XML) {
-            return LogFormatter.formatXml(object.toString());
-        }
+        if (object == null) return NULL;
+        if (type == JSON) return LogFormatter.formatJson(object.toString());
+        if (type == XML) return LogFormatter.formatXml(object.toString());
         return formatObject(object);
     }
 
     private static String formatObject(Object object) {
-        if (object == null) {
-            return NULL;
-        }
+        if (object == null) return NULL;
         if (!I_FORMATTER_MAP.isEmpty()) {
             IFormatter iFormatter = I_FORMATTER_MAP.get(getClassFromObject(object));
             if (iFormatter != null) {
@@ -357,18 +340,10 @@ public class LogUtils {
                 return iFormatter.format(object);
             }
         }
-        if (object.getClass().isArray()) {
-            return LogFormatter.array2String(object);
-        }
-        if (object instanceof Throwable) {
-            return LogFormatter.throwable2String((Throwable) object);
-        }
-        if (object instanceof Bundle) {
-            return LogFormatter.bundle2String((Bundle) object);
-        }
-        if (object instanceof Intent) {
-            return LogFormatter.intent2String((Intent) object);
-        }
+        if (object.getClass().isArray()) return LogFormatter.array2String(object);
+        if (object instanceof Throwable) return LogFormatter.throwable2String((Throwable) object);
+        if (object instanceof Bundle) return LogFormatter.bundle2String((Bundle) object);
+        if (object instanceof Intent) return LogFormatter.intent2String((Intent) object);
         return object.toString();
     }
 
@@ -397,9 +372,7 @@ public class LogUtils {
             for (String aHead : head) {
                 Log.println(type, tag, CONFIG.mLogBorderSwitch ? LEFT_BORDER + aHead : aHead);
             }
-            if (CONFIG.mLogBorderSwitch) {
-                Log.println(type, tag, MIDDLE_BORDER);
-            }
+            if (CONFIG.mLogBorderSwitch) Log.println(type, tag, MIDDLE_BORDER);
         }
     }
 
@@ -520,12 +493,8 @@ public class LogUtils {
 
     private static boolean createOrExistsFile(final String filePath) {
         File file = new File(filePath);
-        if (file.exists()) {
-            return file.isFile();
-        }
-        if (!createOrExistsDir(file.getParentFile())) {
-            return false;
-        }
+        if (file.exists()) return file.isFile();
+        if (!createOrExistsDir(file.getParentFile())) return false;
         try {
             deleteDueLogs(filePath);
             boolean isCreate = file.createNewFile();
@@ -548,9 +517,7 @@ public class LogUtils {
                 return name.matches("^" + CONFIG.mFilePrefix + "-[0-9]{4}-[0-9]{2}-[0-9]{2}.txt$");
             }
         });
-        if (files.length <= 0) {
-            return;
-        }
+        if (files.length <= 0) return;
         final int length = filePath.length();
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         try {
@@ -609,9 +576,7 @@ public class LogUtils {
     }
 
     private static boolean isSpace(final String s) {
-        if (s == null) {
-            return true;
-        }
+        if (s == null) return true;
         for (int i = 0, len = s.length(); i < len; ++i) {
             if (!Character.isWhitespace(s.charAt(i))) {
                 return false;
@@ -630,9 +595,7 @@ public class LogUtils {
                     bw.write(input);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    if (BuildConfig.DEBUG) {
-                        Log.e("LogUtils", "log to " + filePath + " failed!");
-                    }
+                    Log.e("LogUtils", "log to " + filePath + " failed!");
                 } finally {
                     try {
                         if (bw != null) {
@@ -649,29 +612,27 @@ public class LogUtils {
     public static class Config {
         private String mDefaultDir;// The default storage directory of log.
         private String mDir;       // The storage directory of log.
-        private String mFilePrefix = "util";// The file prefix of log.
-        private boolean mLogSwitch = true;  // The switch of log.
+        private String  mFilePrefix        = "util";// The file prefix of log.
+        private boolean mLogSwitch         = true;  // The switch of log.
         private boolean mLog2ConsoleSwitch = true;  // The logcat's switch of log.
-        private String mGlobalTag = null;  // The global tag of log.
-        private boolean mTagIsSpace = true;  // The global tag is space.
-        private boolean mLogHeadSwitch = true;  // The head's switch of log.
-        private boolean mLog2FileSwitch = false; // The file's switch of log.
-        private boolean mLogBorderSwitch = true;  // The border's switch of log.
-        private boolean mSingleTagSwitch = true;  // The single tag of log.
-        private int mConsoleFilter = V;     // The console's filter of log.
-        private int mFileFilter = V;     // The file's filter of log.
-        private int mStackDeep = 1;     // The stack's deep of log.
-        private int mStackOffset = 0;     // The stack's offset of log.
-        private int mSaveDays = -1;    // The save days of log.
+        private String  mGlobalTag         = null;  // The global tag of log.
+        private boolean mTagIsSpace        = true;  // The global tag is space.
+        private boolean mLogHeadSwitch     = true;  // The head's switch of log.
+        private boolean mLog2FileSwitch    = false; // The file's switch of log.
+        private boolean mLogBorderSwitch   = true;  // The border's switch of log.
+        private boolean mSingleTagSwitch   = true;  // The single tag of log.
+        private int     mConsoleFilter     = V;     // The console's filter of log.
+        private int     mFileFilter        = V;     // The file's filter of log.
+        private int     mStackDeep         = 1;     // The stack's deep of log.
+        private int     mStackOffset       = 0;     // The stack's offset of log.
+        private int     mSaveDays          = -1;    // The save days of log.
 
         private Config() {
-            if (mDefaultDir != null) {
-                return;
-            }
+            if (mDefaultDir != null) return;
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                    && Utils.getApp().getExternalCacheDir() != null) {
+                    && Utils.getApp().getExternalCacheDir() != null)
                 mDefaultDir = Utils.getApp().getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
-            } else {
+            else {
                 mDefaultDir = Utils.getApp().getCacheDir() + FILE_SEP + "log" + FILE_SEP;
             }
         }
@@ -767,7 +728,7 @@ public class LogUtils {
 
         public final <T> Config addFormatter(final IFormatter<T> iFormatter) {
             if (iFormatter != null) {
-                I_FORMATTER_MAP.put(getTypeClassFromInterface(iFormatter), iFormatter);
+                I_FORMATTER_MAP.put(getTypeClassFromParadigm(iFormatter), iFormatter);
             }
             return this;
         }
@@ -792,14 +753,14 @@ public class LogUtils {
         }
     }
 
-    public interface IFormatter<T> {
-        String format(T t);
+    public abstract static class IFormatter<T> {
+        public abstract String format(T t);
     }
 
     private static class TagHead {
-        String tag;
+        String   tag;
         String[] consoleHead;
-        String fileHead;
+        String   fileHead;
 
         TagHead(String tag, String[] consoleHead, String fileHead) {
             this.tag = tag;
@@ -896,9 +857,7 @@ public class LogUtils {
                 } else {
                     sb.append(formatObject(value));
                 }
-                if (!iterator.hasNext()) {
-                    return sb.append(" }").toString();
-                }
+                if (!iterator.hasNext()) return sb.append(" }").toString();
                 sb.append(',').append(' ');
             }
         }
@@ -1053,12 +1012,15 @@ public class LogUtils {
         }
     }
 
-    static <T> Class getTypeClassFromInterface(final IFormatter<T> callback) {
-        if (callback == null) {
-            return null;
+    static <T> Class getTypeClassFromParadigm(final IFormatter<T> formatter) {
+        Type[] genericInterfaces = formatter.getClass().getGenericInterfaces();
+        Type type;
+        if (genericInterfaces.length == 1) {
+            type = genericInterfaces[0];
+        } else {
+            type = formatter.getClass().getGenericSuperclass();
         }
-        Type mySuperClass = callback.getClass().getGenericInterfaces()[0];
-        Type type = ((ParameterizedType) mySuperClass).getActualTypeArguments()[0];
+        type = ((ParameterizedType) type).getActualTypeArguments()[0];
         while (type instanceof ParameterizedType) {
             type = ((ParameterizedType) type).getRawType();
         }
@@ -1078,13 +1040,23 @@ public class LogUtils {
 
     private static Class getClassFromObject(final Object obj) {
         Class objClass = obj.getClass();
-        Type[] genericInterfaces = objClass.getGenericInterfaces();
-        if (genericInterfaces.length == 1) {
-            Type type = genericInterfaces[0];
-            while (type instanceof ParameterizedType) {
-                type = ((ParameterizedType) type).getRawType();
+        if (objClass.isAnonymousClass() || objClass.isSynthetic()) {
+            Type[] genericInterfaces = objClass.getGenericInterfaces();
+            String className;
+            if (genericInterfaces.length == 1) {// interface
+                Type type = genericInterfaces[0];
+                while (type instanceof ParameterizedType) {
+                    type = ((ParameterizedType) type).getRawType();
+                }
+                className = type.toString();
+            } else {// abstract class or lambda
+                Type type = objClass.getGenericSuperclass();
+                while (type instanceof ParameterizedType) {
+                    type = ((ParameterizedType) type).getRawType();
+                }
+                className = type.toString();
             }
-            String className = type.toString();
+
             if (className.startsWith("class ")) {
                 className = className.substring(6);
             } else if (className.startsWith("interface ")) {

@@ -146,14 +146,14 @@ public class QMUICommonListItemView extends RelativeLayout {
         final int initDetailColor = array.getColor(R.styleable.QMUICommonListItemView_qmui_commonList_detailColor, QMUIResHelper.getAttrColor(getContext(), R.attr.qmui_config_color_gray_5));
         array.recycle();
 
-        mImageView = findViewById(R.id.group_list_item_imageView);
-        mTextContainer = findViewById(R.id.group_list_item_textContainer);
-        mTextView = findViewById(R.id.group_list_item_textView);
+        mImageView = (ImageView) findViewById(R.id.group_list_item_imageView);
+        mTextContainer = (LinearLayout) findViewById(R.id.group_list_item_textContainer);
+        mTextView = (TextView) findViewById(R.id.group_list_item_textView);
         mTextView.setTextColor(initTitleColor);
-        mRedDot = findViewById(R.id.group_list_item_tips_dot);
-        mNewTipViewStub = findViewById(R.id.group_list_item_tips_new);
-        mDetailTextView = findViewById(R.id.group_list_item_detailTextView);
-        mTextDetailSpace = findViewById(R.id.group_list_item_space);
+        mRedDot = (ImageView) findViewById(R.id.group_list_item_tips_dot);
+        mNewTipViewStub = (ViewStub) findViewById(R.id.group_list_item_tips_new);
+        mDetailTextView = (TextView) findViewById(R.id.group_list_item_detailTextView);
+        mTextDetailSpace = (Space) findViewById(R.id.group_list_item_space);
         mDetailTextView.setTextColor(initDetailColor);
         LinearLayout.LayoutParams detailTextViewLP = (LinearLayout.LayoutParams) mDetailTextView.getLayoutParams();
         if (QMUIViewHelper.getIsLastLineSpacingExtraError()) {
@@ -164,9 +164,17 @@ public class QMUICommonListItemView extends RelativeLayout {
         } else {
             detailTextViewLP.topMargin = 0;
         }
-        mAccessoryView = findViewById(R.id.group_list_item_accessoryView);
+        mAccessoryView = (ViewGroup) findViewById(R.id.group_list_item_accessoryView);
         setOrientation(orientation);
         setAccessoryType(accessoryType);
+    }
+
+
+    public void updateImageViewLp(LayoutParamConfig lpConfig) {
+        if(lpConfig != null){
+            LayoutParams lp = (LayoutParams) mImageView.getLayoutParams();
+            mImageView.setLayoutParams(lpConfig.onConfig(lp));
+        }
     }
 
     public void setImageDrawable(Drawable drawable) {
@@ -402,5 +410,9 @@ public class QMUICommonListItemView extends RelativeLayout {
         }
     }
 
+
+    public interface LayoutParamConfig {
+        RelativeLayout.LayoutParams onConfig(RelativeLayout.LayoutParams lp);
+    }
 
 }
