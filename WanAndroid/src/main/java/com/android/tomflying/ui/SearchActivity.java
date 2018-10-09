@@ -242,7 +242,7 @@ public class SearchActivity extends MyActivity {
     }
 
     private void getHotKey() {
-        OkHttpUtil.getRequets(ApiConstant.Guide.HOT_KEY_URL, this, null, new JsonCallback<LzyResponse<List<SearchKeyBean>>>() {
+        OkHttpUtil.getRequest(ApiConstant.Guide.HOT_KEY_URL, this, null, new JsonCallback<LzyResponse<List<SearchKeyBean>>>() {
             @Override
             public void onSuccess(Response<LzyResponse<List<SearchKeyBean>>> response) {
                 addHotKey(response.body().data);

@@ -61,7 +61,7 @@ public class GuideFragment extends MyFragment {
     }
 
     private void getGuide() {
-        OkHttpUtil.getRequets(ApiConstant.Guide.TREE_URL, this, null, new JsonCallback<LzyResponse<List<GuideBean>>>() {
+        OkHttpUtil.getRequest(ApiConstant.Guide.TREE_URL, this, null, new JsonCallback<LzyResponse<List<GuideBean>>>() {
 
             @Override
             public void onStart(Request<LzyResponse<List<GuideBean>>, ? extends Request> request) {

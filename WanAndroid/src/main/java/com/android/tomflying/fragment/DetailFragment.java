@@ -75,7 +75,7 @@ public class DetailFragment extends MyFragment {
             page++;
         }
 
-        OkHttpUtil.getRequets(ApiConstant.Project.PROJECTS_URL + page + ApiConstant.END_URL + "?cid=" + cid, this, null, new JsonCallback<LzyResponse<ArticlesBean>>() {
+        OkHttpUtil.getRequest(ApiConstant.Project.PROJECTS_URL + page + ApiConstant.END_URL + "?cid=" + cid, this, null, new JsonCallback<LzyResponse<ArticlesBean>>() {
 
             @Override
             public void onStart(Request<LzyResponse<ArticlesBean>, ? extends Request> request) {

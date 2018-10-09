@@ -24,6 +24,7 @@ ext {
             GREENDAO_VERSION           : '3.2.2',
             ZXING_VERSION              : '3.3.3',
             GSON_VERSION               : '2.8.5',
+            FASTJSON_VERSION           : '1.1.70.android',
             AROUTER_VERSION            : '1.4.0',
             AROUTER_COMPILER_VERSION   : '1.2.1',
             OKHTTP_VERSION             : '3.11.0',
@@ -54,6 +55,7 @@ ext {
 
             "zxing"                    : "com.google.zxing:core:${version["ZXING_VERSION"]}",
             "gson"                     : "com.google.code.gson:gson:${version["GSON_VERSION"]}",
+            "fastjson"                 : "com.alibaba:fastjson:${version["FASTJSON_VERSION"]}",
 
             "okhttp"                   : "com.squareup.okhttp3:okhttp:${version["OKHTTP_VERSION"]}",
             "okhttp-urlconnection"     : "com.squareup.okhttp3:okhttp-urlconnection:${version["OKHTTP_VERSION"]}",

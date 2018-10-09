@@ -99,7 +99,7 @@ public class HomeFragment extends MyFragment {
     }
 
     private void getBanner() {
-        OkHttpUtil.getRequets(ApiConstant.Home.BANNER_URL, this, null, new JsonCallback<LzyResponse<List<BannerBean>>>() {
+        OkHttpUtil.getRequest(ApiConstant.Home.BANNER_URL, this, null, new JsonCallback<LzyResponse<List<BannerBean>>>() {
 
             @Override
             public void onSuccess(Response<LzyResponse<List<BannerBean>>> response) {
@@ -135,7 +135,7 @@ public class HomeFragment extends MyFragment {
         } else {
             page = 0;
         }
-        OkHttpUtil.getRequets(ApiConstant.Home.ARTICLES_URL + page + ApiConstant.END_URL, this, null, new JsonCallback<LzyResponse<ArticlesBean>>() {
+        OkHttpUtil.getRequest(ApiConstant.Home.ARTICLES_URL + page + ApiConstant.END_URL, this, null, new JsonCallback<LzyResponse<ArticlesBean>>() {
 
             @Override
             public void onStart(Request<LzyResponse<ArticlesBean>, ? extends Request> request) {

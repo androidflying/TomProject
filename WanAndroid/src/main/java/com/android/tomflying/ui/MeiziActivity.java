@@ -104,7 +104,7 @@ public class MeiziActivity extends MyActivity {
 
     @Override
     public void doBusiness() {
-        OkHttpUtil.getRequets(ApiConstant.Others.MEIZI_URL, this, null, new StringCallback() {
+        OkHttpUtil.getRequest(ApiConstant.Others.MEIZI_URL, this, null, new StringCallback() {
 
             @Override
             public void onStart(Request<String, ? extends Request> request) {

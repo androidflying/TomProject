@@ -12,14 +12,14 @@ import com.tom.network.model.HttpParams;
  * 描述：
  */
 public class OkHttpUtil {
-    public static <T> void getRequets(String url, Object tag, HttpParams params, JsonCallback<T> callback) {
+    public static <T> void getRequest(String url, Object tag, HttpParams params, JsonCallback<T> callback) {
         OkGo.<T>get(url)
                 .tag(tag)
                 .params(params)
                 .execute(callback);
     }
 
-    public static void getRequets(String url, Object tag, HttpParams params, StringCallback callback) {
+    public static void getRequest(String url, Object tag, HttpParams params, StringCallback callback) {
         OkGo.<String>get(url)
                 .tag(tag)
                 .params(params)

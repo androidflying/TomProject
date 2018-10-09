@@ -166,7 +166,7 @@ public class ArticleCollectedActivity extends MyActivity {
             page++;
         }
 
-        OkHttpUtil.getRequets(ApiConstant.User.COLLECT_ARTICLES_URL + page + ApiConstant.END_URL, this, null, new JsonCallback<LzyResponse<CollectArticleBean>>() {
+        OkHttpUtil.getRequest(ApiConstant.User.COLLECT_ARTICLES_URL + page + ApiConstant.END_URL, this, null, new JsonCallback<LzyResponse<CollectArticleBean>>() {
 
             @Override
             public void onStart(Request<LzyResponse<CollectArticleBean>, ? extends Request> request) {

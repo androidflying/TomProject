@@ -17,7 +17,6 @@ import com.android.tomflying.event.LoginEvent;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.tom.baselib.utils.ActivityUtils;
-import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.SPUtils;
 import com.tom.baselib.utils.TimeUtils;
 import com.tom.baselib.utils.ToastUtils;

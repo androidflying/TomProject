@@ -32,7 +32,6 @@ android {
 dependencies {
     implementation rootProject.ext.dependencies["appcompat-v7"]
     api rootProject.ext.dependencies["multidex"]
-    api project(':ThirdLibrarys:TomNetwork')
     api(rootProject.ext.dependencies["arouter-api"]) {
         exclude module: 'support-v4'
         exclude module: 'support-annotations'

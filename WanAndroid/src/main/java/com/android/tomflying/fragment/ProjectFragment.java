@@ -73,7 +73,7 @@ public class ProjectFragment extends MyFragment {
     }
 
     private void getCate() {
-        OkHttpUtil.getRequets(ApiConstant.Project.TREE_URL, this, null, new JsonCallback<LzyResponse<List<ProjectCateBean>>>() {
+        OkHttpUtil.getRequest(ApiConstant.Project.TREE_URL, this, null, new JsonCallback<LzyResponse<List<ProjectCateBean>>>() {
             @Override
             public void onSuccess(Response<LzyResponse<List<ProjectCateBean>>> response) {
                 tabSegment.setVisibility(View.VISIBLE);

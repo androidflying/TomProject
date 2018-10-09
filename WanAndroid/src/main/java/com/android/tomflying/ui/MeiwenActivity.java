@@ -91,7 +91,7 @@ public class MeiwenActivity extends MyActivity {
     }
 
     private void getMeiwen() {
-        OkHttpUtil.getRequets(ApiConstant.Others.MEIWEN_URL, this, null, new StringCallback() {
+        OkHttpUtil.getRequest(ApiConstant.Others.MEIWEN_URL, this, null, new StringCallback() {
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 showLoadingDialog();

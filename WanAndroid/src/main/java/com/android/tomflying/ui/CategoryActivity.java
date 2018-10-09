@@ -136,7 +136,7 @@ public class CategoryActivity extends MyActivity {
             page++;
         }
 
-        OkHttpUtil.getRequets(ApiConstant.Home.ARTICLES_URL + page + ApiConstant.END_URL + "?cid=" + cid, this, null, new JsonCallback<LzyResponse<ArticlesBean>>() {
+        OkHttpUtil.getRequest(ApiConstant.Home.ARTICLES_URL + page + ApiConstant.END_URL + "?cid=" + cid, this, null, new JsonCallback<LzyResponse<ArticlesBean>>() {
 
             @Override
             public void onStart(Request<LzyResponse<ArticlesBean>, ? extends Request> request) {
