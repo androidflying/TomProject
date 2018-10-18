@@ -469,8 +469,10 @@ public class FileUtils {
             return false;
         }
         if (destDir.exists()) {
-            if (listener == null || listener.onReplace()) {// require delete the old directory
-                if (!deleteAllInDir(destDir)) {// unsuccessfully delete then return false
+            // require delete the old directory
+            if (listener == null || listener.onReplace()) {
+                // unsuccessfully delete then return false
+                if (!deleteAllInDir(destDir)) {
                     return false;
                 }
             } else {
@@ -523,8 +525,10 @@ public class FileUtils {
             return false;
         }
         if (destFile.exists()) {
-            if (listener == null || listener.onReplace()) {// require delete the old file
-                if (!destFile.delete()) {// unsuccessfully delete then return false
+            // require delete the old file
+            if (listener == null || listener.onReplace()) {
+                // unsuccessfully delete then return false
+                if (!destFile.delete()) {
                     return false;
                 }
             } else {
@@ -541,6 +545,32 @@ public class FileUtils {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param filePath The path of file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean delete(final String filePath) {
+        return delete(getFileByPath(filePath));
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param file The file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean delete(final File file) {
+        if (file == null) {
+            return false;
+        }
+        if (file.isDirectory()) {
+            return deleteDir(file);
+        }
+        return deleteFile(file);
     }
 
     /**
@@ -922,13 +952,17 @@ public class FileUtils {
             if (LINE_SEP.endsWith("\n")) {
                 while ((readChars = is.read(buffer, 0, 1024)) != -1) {
                     for (int i = 0; i < readChars; ++i) {
-                        if (buffer[i] == '\n') ++count;
+                        if (buffer[i] == '\n'){
+                            ++count;
+                        }
                     }
                 }
             } else {
                 while ((readChars = is.read(buffer, 0, 1024)) != -1) {
                     for (int i = 0; i < readChars; ++i) {
-                        if (buffer[i] == '\r') ++count;
+                        if (buffer[i] == '\r') {
+                            ++count;
+                        }
                     }
                 }
             }
@@ -1006,9 +1040,7 @@ public class FileUtils {
      * @return the length of directory
      */
     public static long getDirLength(final File dir) {
-        if (!isDir(dir)) {
-            return -1;
-        }
+        if (!isDir(dir)) return -1;
         long len = 0;
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
@@ -1135,7 +1167,9 @@ public class FileUtils {
      * @return the file's path of directory
      */
     public static String getDirName(final File file) {
-        if (file == null) return "";
+        if (file == null) {
+            return "";
+        }
         return getDirName(file.getAbsolutePath());
     }
 
@@ -1200,7 +1234,7 @@ public class FileUtils {
      * @return the name of file without extension
      */
     public static String getFileNameNoExtension(final String filePath) {
-        if (isSpace(filePath)) {
+        if (isSpace(filePath)){
             return "";
         }
         int lastPoi = filePath.lastIndexOf('.');
@@ -1221,7 +1255,7 @@ public class FileUtils {
      * @return the extension of file
      */
     public static String getFileExtension(final File file) {
-        if (file == null) {
+        if (file == null){
             return "";
         }
         return getFileExtension(file.getPath());
@@ -1234,7 +1268,7 @@ public class FileUtils {
      * @return the extension of file
      */
     public static String getFileExtension(final String filePath) {
-        if (isSpace(filePath)) {
+        if (isSpace(filePath)){
             return "";
         }
         int lastPoi = filePath.lastIndexOf('.');
