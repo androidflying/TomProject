@@ -9,7 +9,7 @@ android {
         minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
         versionCode 1
-        versionName "1.5.3"
+        versionName "1.5.4"
 
 
     }
@@ -25,5 +25,5 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api files('libs/umeng-common-1.5.3.jar')
+    api files('libs/umeng-common-1.5.4.jar')
 }
