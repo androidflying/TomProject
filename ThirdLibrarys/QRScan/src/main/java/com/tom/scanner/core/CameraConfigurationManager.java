@@ -30,12 +30,6 @@ public class CameraConfigurationManager {
     }
 
     void initFromCameraParameters(Camera camera) {
-        Camera.Parameters parameters = camera.getParameters();
-
-        if (CameraConfigurationManager.autoFocusAble(camera)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        }
-
         Point screenResolution = QRCodeUtil.getScreenResolution(mContext);
         Point screenResolutionForCamera = new Point();
         screenResolutionForCamera.x = screenResolution.x;
@@ -46,7 +40,7 @@ public class CameraConfigurationManager {
             screenResolutionForCamera.y = screenResolution.x;
         }
 
-        mPreviewResolution = getPreviewResolution(parameters, screenResolutionForCamera);
+        mPreviewResolution = getPreviewResolution(camera.getParameters(), screenResolutionForCamera);
 
         if (QRCodeUtil.isPortrait(mContext)) {
             mCameraResolution = new Point(mPreviewResolution.y, mPreviewResolution.x);
@@ -70,8 +64,49 @@ public class CameraConfigurationManager {
         parameters.setPreviewSize(mPreviewResolution.x, mPreviewResolution.y);
         setZoom(parameters);
 
+        // https://github.com/googlesamples/android-vision/blob/master/visionSamples/barcode-reader/app/src/main/java/com/google/android/gms/samples/vision/barcodereader/ui/camera/CameraSource.java
+        int[] previewFpsRange = selectPreviewFpsRange(camera, 15.0f);
+        if (previewFpsRange != null) {
+            parameters.setPreviewFpsRange(
+                    previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                    previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+        }
+
         camera.setDisplayOrientation(getDisplayOrientation());
         camera.setParameters(parameters);
+    }
+
+    /**
+     * Selects the most suitable preview frames per second range, given the desired frames per
+     * second.
+     *
+     * @param camera            the camera to select a frames per second range from
+     * @param desiredPreviewFps the desired frames per second for the camera preview frames
+     * @return the selected preview frames per second range
+     */
+    private int[] selectPreviewFpsRange(Camera camera, float desiredPreviewFps) {
+        // The camera API uses integers scaled by a factor of 1000 instead of floating-point frame
+        // rates.
+        int desiredPreviewFpsScaled = (int) (desiredPreviewFps * 1000.0f);
+
+        // The method for selecting the best range is to minimize the sum of the differences between
+        // the desired value and the upper and lower bounds of the range.  This may select a range
+        // that the desired value is outside of, but this is often preferred.  For example, if the
+        // desired frame rate is 29.97, the range (30, 30) is probably more desirable than the
+        // range (15, 30).
+        int[] selectedFpsRange = null;
+        int minDiff = Integer.MAX_VALUE;
+        List<int[]> previewFpsRangeList = camera.getParameters().getSupportedPreviewFpsRange();
+        for (int[] range : previewFpsRangeList) {
+            int deltaMin = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+            int deltaMax = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
+            int diff = Math.abs(deltaMin) + Math.abs(deltaMax);
+            if (diff < minDiff) {
+                selectedFpsRange = range;
+                minDiff = diff;
+            }
+        }
+        return selectedFpsRange;
     }
 
     void openFlashlight(Camera camera) {
@@ -257,4 +292,5 @@ public class CameraConfigurationManager {
             parameters.set("taking-picture-zoom", tenDesiredZoom);
         }
     }
+
 }
