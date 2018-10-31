@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Layout;
+import android.text.Layout.Alignment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -52,6 +53,9 @@ import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
+
+import static android.graphics.BlurMaskFilter.Blur;
+
 
 /**
  * 作者：tom_flying
@@ -104,11 +108,11 @@ public class SpanUtils {
     private boolean isBoldItalic;
     private String fontFamily;
     private Typeface typeface;
-    private Layout.Alignment alignment;
+    private Alignment alignment;
     private ClickableSpan clickSpan;
     private String url;
     private float blurRadius;
-    private BlurMaskFilter.Blur style;
+    private Blur style;
     private Shader shader;
     private float shadowRadius;
     private float shadowDx;
@@ -132,10 +136,10 @@ public class SpanUtils {
     private final int mTypeImage = 1;
     private final int mTypeSpace = 2;
 
-
     public SpanUtils() {
         mBuilder = new SpannableStringBuilder();
         mText = "";
+        mType = -1;
         setDefault();
     }
 
@@ -458,13 +462,13 @@ public class SpanUtils {
      *
      * @param alignment The alignment.
      *                  <ul>
-     *                  <li>{@link Layout.Alignment#ALIGN_NORMAL  }</li>
-     *                  <li>{@link Layout.Alignment#ALIGN_OPPOSITE}</li>
-     *                  <li>{@link Layout.Alignment#ALIGN_CENTER  }</li>
+     *                  <li>{@link Alignment#ALIGN_NORMAL  }</li>
+     *                  <li>{@link Alignment#ALIGN_OPPOSITE}</li>
+     *                  <li>{@link Alignment#ALIGN_CENTER  }</li>
      *                  </ul>
      * @return the single {@link SpanUtils} instance
      */
-    public SpanUtils setAlign(@NonNull final Layout.Alignment alignment) {
+    public SpanUtils setAlign(@NonNull final Alignment alignment) {
         this.alignment = alignment;
         return this;
     }
@@ -499,15 +503,15 @@ public class SpanUtils {
      * @param radius The radius of blur.
      * @param style  The style.
      *               <ul>
-     *               <li>{@link BlurMaskFilter.Blur#NORMAL}</li>
-     *               <li>{@link BlurMaskFilter.Blur#SOLID}</li>
-     *               <li>{@link BlurMaskFilter.Blur#OUTER}</li>
-     *               <li>{@link BlurMaskFilter.Blur#INNER}</li>
+     *               <li>{@link Blur#NORMAL}</li>
+     *               <li>{@link Blur#SOLID}</li>
+     *               <li>{@link Blur#OUTER}</li>
+     *               <li>{@link Blur#INNER}</li>
      *               </ul>
      * @return the single {@link SpanUtils} instance
      */
     public SpanUtils setBlur(@FloatRange(from = 0, fromInclusive = false) final float radius,
-                             final BlurMaskFilter.Blur style) {
+                             final Blur style) {
         this.blurRadius = radius;
         this.style = style;
         return this;
@@ -706,7 +710,6 @@ public class SpanUtils {
      * @return the single {@link SpanUtils} instance
      */
     public SpanUtils appendImage(@DrawableRes final int resourceId, @Align final int align) {
-        append(Character.toString((char) 0));// it's important for span start with image
         apply(mTypeImage);
         this.imageResourceId = resourceId;
         this.alignImage = align;
@@ -764,9 +767,7 @@ public class SpanUtils {
     }
 
     private void updateCharCharSequence() {
-        if (mText.length() == 0) {
-            return;
-        }
+        if (mText.length() == 0) return;
         int start = mBuilder.length();
         mBuilder.append(mText);
         int end = mBuilder.length();
@@ -795,7 +796,6 @@ public class SpanUtils {
                     flag
             );
         }
-
         if (fontSize != -1) {
             mBuilder.setSpan(new AbsoluteSizeSpan(fontSize, fontSizeIsDp), start, end, flag);
         }
@@ -872,6 +872,10 @@ public class SpanUtils {
 
     private void updateImage() {
         int start = mBuilder.length();
+        if (start == 0) {
+            mBuilder.append(Character.toString((char) 2));
+            start = 1;
+        }
         mBuilder.append("<img>");
         int end = start + 5;
         if (imageBitmap != null) {
@@ -912,27 +916,27 @@ public class SpanUtils {
         public void chooseHeight(final CharSequence text, final int start, final int end,
                                  final int spanstartv, final int v, final Paint.FontMetricsInt fm) {
             int need = height - (v + fm.descent - fm.ascent - spanstartv);
-//            if (need > 0) {
-            if (mVerticalAlignment == ALIGN_TOP) {
-                fm.descent += need;
-            } else if (mVerticalAlignment == ALIGN_CENTER) {
-                fm.descent += need / 2;
-                fm.ascent -= need / 2;
-            } else {
-                fm.ascent -= need;
+            if (need > 0) {
+                if (mVerticalAlignment == ALIGN_TOP) {
+                    fm.descent += need;
+                } else if (mVerticalAlignment == ALIGN_CENTER) {
+                    fm.descent += need / 2;
+                    fm.ascent -= need / 2;
+                } else {
+                    fm.ascent -= need;
+                }
             }
-//            }
             need = height - (v + fm.bottom - fm.top - spanstartv);
-//            if (need > 0) {
-            if (mVerticalAlignment == ALIGN_TOP) {
-                fm.top += need;
-            } else if (mVerticalAlignment == ALIGN_CENTER) {
-                fm.bottom += need / 2;
-                fm.top -= need / 2;
-            } else {
-                fm.top -= need;
+            if (need > 0) {
+                if (mVerticalAlignment == ALIGN_TOP) {
+                    fm.top += need;
+                } else if (mVerticalAlignment == ALIGN_CENTER) {
+                    fm.bottom += need / 2;
+                    fm.top -= need / 2;
+                } else {
+                    fm.top -= need;
+                }
             }
-//            }
         }
 
         @Override

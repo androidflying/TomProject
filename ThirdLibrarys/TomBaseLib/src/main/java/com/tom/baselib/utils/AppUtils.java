@@ -441,6 +441,10 @@ public class AppUtils {
      * Relaunch the application.
      */
     public static void relaunchApp() {
+        relaunchApp(false);
+    }
+
+    public static void relaunchApp(final boolean isKillProcess) {
         PackageManager packageManager = Utils.getApp().getPackageManager();
         Intent intent = packageManager.getLaunchIntentForPackage(Utils.getApp().getPackageName());
         if (intent == null) {
@@ -449,6 +453,12 @@ public class AppUtils {
         ComponentName componentName = intent.getComponent();
         Intent mainIntent = Intent.makeRestartActivityTask(componentName);
         Utils.getApp().startActivity(mainIntent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Utils.getApp().startActivity(intent);
+        if (!isKillProcess) {
+            return;
+        }
+        android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
     }
 

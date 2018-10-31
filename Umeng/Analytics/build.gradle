@@ -24,5 +24,5 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api files('libs/umeng-analytics-7.5.4.jar')
-    implementation project(':Umeng:Common')
+    api project(':Umeng:Common')
 }
