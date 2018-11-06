@@ -1,7 +1,7 @@
 package com.tom.mrvah.helper;
 
-import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IntRange;
+import androidx.annotation.LayoutRes;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 

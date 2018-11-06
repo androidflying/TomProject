@@ -1,6 +1,6 @@
 package com.android.tomflying.adapter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.android.tomflying.R;
 import com.android.tomflying.bean.OpenSourceBean;

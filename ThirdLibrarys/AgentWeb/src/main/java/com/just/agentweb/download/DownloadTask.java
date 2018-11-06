@@ -17,7 +17,8 @@
 package com.just.agentweb.download;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
+
+import androidx.annotation.DrawableRes;
 
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.R;

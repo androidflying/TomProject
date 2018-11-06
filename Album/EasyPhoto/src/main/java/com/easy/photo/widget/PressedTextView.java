@@ -3,7 +3,8 @@ package com.easy.photo.widget;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 /**
@@ -11,7 +12,7 @@ import android.util.AttributeSet;
  * Created by huan on 2017/9/15.
  */
 
-public class PressedTextView extends android.support.v7.widget.AppCompatTextView {
+public class PressedTextView extends androidx.appcompat.widget.AppCompatTextView {
     private float pressedScale;
     private AnimatorSet set;
     private int pressedFlag;

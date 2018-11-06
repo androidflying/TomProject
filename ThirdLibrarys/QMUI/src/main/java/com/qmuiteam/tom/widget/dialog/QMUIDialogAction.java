@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.annotation.IntDef;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 

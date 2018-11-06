@@ -1,6 +1,6 @@
 package com.tom.mrvah.helper;
 
-import android.support.v7.util.DiffUtil;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.tom.mrvah.entity.MultiTypeEntity;
 

@@ -2,9 +2,11 @@ package com.qmuiteam.tom.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.WindowInsetsCompat;
+
+import com.google.android.material.appbar.AppBarLayout;
+
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -12,8 +14,10 @@ import com.qmuiteam.tom.util.QMUIWindowInsetHelper;
 
 import java.lang.reflect.Field;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 /**
- * add support for API 19 when use with {@link android.support.design.widget.CoordinatorLayout}
+ * add support for API 19 when use with {@link CoordinatorLayout}
  * and {@link QMUICollapsingTopBarLayout}
  * <p>
  * notice: we use reflection to change the field value in AppBarLayout. use it only if you need to

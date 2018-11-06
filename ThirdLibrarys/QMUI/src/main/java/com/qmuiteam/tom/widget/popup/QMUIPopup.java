@@ -3,8 +3,9 @@ package com.qmuiteam.tom.widget.popup;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
-import android.support.annotation.IntDef;
-import android.support.annotation.LayoutRes;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

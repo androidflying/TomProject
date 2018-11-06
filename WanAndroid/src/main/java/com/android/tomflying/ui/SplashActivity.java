@@ -2,7 +2,8 @@ package com.android.tomflying.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -72,10 +73,10 @@ public class SplashActivity extends MyActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                ActivityUtils.finishActivity(SplashActivity.this);
                 ActivityUtils.startActivity(MainActivity.class);
+                ActivityUtils.finishActivity(SplashActivity.this);
             }
-        }, 2000);
+        }, 3000);
     }
 
     private void login(String name, String password) {
@@ -104,8 +105,8 @@ public class SplashActivity extends MyActivity {
                 if (time < 1500) {
                     delayStart();
                 } else {
-                    ActivityUtils.finishActivity(SplashActivity.this);
                     ActivityUtils.startActivity(MainActivity.class);
+                    ActivityUtils.finishActivity(SplashActivity.this);
                 }
             }
 

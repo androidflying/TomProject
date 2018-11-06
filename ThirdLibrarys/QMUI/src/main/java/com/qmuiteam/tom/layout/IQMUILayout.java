@@ -1,7 +1,7 @@
 package com.qmuiteam.tom.layout;
 
-import android.support.annotation.ColorInt;
-import android.support.annotation.IntDef;
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntDef;
 import android.view.View;
 
 import java.lang.annotation.Retention;

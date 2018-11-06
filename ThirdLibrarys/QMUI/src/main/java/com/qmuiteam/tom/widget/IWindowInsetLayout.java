@@ -1,8 +1,6 @@
 package com.qmuiteam.tom.widget;
 
 import android.graphics.Rect;
-import android.support.v4.view.WindowInsetsCompat;
-import android.view.WindowInsets;
 
 /**
  * @author cginechen

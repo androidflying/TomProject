@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">福利舍</string>
+    <string name="title_books">段子</string>
+    <string name="title_photo">图片</string>
+    <string name="title_music">音乐</string>
+    <string name="title_video">视频</string>
+    <string name="title_more">更多</string>
+</resources>

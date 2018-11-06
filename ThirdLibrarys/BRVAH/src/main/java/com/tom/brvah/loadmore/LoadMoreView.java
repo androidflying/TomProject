@@ -1,7 +1,7 @@
 package com.tom.brvah.loadmore;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.BaseViewHolder;

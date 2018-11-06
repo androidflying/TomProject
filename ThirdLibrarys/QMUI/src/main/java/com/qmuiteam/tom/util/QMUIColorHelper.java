@@ -1,7 +1,8 @@
 package com.qmuiteam.tom.util;
 
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
+
+import androidx.annotation.ColorInt;
 
 /**
  * @author cginechen

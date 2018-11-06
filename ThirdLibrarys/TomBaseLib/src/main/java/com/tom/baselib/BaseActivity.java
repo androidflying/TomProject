@@ -6,9 +6,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -26,7 +27,7 @@ import com.tom.baselib.utils.ScreenUtils;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView {
 
     protected View mContentView;
-    protected Activity mActivity;
+    protected AppCompatActivity mActivity;
     private int fastTime = 200;
     /**
      * 上次点击时间
@@ -39,6 +40,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         mActivity = this;
         //默认实现沉浸式状态栏
         BarUtils.setStatusBarAlpha(this);
+        //默认强制竖屏
+        ScreenUtils.setPortrait(this);
         if (isNeedAdapt()) {
             //今日头条屏幕适配方案
             if (ScreenUtils.isPortrait()) {
@@ -88,7 +91,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected abstract int setAdaptHorizontalScreen();
 
     protected void setBaseView(@LayoutRes int layoutId) {
-        setContentView(mContentView = LayoutInflater.from(this).inflate(layoutId, null));
+        setContentView(mContentView = LayoutInflater.from(getBaseContext()).inflate(layoutId, null));
     }
 
     @Override

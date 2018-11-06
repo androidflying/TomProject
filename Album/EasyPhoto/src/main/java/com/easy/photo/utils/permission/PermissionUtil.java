@@ -2,9 +2,10 @@ package com.easy.photo.utils.permission;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.PermissionChecker;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 
 import com.easy.photo.constant.Code;
 

@@ -1,8 +1,9 @@
 package com.tom.common.util;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.easy.photo.EasyPhotos;
 import com.easy.photo.builder.AlbumBuilder;

@@ -3,8 +3,9 @@ package com.qmuiteam.tom.widget.grouplist;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.IntDef;
-import android.support.v4.widget.Space;
+
+import androidx.annotation.IntDef;
+import androidx.legacy.widget.Space;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -146,14 +147,14 @@ public class QMUICommonListItemView extends RelativeLayout {
         final int initDetailColor = array.getColor(R.styleable.QMUICommonListItemView_qmui_commonList_detailColor, QMUIResHelper.getAttrColor(getContext(), R.attr.qmui_config_color_gray_5));
         array.recycle();
 
-        mImageView = (ImageView) findViewById(R.id.group_list_item_imageView);
-        mTextContainer = (LinearLayout) findViewById(R.id.group_list_item_textContainer);
-        mTextView = (TextView) findViewById(R.id.group_list_item_textView);
+        mImageView = findViewById(R.id.group_list_item_imageView);
+        mTextContainer = findViewById(R.id.group_list_item_textContainer);
+        mTextView = findViewById(R.id.group_list_item_textView);
         mTextView.setTextColor(initTitleColor);
-        mRedDot = (ImageView) findViewById(R.id.group_list_item_tips_dot);
-        mNewTipViewStub = (ViewStub) findViewById(R.id.group_list_item_tips_new);
-        mDetailTextView = (TextView) findViewById(R.id.group_list_item_detailTextView);
-        mTextDetailSpace = (Space) findViewById(R.id.group_list_item_space);
+        mRedDot = findViewById(R.id.group_list_item_tips_dot);
+        mNewTipViewStub = findViewById(R.id.group_list_item_tips_new);
+        mDetailTextView = findViewById(R.id.group_list_item_detailTextView);
+        mTextDetailSpace = findViewById(R.id.group_list_item_space);
         mDetailTextView.setTextColor(initDetailColor);
         LinearLayout.LayoutParams detailTextViewLP = (LinearLayout.LayoutParams) mDetailTextView.getLayoutParams();
         if (QMUIViewHelper.getIsLastLineSpacingExtraError()) {
@@ -164,7 +165,7 @@ public class QMUICommonListItemView extends RelativeLayout {
         } else {
             detailTextViewLP.topMargin = 0;
         }
-        mAccessoryView = (ViewGroup) findViewById(R.id.group_list_item_accessoryView);
+        mAccessoryView = findViewById(R.id.group_list_item_accessoryView);
         setOrientation(orientation);
         setAccessoryType(accessoryType);
     }

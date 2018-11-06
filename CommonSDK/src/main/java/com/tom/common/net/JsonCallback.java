@@ -1,5 +1,6 @@
 package com.tom.common.net;
 
+
 import com.tom.network.callback.AbsCallback;
 
 import java.lang.reflect.ParameterizedType;

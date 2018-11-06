@@ -29,7 +29,9 @@ ext {
             AROUTER_VERSION            : '1.4.0',
             AROUTER_COMPILER_VERSION   : '1.2.1',
             OKHTTP_VERSION             : '3.11.0',
-            BUTTERKNIFE_VERSION        : '8.8.1'
+            BUTTERKNIFE_VERSION        : '8.8.1',
+            LOTTIE_VERSION             : '2.8.0',
+            VIDEO_PLAYER_VERSION       : '6.3.1',
     ]
 
     greendaoVersion = 1
@@ -64,6 +66,11 @@ ext {
             "okhttp-urlconnection"     : "com.squareup.okhttp3:okhttp-urlconnection:${version["OKHTTP_VERSION"]}",
 
             "glide"                    : "com.github.bumptech.glide:glide:${version["GLIDE_VERSION"]}",
+
+
+            "lottie"                   : "com.airbnb.android:lottie:${version["LOTTIE_VERSION"]}",
+
+            "video-player"             : "cn.jzvd:jiaozivideoplayer:${version["VIDEO_PLAYER_VERSION"]}",
 
     ]
 }

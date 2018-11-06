@@ -10,7 +10,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
+
+import androidx.annotation.LayoutRes;
 import android.text.InputType;
 import android.text.method.TransformationMethod;
 import android.view.Gravity;

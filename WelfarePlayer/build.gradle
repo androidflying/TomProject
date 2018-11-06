@@ -1,0 +1,52 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.android["COMPILE_SDK_VERSION"]
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
+        targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
+        applicationId "com.hub.welfare"
+        versionCode 1
+        versionName "1.0.0"
+        vectorDrawables.useSupportLibrary = true
+
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled rootProject.ext.MINIFY_DISABLED
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            shrinkResources true
+            zipAlignEnabled true
+            minifyEnabled rootProject.ext.MINIFY_ENABLED
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.dependencies["appcompat-v7"]
+    implementation rootProject.ext.dependencies["design"]
+    implementation rootProject.ext.dependencies["constraint-layout"]
+    implementation rootProject.ext.dependencies["support-vector-drawable"]
+    implementation project(':ThirdLibrarys:TomBaseLib')
+    implementation project(':ThirdLibrarys:TomNetwork')
+    implementation project(':ThirdLibrarys:BRVAH')
+    implementation rootProject.ext.dependencies["gson"]
+    implementation rootProject.ext.dependencies["eventbus"]
+    implementation rootProject.ext.dependencies["glide"]
+    implementation rootProject.ext.dependencies["lottie"]
+    implementation rootProject.ext.dependencies["video-player"]
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+
+}

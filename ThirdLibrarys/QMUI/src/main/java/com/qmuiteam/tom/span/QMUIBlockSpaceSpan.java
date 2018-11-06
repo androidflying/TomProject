@@ -2,7 +2,8 @@ package com.qmuiteam.tom.span;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 import android.text.style.ReplacementSpan;
 
 import com.qmuiteam.tom.util.QMUIDeviceHelper;

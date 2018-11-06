@@ -1,6 +1,6 @@
 package com.tom.baselib.utils;
 
-import android.support.v4.util.SimpleArrayMap;
+import androidx.collection.SimpleArrayMap;
 
 import com.tom.baselib.constant.RegexConstants;
 

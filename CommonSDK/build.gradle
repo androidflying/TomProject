@@ -23,6 +23,7 @@ android {
 dependencies {
     api project(':ThirdLibrarys:BRVAH')
     api project(':ThirdLibrarys:TomBaseLib')
+    api project(':ThirdLibrarys:TomNetwork')
     implementation rootProject.ext.dependencies["appcompat-v7"]
     implementation rootProject.ext.dependencies["constraint-layout"]
     implementation rootProject.ext.dependencies["design"]

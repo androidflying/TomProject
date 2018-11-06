@@ -43,7 +43,7 @@
             android:textColor="?attr/qmui_config_color_gray_1"
             android:textSize="?attr/qmui_common_list_item_title_h_text_size" />
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:id="@+id/group_list_item_space"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -3,7 +3,8 @@ package com.android.tomflying.fragment;
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

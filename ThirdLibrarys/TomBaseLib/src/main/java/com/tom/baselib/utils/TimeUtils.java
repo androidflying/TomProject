@@ -1,6 +1,6 @@
 package com.tom.baselib.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tom.baselib.constant.TimeConstants;
 

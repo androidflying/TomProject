@@ -16,7 +16,7 @@
 
 package com.just.agentweb.download;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.util.ArrayMap;
 
 import com.just.agentweb.R;
