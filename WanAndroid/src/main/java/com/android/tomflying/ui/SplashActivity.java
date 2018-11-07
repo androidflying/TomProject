@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
+
 import android.text.TextUtils;
 import android.view.View;
 
@@ -18,10 +19,12 @@ import com.android.tomflying.event.LoginEvent;
 import com.android.tomflying.util.JsonCallback;
 import com.android.tomflying.util.OkHttpUtil;
 import com.tom.baselib.utils.ActivityUtils;
+import com.tom.baselib.utils.LogUtils;
 import com.tom.baselib.utils.SPUtils;
 import com.tom.baselib.utils.TimeUtils;
 import com.tom.baselib.utils.ToastUtils;
 import com.tom.network.OkGo;
+import com.tom.network.callback.StringCallback;
 import com.tom.network.model.HttpParams;
 import com.tom.network.model.Response;
 import com.tom.network.request.base.Request;
@@ -118,7 +121,6 @@ public class SplashActivity extends MyActivity {
                 EventBus.getDefault().post(new LoginEvent());
             }
         });
-
     }
 
     @Override

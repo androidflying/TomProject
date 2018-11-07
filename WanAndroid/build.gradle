@@ -13,8 +13,8 @@ android {
         minSdkVersion rootProject.ext.android["MIN_SDK_VERSION"]
         targetSdkVersion rootProject.ext.android["TARGET_SDK_VERSION"]
         applicationId "com.android.tomflying"
-        versionCode 8
-        versionName "1.1.0"
+        versionCode 9
+        versionName "1.1.1"
 
     }
 

@@ -13,11 +13,13 @@ public class LoginBean {
 
 
     /**
+     * chapterTops : []
      * collectIds : []
      * email :
      * icon :
      * id : 5515
-     * password : 123456
+     * password : *******
+     * token :
      * type : 0
      * username : 953530507
      */
@@ -26,9 +28,11 @@ public class LoginBean {
     private String icon;
     private int id;
     private String password;
+    private String token;
     private int type;
     private String username;
-    private List<?> collectIds;
+    private List<String> chapterTops;
+    private List<String> collectIds;
 
     public String getEmail() {
         return email;
@@ -62,6 +66,14 @@ public class LoginBean {
         this.password = password;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public int getType() {
         return type;
     }
@@ -78,11 +90,19 @@ public class LoginBean {
         this.username = username;
     }
 
+    public List<?> getChapterTops() {
+        return chapterTops;
+    }
+
+    public void setChapterTops(List<String> chapterTops) {
+        this.chapterTops = chapterTops;
+    }
+
     public List<?> getCollectIds() {
         return collectIds;
     }
 
-    public void setCollectIds(List<?> collectIds) {
+    public void setCollectIds(List<String> collectIds) {
         this.collectIds = collectIds;
     }
 }
