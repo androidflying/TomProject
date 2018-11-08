@@ -7,11 +7,11 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.qmuiteam.tom.R;
+
+import androidx.annotation.Nullable;
 
 /**
  * 可以方便地生成圆角矩形/圆形 {@link android.graphics.drawable.Drawable}。

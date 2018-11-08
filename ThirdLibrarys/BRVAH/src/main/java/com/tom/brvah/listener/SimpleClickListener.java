@@ -1,19 +1,18 @@
 package com.tom.brvah.listener;
 
 import android.os.Build;
-
-import androidx.core.view.GestureDetectorCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
-
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.BaseViewHolder;
 
 import java.util.Set;
+
+import androidx.core.view.GestureDetectorCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.tom.brvah.BaseQuickAdapter.EMPTY_VIEW;
 import static com.tom.brvah.BaseQuickAdapter.FOOTER_VIEW;

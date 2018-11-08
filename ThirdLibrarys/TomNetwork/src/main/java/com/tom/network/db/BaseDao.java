@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Pair;
 
-
 import com.tom.network.utils.OkLogger;
 
 import java.util.ArrayList;

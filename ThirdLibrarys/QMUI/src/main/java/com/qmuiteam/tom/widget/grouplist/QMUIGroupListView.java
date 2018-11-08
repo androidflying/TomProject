@@ -4,8 +4,6 @@ package com.qmuiteam.tom.widget.grouplist;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -19,6 +17,8 @@ import com.qmuiteam.tom.util.QMUIViewHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
 
 /**
  * 通用的列表, 常用于 App 的设置界面。

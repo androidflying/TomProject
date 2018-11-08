@@ -1,11 +1,6 @@
 package com.tom.brvah;
 
 import android.graphics.Canvas;
-
-import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -15,6 +10,11 @@ import com.tom.brvah.listener.OnItemSwipeListener;
 
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.view.MotionEventCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class BaseItemDraggableAdapter<T, K extends BaseViewHolder> extends BaseQuickAdapter<T, K> {
     private static final int NO_TOGGLE_VIEW = 0;

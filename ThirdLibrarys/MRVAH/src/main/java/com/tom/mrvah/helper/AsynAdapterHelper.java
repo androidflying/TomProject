@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 
-import androidx.recyclerview.widget.DiffUtil;
-
 import com.tom.mrvah.entity.HandleBase;
 import com.tom.mrvah.entity.MultiTypeEntity;
 
@@ -14,6 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import androidx.recyclerview.widget.DiffUtil;
 
 /**
  * 作者:  tom_flying

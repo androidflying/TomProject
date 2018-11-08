@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import com.tom.baselib.BaseActivity;
 import com.tom.common.util.DialogUtil;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.message.PushAgent;
 
 import org.greenrobot.eventbus.EventBus;
 

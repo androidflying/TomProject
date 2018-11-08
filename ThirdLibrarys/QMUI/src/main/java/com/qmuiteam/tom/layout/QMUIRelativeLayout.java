@@ -2,11 +2,11 @@ package com.qmuiteam.tom.layout;
 
 import android.content.Context;
 import android.graphics.Canvas;
-
-import androidx.annotation.ColorInt;
 import android.util.AttributeSet;
 
 import com.qmuiteam.tom.alpha.QMUIAlphaRelativeLayout;
+
+import androidx.annotation.ColorInt;
 
 /**
  * @author cginechen

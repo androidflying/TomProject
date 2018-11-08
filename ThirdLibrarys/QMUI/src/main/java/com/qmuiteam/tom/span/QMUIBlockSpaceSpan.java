@@ -2,11 +2,11 @@ package com.qmuiteam.tom.span;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
-import androidx.annotation.NonNull;
 import android.text.style.ReplacementSpan;
 
 import com.qmuiteam.tom.util.QMUIDeviceHelper;
+
+import androidx.annotation.NonNull;
 
 /**
  * 提供一个整行的空白的Span，可用来用于制作段间距

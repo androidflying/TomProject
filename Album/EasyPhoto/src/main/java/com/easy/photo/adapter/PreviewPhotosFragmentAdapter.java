@@ -1,8 +1,6 @@
 package com.easy.photo.adapter;
 
 import android.content.Context;
-
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,8 @@ import com.easy.photo.constant.Type;
 import com.easy.photo.result.Result;
 import com.easy.photo.setting.Setting;
 import com.easy.photo.widget.PressedImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 预览所有选中图片集合的适配器

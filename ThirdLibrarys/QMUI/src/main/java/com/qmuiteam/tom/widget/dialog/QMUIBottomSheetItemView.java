@@ -1,14 +1,14 @@
 package com.qmuiteam.tom.widget.dialog;
 
 import android.content.Context;
-
-import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.ViewStub;
 import android.widget.TextView;
 
 import com.qmuiteam.tom.R;
 import com.qmuiteam.tom.alpha.QMUIAlphaLinearLayout;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 /**
  * QMUIBottomSheet 的ItemView

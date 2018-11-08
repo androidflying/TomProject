@@ -3,9 +3,9 @@ package com.easy.photo.widget;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
-import android.util.AttributeSet;
 
 /**
  * 带点击状态的textview

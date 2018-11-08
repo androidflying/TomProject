@@ -26,13 +26,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.RequiresApi;
-import androidx.core.text.TextDirectionHeuristicsCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.widget.TintTypedArray;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -40,6 +33,13 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.qmuiteam.tom.R;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.TintTypedArray;
+import androidx.core.text.TextDirectionHeuristicsCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
 
 public final class QMUICollapsingTextHelper {
 

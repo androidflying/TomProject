@@ -1,9 +1,9 @@
 package com.qmuiteam.tom.alpha;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatImageButton;
-import android.util.AttributeSet;
 
 public class QMUIAlphaImageButton extends AppCompatImageButton {
 

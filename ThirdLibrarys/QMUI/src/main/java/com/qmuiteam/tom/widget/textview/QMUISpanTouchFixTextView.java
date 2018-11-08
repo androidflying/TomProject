@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-import com.qmuiteam.tom.span.QMUITouchableSpan;
 import com.qmuiteam.tom.link.QMUILinkTouchMovementMethod;
+import com.qmuiteam.tom.span.QMUITouchableSpan;
 
 /**
  * <p>

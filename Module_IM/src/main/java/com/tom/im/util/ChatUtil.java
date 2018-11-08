@@ -14,7 +14,6 @@ import io.rong.imkit.DefaultExtensionModule;
 import io.rong.imkit.IExtensionModule;
 import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
-import io.rong.imkit.model.GroupUserInfo;
 import io.rong.imkit.model.UIConversation;
 import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
 import io.rong.imlib.RongIMClient;

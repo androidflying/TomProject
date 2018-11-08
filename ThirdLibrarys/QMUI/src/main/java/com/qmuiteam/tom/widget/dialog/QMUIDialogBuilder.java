@@ -3,12 +3,6 @@ package com.qmuiteam.tom.widget.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
-import androidx.annotation.StyleRes;
-import androidx.core.content.ContextCompat;
-import androidx.legacy.widget.Space;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +19,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.widget.Space;
 
 /**
  * 创建 {@link QMUIDialog} 的 Builder 基类, 不同的 Builder 子类拥有创建不同类型对话框的能力, 具体见子类。

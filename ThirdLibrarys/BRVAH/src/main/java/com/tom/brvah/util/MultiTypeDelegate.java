@@ -1,9 +1,10 @@
 package com.tom.brvah.util;
 
-import androidx.annotation.LayoutRes;
 import android.util.SparseIntArray;
 
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
 
 import static com.tom.brvah.BaseMultiItemQuickAdapter.TYPE_NOT_FOUND;
 

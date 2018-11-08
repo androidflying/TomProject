@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
-import androidx.collection.SimpleArrayMap;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying

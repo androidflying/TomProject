@@ -2,11 +2,11 @@ package com.tom.common.base;
 
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-
 import com.tom.baselib.BaseLazyFragment;
 
 import org.greenrobot.eventbus.EventBus;
+
+import androidx.annotation.Nullable;
 
 /**
  * 作者：tom_flying

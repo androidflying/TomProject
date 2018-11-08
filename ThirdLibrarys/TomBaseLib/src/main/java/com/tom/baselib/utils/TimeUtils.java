@@ -1,7 +1,5 @@
 package com.tom.baselib.utils;
 
-import androidx.annotation.NonNull;
-
 import com.tom.baselib.constant.TimeConstants;
 
 import java.text.DateFormat;
@@ -10,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 /**
  * 作者：tom_flying

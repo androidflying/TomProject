@@ -3,9 +3,6 @@ package com.qmuiteam.tom.widget.grouplist;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.IntDef;
-import androidx.legacy.widget.Space;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -28,6 +25,9 @@ import com.qmuiteam.tom.util.QMUIViewHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+import androidx.legacy.widget.Space;
 
 /**
  * 作为通用列表 {@link QMUIGroupListView} 里的 item 使用，也可以单独使用。

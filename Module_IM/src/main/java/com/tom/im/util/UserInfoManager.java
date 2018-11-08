@@ -1,19 +1,14 @@
 package com.tom.im.util;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 
 import com.tom.baselib.utils.LogUtils;
 import com.tom.im.BuildConfig;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
-import io.rong.imkit.RongIM;
-import io.rong.imlib.model.Group;
 import io.rong.imlib.model.UserInfo;
 
 /**

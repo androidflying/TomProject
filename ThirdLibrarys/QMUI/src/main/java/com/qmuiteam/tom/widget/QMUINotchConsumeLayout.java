@@ -3,12 +3,12 @@ package com.qmuiteam.tom.widget;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import com.qmuiteam.tom.util.QMUINotchHelper;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * 作者：tom_flying

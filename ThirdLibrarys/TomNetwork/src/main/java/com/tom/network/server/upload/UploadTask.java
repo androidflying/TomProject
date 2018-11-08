@@ -7,10 +7,10 @@ import com.tom.network.model.Progress;
 import com.tom.network.model.Response;
 import com.tom.network.request.base.ProgressRequestBody;
 import com.tom.network.request.base.Request;
-import com.tom.network.utils.HttpUtils;
-import com.tom.network.utils.OkLogger;
 import com.tom.network.server.OkUpload;
 import com.tom.network.server.task.PriorityRunnable;
+import com.tom.network.utils.HttpUtils;
+import com.tom.network.utils.OkLogger;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -1,9 +1,6 @@
 package com.easy.photo.adapter;
 
 import android.content.Context;
-
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +13,8 @@ import com.github.chrisbanes.photoview.OnScaleChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 大图预览界面图片集合的适配器

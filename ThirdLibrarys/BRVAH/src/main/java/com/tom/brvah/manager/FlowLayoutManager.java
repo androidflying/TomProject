@@ -1,8 +1,6 @@
 package com.tom.brvah.manager;
 
 import android.graphics.Rect;
-
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -12,6 +10,8 @@ import com.tom.brvah.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 作者：tom_flying

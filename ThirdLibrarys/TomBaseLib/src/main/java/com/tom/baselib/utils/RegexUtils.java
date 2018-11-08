@@ -1,14 +1,14 @@
 package com.tom.baselib.utils;
 
-import androidx.collection.SimpleArrayMap;
-
 import com.tom.baselib.constant.RegexConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Collections;
+
+import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying

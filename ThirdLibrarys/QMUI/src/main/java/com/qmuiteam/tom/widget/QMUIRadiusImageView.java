@@ -17,13 +17,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-
-import androidx.annotation.ColorInt;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.qmuiteam.tom.R;
+
+import androidx.annotation.ColorInt;
+import androidx.appcompat.widget.AppCompatImageView;
 
 /**
  * 提供为图片添加圆角、边框、剪裁到圆形或其他形状等功能。

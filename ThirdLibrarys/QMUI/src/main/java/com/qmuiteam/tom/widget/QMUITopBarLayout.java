@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-
-import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +17,8 @@ import com.qmuiteam.tom.alpha.QMUIAlphaImageButton;
 import com.qmuiteam.tom.util.QMUIDrawableHelper;
 import com.qmuiteam.tom.util.QMUIResHelper;
 import com.qmuiteam.tom.util.QMUIViewHelper;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * 这是一个对 {@link QMUITopBar} 的代理类，需要它的原因是：

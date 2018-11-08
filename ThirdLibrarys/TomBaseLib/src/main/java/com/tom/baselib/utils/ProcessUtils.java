@@ -2,7 +2,6 @@ package com.tom.baselib.utils;
 
 import android.app.ActivityManager;
 import android.app.AppOpsManager;
-import android.app.Application;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
@@ -12,9 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Process;
 import android.provider.Settings;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresPermission;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -22,6 +18,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 
 import static android.Manifest.permission.KILL_BACKGROUND_PROCESSES;
 

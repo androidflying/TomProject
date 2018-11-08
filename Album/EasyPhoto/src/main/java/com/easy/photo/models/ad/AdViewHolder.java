@@ -1,10 +1,11 @@
 package com.easy.photo.models.ad;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.easy.photo.R;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 广告viewolder

@@ -1,12 +1,13 @@
 package com.qmuiteam.tom.span;
 
-import androidx.annotation.ColorInt;
-import androidx.core.view.ViewCompat;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
 import com.qmuiteam.tom.link.ITouchableSpan;
+
+import androidx.annotation.ColorInt;
+import androidx.core.view.ViewCompat;
 
 /**
  * 可 Touch 的 Span，在 {@link #setPressed(boolean)} 后根据是否 pressed 来触发不同的UI状态

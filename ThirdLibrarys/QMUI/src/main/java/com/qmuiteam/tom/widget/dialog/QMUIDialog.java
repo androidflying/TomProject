@@ -10,8 +10,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.LayoutRes;
 import android.text.InputType;
 import android.text.method.TransformationMethod;
 import android.view.Gravity;
@@ -38,6 +36,8 @@ import com.qmuiteam.tom.widget.QMUIWrapContentScrollView;
 import com.qmuiteam.tom.widget.textview.QMUISpanTouchFixTextView;
 
 import java.util.ArrayList;
+
+import androidx.annotation.LayoutRes;
 
 /**
  * QMUIDialog 对话框一般由 {@link QMUIDialogBuilder} 及其子类创建, 不同的 Builder 可以创建不同类型的对话框,

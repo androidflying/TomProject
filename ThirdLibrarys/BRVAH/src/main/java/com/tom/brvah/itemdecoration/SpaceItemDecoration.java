@@ -1,9 +1,9 @@
 package com.tom.brvah.itemdecoration;
 
 import android.graphics.Rect;
+import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 /**
  * 作者：tom_flying

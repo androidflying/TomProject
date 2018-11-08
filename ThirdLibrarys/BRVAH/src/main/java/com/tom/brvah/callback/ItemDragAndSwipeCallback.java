@@ -1,14 +1,14 @@
 package com.tom.brvah.callback;
 
 import android.graphics.Canvas;
-
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.View;
 
 import com.tom.brvah.BaseItemDraggableAdapter;
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.R;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemDragAndSwipeCallback extends ItemTouchHelper.Callback {
 

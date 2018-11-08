@@ -4,10 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,6 +21,10 @@ import com.qmuiteam.tom.widget.QMUILoadingView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 
 /**
  * 提供一个浮层展示在屏幕中间, 一般使用 {@link QMUITipDialog.Builder} 或 {@link QMUITipDialog.CustomBuilder} 生成。

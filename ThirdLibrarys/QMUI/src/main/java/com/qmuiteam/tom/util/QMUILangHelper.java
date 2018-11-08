@@ -1,10 +1,10 @@
 package com.qmuiteam.tom.util;
 
-import androidx.annotation.Nullable;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
 
 /**
  * @author cginechen

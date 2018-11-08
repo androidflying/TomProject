@@ -11,9 +11,6 @@ import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.SystemClock;
-
-import androidx.collection.LongSparseArray;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,6 +30,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import androidx.collection.LongSparseArray;
+import androidx.core.view.ViewCompat;
 
 /**
  * 使 {@link ListView} 支持添加/删除 Item 的动画，支持自定义动画效果。

@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
-
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import com.qmuiteam.tom.util.QMUIWindowInsetHelper;
+
+import androidx.core.view.ViewCompat;
 
 /**
  * From: https://github.com/oxoooo/earth/blob/30bd82fac7867be596bddf3bd0b32d8be3800665/app/src/main/java/ooo/oxo/apps/earth/widget/WindowInsetsFrameLayout.java

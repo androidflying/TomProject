@@ -1,10 +1,10 @@
 package com.tom.baselib.utils;
 
+import com.tom.baselib.constant.CacheConstants;
+
 import androidx.annotation.NonNull;
 import androidx.collection.LruCache;
 import androidx.collection.SimpleArrayMap;
-
-import com.tom.baselib.constant.CacheConstants;
 
 /**
  * 作者：tom_flying

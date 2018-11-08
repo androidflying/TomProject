@@ -1,20 +1,17 @@
 package com.tom.baselib;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tom.baselib.utils.BarUtils;
 import com.tom.baselib.utils.ScreenUtils;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * 作者：tom_flying

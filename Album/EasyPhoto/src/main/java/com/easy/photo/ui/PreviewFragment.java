@@ -2,16 +2,16 @@ package com.easy.photo.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.easy.photo.R;
 import com.easy.photo.adapter.PreviewPhotosFragmentAdapter;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class PreviewFragment extends Fragment implements PreviewPhotosFragmentAdapter.OnClickListener {
 

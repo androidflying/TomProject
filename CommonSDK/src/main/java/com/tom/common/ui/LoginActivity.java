@@ -1,8 +1,6 @@
 package com.tom.common.ui;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -12,6 +10,8 @@ import com.tom.common.R;
 import com.tom.common.base.CommonActivity;
 import com.tom.common.util.DisplayUtil;
 import com.tom.common.valid.LoginAction;
+
+import androidx.annotation.NonNull;
 
 
 public class LoginActivity extends CommonActivity {

@@ -7,8 +7,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-
-import androidx.core.content.FileProvider;
 import android.util.DisplayMetrics;
 
 import java.lang.reflect.Field;
@@ -17,6 +15,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import androidx.core.content.FileProvider;
 
 /**
  * 作者：tom_flying
@@ -31,6 +31,9 @@ public class Utils {
     private static Application sApplication;
 
     private static final ActivityLifecycleImpl ACTIVITY_LIFECYCLE = new ActivityLifecycleImpl();
+    private final static String PERMISSION_ACTIVITY_CLASS_NAME =
+            "com.tom.baselib.utils.PermissionUtils$PermissionActivity";
+
 
     private Utils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -188,17 +191,17 @@ public class Utils {
     }
 
     static class AdaptScreenArgs {
-        int     sizeInPx;
+        int sizeInPx;
         boolean isVerticalSlide;
     }
 
     static class ActivityLifecycleImpl implements Application.ActivityLifecycleCallbacks {
 
-        final LinkedList<Activity>                        mActivityList      = new LinkedList<>();
+        final LinkedList<Activity> mActivityList = new LinkedList<>();
         final HashMap<Object, OnAppStatusChangedListener> mStatusListenerMap = new HashMap<>();
 
         private int mForegroundCount = 0;
-        private int mConfigCount     = 0;
+        private int mConfigCount = 0;
 
         void addListener(final Object object, final OnAppStatusChangedListener listener) {
             mStatusListenerMap.put(object, listener);
@@ -271,7 +274,7 @@ public class Utils {
         }
 
         private void setTopActivity(final Activity activity) {
-            if (activity.getClass() == PermissionUtils.PermissionActivity.class) {
+            if (PERMISSION_ACTIVITY_CLASS_NAME.equals(activity.getClass().getName())) {
                 return;
             }
             if (mActivityList.contains(activity)) {

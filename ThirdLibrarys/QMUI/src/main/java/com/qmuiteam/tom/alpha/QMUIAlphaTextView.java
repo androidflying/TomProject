@@ -1,9 +1,9 @@
 package com.qmuiteam.tom.alpha;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatTextView;
-import android.util.AttributeSet;
 
 /**
  * 在 pressed 和 disabled 时改变 View 的透明度

@@ -19,10 +19,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +35,10 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 /**
  * @author cginechen

@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import com.easy.photo.builder.AlbumBuilder;
 import com.easy.photo.engine.ImageEngine;
 import com.easy.photo.models.ad.AdListener;
@@ -15,6 +12,9 @@ import com.easy.photo.utils.media.MediaScannerConnectionUtils;
 
 import java.io.File;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * EasyPhotos的启动管理器

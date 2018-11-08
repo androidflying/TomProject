@@ -1,10 +1,10 @@
 package com.tom.brvah.loadmore;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
-
 import com.tom.brvah.BaseQuickAdapter;
 import com.tom.brvah.BaseViewHolder;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 
 public abstract class LoadMoreView {
 

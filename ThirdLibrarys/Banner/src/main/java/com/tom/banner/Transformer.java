@@ -1,7 +1,5 @@
 package com.tom.banner;
 
-import androidx.viewpager.widget.ViewPager.PageTransformer;
-
 import com.tom.banner.transformer.AccordionTransformer;
 import com.tom.banner.transformer.BackgroundToForegroundTransformer;
 import com.tom.banner.transformer.CubeInTransformer;
@@ -19,6 +17,8 @@ import com.tom.banner.transformer.TabletTransformer;
 import com.tom.banner.transformer.ZoomInTransformer;
 import com.tom.banner.transformer.ZoomOutSlideTransformer;
 import com.tom.banner.transformer.ZoomOutTranformer;
+
+import androidx.viewpager.widget.ViewPager.PageTransformer;
 
 /**
  * 作者：tom_flying

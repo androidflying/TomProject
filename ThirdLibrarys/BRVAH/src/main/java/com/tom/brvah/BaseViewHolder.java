@@ -5,12 +5,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
-import androidx.annotation.StringRes;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.util.Linkify;
 import android.util.SparseArray;
 import android.view.View;
@@ -27,6 +21,12 @@ import android.widget.TextView;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class BaseViewHolder extends RecyclerView.ViewHolder {
 

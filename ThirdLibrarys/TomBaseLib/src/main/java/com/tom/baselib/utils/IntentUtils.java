@@ -7,13 +7,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
-import androidx.annotation.RequiresPermission;
-import androidx.core.content.FileProvider;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import androidx.annotation.RequiresPermission;
+import androidx.core.content.FileProvider;
 
 import static android.Manifest.permission.CALL_PHONE;
 

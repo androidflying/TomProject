@@ -16,8 +16,9 @@
 
 package com.qmuiteam.tom.util;
 
-import androidx.core.view.ViewCompat;
 import android.view.View;
+
+import androidx.core.view.ViewCompat;
 
 /**
  * Utility helper for moving a {@link View} around using

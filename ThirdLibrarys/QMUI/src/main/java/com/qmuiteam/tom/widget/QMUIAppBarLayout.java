@@ -2,19 +2,17 @@ package com.qmuiteam.tom.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-
-import com.google.android.material.appbar.AppBarLayout;
-
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.qmuiteam.tom.util.QMUIWindowInsetHelper;
 
 import java.lang.reflect.Field;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 /**
  * add support for API 19 when use with {@link CoordinatorLayout}

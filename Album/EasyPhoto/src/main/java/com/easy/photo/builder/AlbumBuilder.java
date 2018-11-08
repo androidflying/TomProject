@@ -1,10 +1,6 @@
 package com.easy.photo.builder;
 
 import android.app.Activity;
-import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.view.View;
 
 import com.easy.photo.engine.ImageEngine;
@@ -18,6 +14,9 @@ import com.easy.photo.ui.PreviewActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * EasyPhotos的启动管理器

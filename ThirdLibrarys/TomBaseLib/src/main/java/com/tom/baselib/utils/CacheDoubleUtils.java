@@ -5,15 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-import androidx.collection.SimpleArrayMap;
-
 import com.tom.baselib.constant.CacheConstants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+
+import androidx.annotation.NonNull;
+import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying

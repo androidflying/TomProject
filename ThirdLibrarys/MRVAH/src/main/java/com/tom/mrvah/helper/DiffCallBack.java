@@ -1,10 +1,10 @@
 package com.tom.mrvah.helper;
 
-import androidx.recyclerview.widget.DiffUtil;
-
 import com.tom.mrvah.entity.MultiTypeEntity;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.DiffUtil;
 
 /**
  * 作者:  tom_flying

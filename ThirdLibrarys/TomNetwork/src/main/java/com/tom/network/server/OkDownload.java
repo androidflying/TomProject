@@ -5,11 +5,11 @@ import android.os.Environment;
 import com.tom.network.db.DownloadManager;
 import com.tom.network.model.Progress;
 import com.tom.network.request.base.Request;
-import com.tom.network.utils.IOUtils;
-import com.tom.network.utils.OkLogger;
 import com.tom.network.server.download.DownloadTask;
 import com.tom.network.server.download.DownloadThreadPool;
 import com.tom.network.server.task.XExecutor;
+import com.tom.network.utils.IOUtils;
+import com.tom.network.utils.OkLogger;
 
 import java.io.File;
 import java.util.ArrayList;

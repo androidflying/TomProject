@@ -2,15 +2,15 @@ package com.tom.common.util;
 
 import android.app.Activity;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import com.easy.photo.EasyPhotos;
 import com.easy.photo.builder.AlbumBuilder;
 import com.easy.photo.models.album.entity.Photo;
 import com.tom.common.GlideEngine;
 
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 /**
  * 作者：tom_flying

@@ -1,8 +1,6 @@
 package com.tom.im.ui;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -10,6 +8,8 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.tom.common.RouterHub;
 import com.tom.common.base.CommonActivity;
 import com.tom.im.R;
+
+import androidx.annotation.NonNull;
 
 
 /**

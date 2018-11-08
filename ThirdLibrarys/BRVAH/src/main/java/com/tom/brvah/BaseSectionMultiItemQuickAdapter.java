@@ -1,7 +1,5 @@
 package com.tom.brvah;
 
-import androidx.annotation.IntRange;
-import androidx.annotation.LayoutRes;
 import android.util.SparseIntArray;
 import android.view.ViewGroup;
 
@@ -10,6 +8,9 @@ import com.tom.brvah.entity.MultiItemEntity;
 import com.tom.brvah.entity.SectionMultiEntity;
 
 import java.util.List;
+
+import androidx.annotation.IntRange;
+import androidx.annotation.LayoutRes;
 
 /**
  * 作者：tom_flying

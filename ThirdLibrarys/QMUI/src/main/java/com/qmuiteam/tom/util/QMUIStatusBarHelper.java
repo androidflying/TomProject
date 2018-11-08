@@ -5,10 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntDef;
-import androidx.core.view.ViewCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +13,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
 
 /**
  * @author cginechen

@@ -1,9 +1,9 @@
 package com.tom.baselib;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
-import android.view.View;
 
 /**
  * 作者：tom_flying

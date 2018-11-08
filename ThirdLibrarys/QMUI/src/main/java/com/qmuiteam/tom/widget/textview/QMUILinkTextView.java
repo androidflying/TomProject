@@ -10,25 +10,24 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
-
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.widget.TextView;
 
 import com.qmuiteam.tom.BuildConfig;
-import com.qmuiteam.tom.link.QMUILinkify;
 import com.qmuiteam.tom.R;
 import com.qmuiteam.tom.link.QMUILinkTouchMovementMethod;
+import com.qmuiteam.tom.link.QMUILinkify;
 import com.qmuiteam.tom.span.QMUIOnSpanClickListener;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 
 /**
  * 使 {@link android.widget.TextView} 能自动识别 URL、电话、邮箱地址。

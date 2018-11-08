@@ -7,8 +7,6 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -21,8 +19,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.qmuiteam.tom.BuildConfig;
 import com.qmuiteam.tom.util.QMUIDisplayHelper;
+
+import androidx.core.view.ViewCompat;
 
 /**
  * 修改自 @author Lorensius W. L. T <lorenz@londatiga.net>

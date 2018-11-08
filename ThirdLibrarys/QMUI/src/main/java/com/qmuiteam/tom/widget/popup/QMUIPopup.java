@@ -3,9 +3,6 @@ package com.qmuiteam.tom.widget.popup;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +16,9 @@ import com.qmuiteam.tom.util.QMUIDisplayHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.LayoutRes;
 
 /**
  * 提供一个浮层，支持自定义浮层的内容，支持在指定 {@link View} 的任一方向旁边展示该浮层，支持自定义浮层出现/消失的动画。

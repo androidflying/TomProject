@@ -1,23 +1,20 @@
 package com.tom.im.ui;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import com.easy.photo.EasyPhotos;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tom.common.GlideEngine;
 import com.tom.common.base.CommonActivity;
 import com.tom.common.util.SelectorUtil;
 import com.tom.im.R;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends CommonActivity {
 

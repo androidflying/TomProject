@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
 
-import com.qmuiteam.tom.util.QMUIDisplayHelper;
 import com.qmuiteam.tom.R;
+import com.qmuiteam.tom.util.QMUIDisplayHelper;
 
 /**
  * 使 {@link TextView} 在宽度固定的情况下，文字多到一行放不下时能缩小文字大小来自适应

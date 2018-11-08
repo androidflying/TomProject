@@ -5,10 +5,6 @@ import android.annotation.TargetApi;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
-
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.View;
@@ -20,6 +16,10 @@ import com.qmuiteam.tom.widget.INotchInsetConsumer;
 import com.qmuiteam.tom.widget.IWindowInsetLayout;
 
 import java.lang.ref.WeakReference;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 /**
  * @author cginechen

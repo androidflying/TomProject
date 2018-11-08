@@ -2,11 +2,11 @@ package com.tom.im;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-
 import com.tom.baselib.ApplicationImpl;
 import com.tom.baselib.utils.ProcessUtils;
 import com.tom.im.util.ChatUtil;
+
+import androidx.annotation.NonNull;
 
 /**
  * 作者：tom_flying

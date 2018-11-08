@@ -3,9 +3,6 @@ package com.tom.banner;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -28,6 +25,9 @@ import com.tom.banner.loader.ImageLoaderInterface;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import static androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import static androidx.viewpager.widget.ViewPager.PageTransformer;

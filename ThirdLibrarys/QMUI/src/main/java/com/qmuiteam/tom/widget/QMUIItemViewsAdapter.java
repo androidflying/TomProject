@@ -1,6 +1,5 @@
 package com.qmuiteam.tom.widget;
 
-import androidx.core.util.Pools;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -9,6 +8,7 @@ import com.qmuiteam.tom.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.util.Pools;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**

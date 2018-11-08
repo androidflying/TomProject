@@ -2,13 +2,13 @@ package com.qmuiteam.tom.widget.dialog;
 
 import android.content.Context;
 import android.graphics.Canvas;
-
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.qmuiteam.tom.R;
 import com.qmuiteam.tom.layout.QMUILinearLayout;
 import com.qmuiteam.tom.util.QMUIResHelper;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by cgspine on 2018/2/28.

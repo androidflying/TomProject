@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-
-import androidx.annotation.NonNull;
 import android.text.TextPaint;
 import android.view.View;
 
@@ -17,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * bitmap工具类

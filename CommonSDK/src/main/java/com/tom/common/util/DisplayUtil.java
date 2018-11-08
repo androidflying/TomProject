@@ -1,8 +1,6 @@
 package com.tom.common.util;
 
 import android.app.Activity;
-
-import androidx.fragment.app.Fragment;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -15,7 +13,8 @@ import com.tom.common.GlideEngine;
 import com.tom.common.R;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * 作者：tom_flying

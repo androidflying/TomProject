@@ -3,14 +3,14 @@ package com.easy.photo.utils.permission;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.PermissionChecker;
-
 import com.easy.photo.constant.Code;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 
 /**
  * 运行时权限工具类

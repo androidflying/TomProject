@@ -4,11 +4,6 @@ package com.qmuiteam.tom.widget.dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.os.Build;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -19,6 +14,9 @@ import com.qmuiteam.tom.util.QMUIViewHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+import androidx.core.content.ContextCompat;
 
 /**
  * @author cginechen

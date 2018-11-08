@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-
 import com.tom.baselib.ApplicationImpl;
 import com.tom.baselib.utils.ProcessUtils;
 import com.tom.baselib.utils.Utils;
@@ -14,6 +12,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.PushAgent;
 import com.umeng.socialize.PlatformConfig;
+
+import androidx.annotation.NonNull;
 
 /**
  * 作者：tom_flying

@@ -1,15 +1,15 @@
 package com.tom.brvah;
 
-import androidx.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.View;
-
 
 import com.tom.brvah.provider.BaseItemProvider;
 import com.tom.brvah.util.MultiTypeDelegate;
 import com.tom.brvah.util.ProviderDelegate;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * 当有多种条目的时候，避免在convert()中做太多的业务逻辑，把逻辑放在对应的ItemProvider中

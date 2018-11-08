@@ -1,7 +1,8 @@
 package com.tom.banner.transformer;
 
-import androidx.viewpager.widget.ViewPager.PageTransformer;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager.PageTransformer;
 
 /**
  * 作者：tom_flying

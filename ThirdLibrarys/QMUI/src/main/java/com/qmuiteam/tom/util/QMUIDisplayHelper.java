@@ -13,8 +13,6 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-
-import androidx.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -28,6 +26,8 @@ import android.view.WindowManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Locale;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * @author cginechen

@@ -9,14 +9,14 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+
+import java.util.List;
 
 import androidx.annotation.AnimRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
-import android.view.View;
-
-import java.util.List;
 
 /**
  * 作者：tom_flying

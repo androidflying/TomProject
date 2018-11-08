@@ -2,11 +2,11 @@ package com.qmuiteam.tom.layout;
 
 import android.content.Context;
 import android.graphics.Canvas;
-
-import androidx.annotation.ColorInt;
 import android.util.AttributeSet;
 
 import com.qmuiteam.tom.alpha.QMUIAlphaButton;
+
+import androidx.annotation.ColorInt;
 
 /**
  * Created by cgspine on 2018/3/1.

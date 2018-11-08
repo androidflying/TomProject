@@ -1,8 +1,9 @@
 package com.qmuiteam.tom.widget;
 
-import androidx.viewpager.widget.PagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 /**
  * @author cginechen

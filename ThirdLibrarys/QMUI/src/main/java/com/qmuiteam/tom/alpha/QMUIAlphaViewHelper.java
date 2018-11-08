@@ -1,12 +1,13 @@
 package com.qmuiteam.tom.alpha;
 
-import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.qmuiteam.tom.R;
 import com.qmuiteam.tom.util.QMUIResHelper;
 
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.NonNull;
 
 public class QMUIAlphaViewHelper {
 
