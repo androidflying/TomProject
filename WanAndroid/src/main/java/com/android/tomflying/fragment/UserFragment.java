@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.android.tomflying.event.LoginEvent;
 import com.android.tomflying.ui.AboutActivity;
 import com.android.tomflying.ui.LoginActivity;
 import com.android.tomflying.ui.OpenSourceActivity;
+import com.android.tomflying.util.DataCleanManager;
 import com.android.tomflying.valid.ArticleAction;
 import com.android.tomflying.valid.LoginValid;
 import com.qmuiteam.tom.widget.QMUICollapsingTopBarLayout;
@@ -59,6 +61,8 @@ public class UserFragment extends MyFragment {
 
     private QMUIDialog.CheckBoxMessageDialogBuilder checkBoxMessageDialogBuilder;
     private TextView tv_name;
+
+    private QMUICommonListItemView clean;
 
     @Override
     public boolean isNeedRegister() {
@@ -153,8 +157,8 @@ public class UserFragment extends MyFragment {
 
         QMUICommonListItemView update = mGroupListView.createItemView("检查更新");
         update.setDetailText(AppUtils.getAppVersionName());
-        QMUICommonListItemView clean = mGroupListView.createItemView("清除缓存");
-        clean.setDetailText(CacheDiskUtils.getInstance().getCacheSize() + " M");
+
+        clean = mGroupListView.createItemView("清除缓存");
 
         QMUICommonListItemView about = mGroupListView.createItemView("关于我们");
         about.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
@@ -175,6 +179,8 @@ public class UserFragment extends MyFragment {
                     @Override
                     public void onClick(View v) {
 
+
+                        showCacheDialog();
                     }
                 })
                 .addItemView(about, new View.OnClickListener() {
@@ -190,6 +196,28 @@ public class UserFragment extends MyFragment {
                     }
                 })
                 .addTo(mGroupListView);
+    }
+
+    private void showCacheDialog() {
+        QMUIDialog.MessageDialogBuilder builder = new QMUIDialog.MessageDialogBuilder(mActivity);
+
+        builder.setTitle("您确定要清除缓存吗?")
+                .setMessage("缓存大小: " + getCache())
+                .addAction("取消", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        dialog.dismiss();
+                    }
+                })
+                .addAction(0, "确定", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        DataCleanManager.clearAllCache(mActivity);
+                        clean.setDetailText(getCache());
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
     }
 
     @Override
@@ -242,12 +270,12 @@ public class UserFragment extends MyFragment {
 
     @Override
     protected void onFirstUserVisible() {
-
+        clean.setDetailText(getCache());
     }
 
     @Override
     protected void onUserVisible() {
-
+        clean.setDetailText(getCache());
     }
 
     @Override
@@ -266,6 +294,15 @@ public class UserFragment extends MyFragment {
             tv_name.setText(SPUtils.getInstance().getString(ConstantValues.NIKE_NAME));
         } else {
             tv_name.setText("点击头像进行登录");
+        }
+    }
+
+    public String getCache() {
+        try {
+            return DataCleanManager.getTotalCacheSize(mActivity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0 KB";
         }
     }
 }

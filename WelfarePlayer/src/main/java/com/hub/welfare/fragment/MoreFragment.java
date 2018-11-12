@@ -95,7 +95,7 @@ public class MoreFragment extends MyFragment {
         contentView.findViewById(R.id.ll_video).setOnClickListener(this);
         contentView.findViewById(R.id.ll_player).setOnClickListener(this);
         contentView.findViewById(R.id.ll_update).setOnClickListener(this);
-        contentView.findViewById(R.id.ll_pay).setOnClickListener(this);
+        contentView.findViewById(R.id.ll_clean).setOnClickListener(this);
         contentView.findViewById(R.id.ll_share).setOnClickListener(this);
         contentView.findViewById(R.id.ll_dayNight).setOnClickListener(this);
         contentView.findViewById(R.id.ll_skip).setOnClickListener(this);
@@ -186,8 +186,8 @@ public class MoreFragment extends MyFragment {
             case R.id.ll_update:
                 ToastUtils.showShort("检查更新");
                 break;
-            case R.id.ll_pay:
-                ToastUtils.showShort("打赏支付");
+            case R.id.ll_clean:
+                ToastUtils.showShort("清除缓存");
                 break;
             case R.id.ll_share:
                 ToastUtils.showShort("分享朋友");

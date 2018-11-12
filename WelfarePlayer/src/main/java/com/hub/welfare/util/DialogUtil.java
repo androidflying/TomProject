@@ -17,8 +17,6 @@ public class DialogUtil {
     public static void showSingleChoose(String[] items, int checked, DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ActivityUtils.getTopActivity());
         builder.setSingleChoiceItems(items, checked, listener);
-
-
         builder.create().show();
     }
 }

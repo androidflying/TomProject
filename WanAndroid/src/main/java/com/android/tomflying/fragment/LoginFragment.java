@@ -105,7 +105,7 @@ public class LoginFragment extends MyFragment {
         login(name, password);
     }
 
-    private void login(String name, String password) {
+    private void login(final String name, final String password) {
 
         HttpParams params = new HttpParams();
         params.put("username", name);
@@ -120,8 +120,8 @@ public class LoginFragment extends MyFragment {
 
             @Override
             public void onSuccess(Response<LzyResponse<LoginBean>> response) {
-                SPUtils.getInstance().put(ConstantValues.NIKE_NAME, response.body().data.getUsername());
-                SPUtils.getInstance().put(ConstantValues.PASSWORD, response.body().data.getPassword());
+                SPUtils.getInstance().put(ConstantValues.NIKE_NAME, name);
+                SPUtils.getInstance().put(ConstantValues.PASSWORD, password);
                 GlobalParams.setIsLogin(true);
                 EventBus.getDefault().post(new LoginEvent());
                 SingleCall.getInstance().doCall();

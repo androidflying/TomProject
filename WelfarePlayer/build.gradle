@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion rootProject.ext.android["COMPILE_SDK_VERSION"]
@@ -30,6 +31,15 @@ android {
 
 }
 
+greendao {
+    //数据库的schema版本，也可以理解为数据库版本号
+    schemaVersion 1
+    //设置DaoMaster、DaoSession、Dao包名，也就是要放置这些类的包的全路径。
+    daoPackage 'com.hub.welfare.dao'
+    //设置DaoMaster、DaoSession、Dao目录
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -42,6 +52,7 @@ dependencies {
     implementation project(':ThirdLibrarys:BRVAH')
     implementation rootProject.ext.dependencies["gson"]
     implementation rootProject.ext.dependencies["eventbus"]
+    implementation rootProject.ext.dependencies["greendao"]
     implementation rootProject.ext.dependencies["glide"]
     implementation rootProject.ext.dependencies["lottie"]
     implementation rootProject.ext.dependencies["video-player"]
