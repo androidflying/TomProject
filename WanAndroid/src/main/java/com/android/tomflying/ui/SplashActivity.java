@@ -95,7 +95,7 @@ public class SplashActivity extends MyActivity {
 
             @Override
             public void onError(Response<LzyResponse<LoginBean>> response) {
-                ToastUtils.showShort(response.body().errorMsg);
+                SPUtils.getInstance().clear();
 
 
             }
