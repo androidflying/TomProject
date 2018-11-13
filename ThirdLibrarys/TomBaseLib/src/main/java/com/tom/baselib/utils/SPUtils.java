@@ -7,9 +7,9 @@ import android.content.SharedPreferences;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.annotation.NonNull;
-import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying
@@ -21,7 +21,7 @@ import androidx.collection.SimpleArrayMap;
 @SuppressLint("ApplySharedPref")
 public final class SPUtils {
 
-    private static final SimpleArrayMap<String, SPUtils> SP_UTILS_MAP = new SimpleArrayMap<>();
+    private static final Map<String, SPUtils> SP_UTILS_MAP = new ConcurrentHashMap<>();
     private SharedPreferences sp;
 
     /**

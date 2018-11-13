@@ -512,4 +512,13 @@ public class NetworkUtils {
         }
         return Formatter.formatIpAddress(wm.getDhcpInfo().serverAddress);
     }
+
+    @RequiresPermission(INTERNET)
+    public static void isAvailableByDns(String ip) {
+
+    }
+
+    public interface Callback {
+        void call(boolean isSuccess);
+    }
 }

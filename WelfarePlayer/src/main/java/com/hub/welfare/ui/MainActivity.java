@@ -8,6 +8,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hub.welfare.R;
 import com.hub.welfare.base.MyActivity;
 import com.hub.welfare.base.MyFragment;
+import com.hub.welfare.dao.CategoryEntityDao;
+import com.hub.welfare.dao.DaoMaster;
+import com.hub.welfare.dao.DaoSession;
 import com.hub.welfare.fragment.BooksFragment;
 import com.hub.welfare.fragment.MoreFragment;
 import com.hub.welfare.fragment.MusicFragment;
@@ -113,6 +116,7 @@ public class MainActivity extends MyActivity {
 
     @Override
     public void doBusiness() {
+        //把图片视频的分类数据初始化一下
 
     }
 

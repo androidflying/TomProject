@@ -29,7 +29,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.UnknownHostException;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -77,29 +76,28 @@ public class LogUtils {
 
     private static final int FILE = 0x10;
     private static final int JSON = 0x20;
-    private static final int XML  = 0x30;
+    private static final int XML = 0x30;
 
-    private static final String FILE_SEP       = System.getProperty("file.separator");
-    private static final String LINE_SEP       = System.getProperty("line.separator");
-    private static final String TOP_CORNER     = "┌";
-    private static final String MIDDLE_CORNER  = "├";
-    private static final String LEFT_BORDER    = "│ ";
-    private static final String BOTTOM_CORNER  = "└";
-    private static final String SIDE_DIVIDER   =
+    private static final String FILE_SEP = System.getProperty("file.separator");
+    private static final String LINE_SEP = System.getProperty("line.separator");
+    private static final String TOP_CORNER = "┌";
+    private static final String MIDDLE_CORNER = "├";
+    private static final String LEFT_BORDER = "│ ";
+    private static final String BOTTOM_CORNER = "└";
+    private static final String SIDE_DIVIDER =
             "────────────────────────────────────────────────────────";
     private static final String MIDDLE_DIVIDER =
             "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄";
-    private static final String TOP_BORDER     = TOP_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
-    private static final String MIDDLE_BORDER  = MIDDLE_CORNER + MIDDLE_DIVIDER + MIDDLE_DIVIDER;
-    private static final String BOTTOM_BORDER  = BOTTOM_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
-    private static final int    MAX_LEN        = 3000;
-    private static final Format FORMAT         =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ", Locale.getDefault());
-    private static final String NOTHING        = "log nothing";
-    private static final String NULL           = "null";
-    private static final String ARGS           = "args";
-    private static final String PLACEHOLDER    = " ";
-    private static final Config CONFIG         = new Config();
+    private static final String TOP_BORDER = TOP_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
+    private static final String MIDDLE_BORDER = MIDDLE_CORNER + MIDDLE_DIVIDER + MIDDLE_DIVIDER;
+    private static final String BOTTOM_BORDER = BOTTOM_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
+    private static final int MAX_LEN = 3000;
+    private static final ThreadLocal<SimpleDateFormat> SDF_THREAD_LOCAL = new ThreadLocal<>();
+    private static final String NOTHING = "log nothing";
+    private static final String NULL = "null";
+    private static final String ARGS = "args";
+    private static final String PLACEHOLDER = " ";
+    private static final Config CONFIG = new Config();
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
@@ -469,9 +467,18 @@ public class LogUtils {
         }
     }
 
+    private static SimpleDateFormat getSdf() {
+        SimpleDateFormat simpleDateFormat = SDF_THREAD_LOCAL.get();
+        if (simpleDateFormat == null) {
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            SDF_THREAD_LOCAL.set(simpleDateFormat);
+        }
+        return simpleDateFormat;
+    }
+
     private static void print2File(final int type, final String tag, final String msg) {
         Date now = new Date(System.currentTimeMillis());
-        String format = FORMAT.format(now);
+        String format = getSdf().format(now);
         String date = format.substring(0, 10);
         String time = format.substring(11);
         final String fullPath =
@@ -613,20 +620,20 @@ public class LogUtils {
     public static class Config {
         private String mDefaultDir;// The default storage directory of log.
         private String mDir;       // The storage directory of log.
-        private String  mFilePrefix        = "util";// The file prefix of log.
-        private boolean mLogSwitch         = true;  // The switch of log.
+        private String mFilePrefix = "util";// The file prefix of log.
+        private boolean mLogSwitch = true;  // The switch of log.
         private boolean mLog2ConsoleSwitch = true;  // The logcat's switch of log.
-        private String  mGlobalTag         = null;  // The global tag of log.
-        private boolean mTagIsSpace        = true;  // The global tag is space.
-        private boolean mLogHeadSwitch     = true;  // The head's switch of log.
-        private boolean mLog2FileSwitch    = false; // The file's switch of log.
-        private boolean mLogBorderSwitch   = true;  // The border's switch of log.
-        private boolean mSingleTagSwitch   = true;  // The single tag of log.
-        private int     mConsoleFilter     = V;     // The console's filter of log.
-        private int     mFileFilter        = V;     // The file's filter of log.
-        private int     mStackDeep         = 1;     // The stack's deep of log.
-        private int     mStackOffset       = 0;     // The stack's offset of log.
-        private int     mSaveDays          = -1;    // The save days of log.
+        private String mGlobalTag = null;  // The global tag of log.
+        private boolean mTagIsSpace = true;  // The global tag is space.
+        private boolean mLogHeadSwitch = true;  // The head's switch of log.
+        private boolean mLog2FileSwitch = false; // The file's switch of log.
+        private boolean mLogBorderSwitch = true;  // The border's switch of log.
+        private boolean mSingleTagSwitch = true;  // The single tag of log.
+        private int mConsoleFilter = V;     // The console's filter of log.
+        private int mFileFilter = V;     // The file's filter of log.
+        private int mStackDeep = 1;     // The stack's deep of log.
+        private int mStackOffset = 0;     // The stack's offset of log.
+        private int mSaveDays = -1;    // The save days of log.
 
         private Config() {
             if (mDefaultDir != null) return;
@@ -759,9 +766,9 @@ public class LogUtils {
     }
 
     private static class TagHead {
-        String   tag;
+        String tag;
         String[] consoleHead;
-        String   fileHead;
+        String fileHead;
 
         TagHead(String tag, String[] consoleHead, String fileHead) {
             this.tag = tag;

@@ -342,7 +342,12 @@ public class Utils {
 
         @Override
         public boolean onCreate() {
-            Utils.init(getContext());
+            Context context = getContext();
+            if (context != null
+                    && context.getClass().getSimpleName().equals("TinkerPatchReflectApplication")) {
+                return true;
+            }
+            Utils.init(context);
             return true;
         }
     }

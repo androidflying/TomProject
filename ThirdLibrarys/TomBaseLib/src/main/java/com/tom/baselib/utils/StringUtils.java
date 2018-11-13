@@ -1,5 +1,10 @@
 package com.tom.baselib.utils;
 
+import android.content.res.Resources;
+
+import androidx.annotation.ArrayRes;
+import androidx.annotation.StringRes;
+
 /**
  * 作者：tom_flying
  * 邮箱：tom_flying@163.com
@@ -68,7 +73,9 @@ public class StringUtils {
                 return s1.equals(s2);
             } else {
                 for (int i = 0; i < length; i++) {
-                    if (s1.charAt(i) != s2.charAt(i)) return false;
+                    if (s1.charAt(i) != s2.charAt(i)) {
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -208,5 +215,48 @@ public class StringUtils {
             }
         }
         return new String(chars);
+    }
+
+    /**
+     * Return the string value associated with a particular resource ID.
+     *
+     * @param id The desired resource identifier.
+     * @return the string value associated with a particular resource ID.
+     */
+    public static String getString(@StringRes int id) {
+        try {
+            return Utils.getApp().getResources().getString(id);
+        } catch (Resources.NotFoundException ignore) {
+            return "";
+        }
+    }
+
+    /**
+     * Return the string value associated with a particular resource ID.
+     *
+     * @param id         The desired resource identifier.
+     * @param formatArgs The format arguments that will be used for substitution.
+     * @return the string value associated with a particular resource ID.
+     */
+    public static String getString(@StringRes int id, Object... formatArgs) {
+        try {
+            return Utils.getApp().getString(id, formatArgs);
+        } catch (Resources.NotFoundException ignore) {
+            return "";
+        }
+    }
+
+    /**
+     * Return the string array associated with a particular resource ID.
+     *
+     * @param id The desired resource identifier.
+     * @return The string array associated with the resource.
+     */
+    public static String[] getStringArray(@ArrayRes int id) {
+        try {
+            return Utils.getApp().getResources().getStringArray(id);
+        } catch (Resources.NotFoundException ignore) {
+            return new String[0];
+        }
     }
 }

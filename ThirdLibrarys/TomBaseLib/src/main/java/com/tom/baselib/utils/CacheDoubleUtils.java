@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.annotation.NonNull;
 import androidx.collection.SimpleArrayMap;
@@ -24,7 +26,7 @@ import androidx.collection.SimpleArrayMap;
  */
 public final class CacheDoubleUtils implements CacheConstants {
 
-    private static final SimpleArrayMap<String, CacheDoubleUtils> CACHE_MAP = new SimpleArrayMap<>();
+    private static final Map<String, CacheDoubleUtils> CACHE_MAP = new ConcurrentHashMap<>();
     private CacheMemoryUtils mCacheMemoryUtils;
     private CacheDiskUtils mCacheDiskUtils;
 

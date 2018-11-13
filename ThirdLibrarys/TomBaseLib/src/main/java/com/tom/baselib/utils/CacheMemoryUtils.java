@@ -2,9 +2,11 @@ package com.tom.baselib.utils;
 
 import com.tom.baselib.constant.CacheConstants;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import androidx.annotation.NonNull;
 import androidx.collection.LruCache;
-import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying
@@ -17,7 +19,7 @@ public final class CacheMemoryUtils implements CacheConstants {
 
     private static final int DEFAULT_MAX_COUNT = 256;
 
-    private static final SimpleArrayMap<String, CacheMemoryUtils> CACHE_MAP = new SimpleArrayMap<>();
+    private static final Map<String, CacheMemoryUtils> CACHE_MAP = new ConcurrentHashMap<>();
 
     private final String mCacheKey;
     private final LruCache<String, CacheValue> mMemoryCache;

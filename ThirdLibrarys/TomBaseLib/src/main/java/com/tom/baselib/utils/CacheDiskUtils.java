@@ -31,11 +31,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import androidx.annotation.NonNull;
-import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying
@@ -48,7 +48,7 @@ public final class CacheDiskUtils implements CacheConstants {
     private static final long DEFAULT_MAX_SIZE = Long.MAX_VALUE;
     private static final int DEFAULT_MAX_COUNT = Integer.MAX_VALUE;
 
-    private static final SimpleArrayMap<String, CacheDiskUtils> CACHE_MAP = new SimpleArrayMap<>();
+    private static final Map<String, CacheDiskUtils> CACHE_MAP = new ConcurrentHashMap<>();
     private final String mCacheKey;
     private final DiskCacheManager mDiskCacheManager;
 
