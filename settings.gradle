@@ -1,4 +1,4 @@
-include ':CommonSDK', ':WanAndroid', ':Module_IM'
+include ':CommonSDK', ':WanAndroid', ':Module_IM', ':TomERP'
 include ':Umeng:Share', ':Umeng:Push', ':Umeng:Analytics', ':Umeng:Common'
 include ':ThirdLibrarys:BRVAH', ':ThirdLibrarys:MRVAH'
 include ':ThirdLibrarys:QMUI', ':ThirdLibrarys:PhotoView'
