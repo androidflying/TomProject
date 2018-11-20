@@ -155,7 +155,9 @@ public class QMUIDrawableHelper {
      */
     public static ColorFilter setDrawableTintColor(Drawable drawable, @ColorInt int tintColor) {
         LightingColorFilter colorFilter = new LightingColorFilter(Color.argb(255, 0, 0, 0), tintColor);
-        drawable.setColorFilter(colorFilter);
+        if (drawable != null) {
+            drawable.setColorFilter(colorFilter);
+        }
         return colorFilter;
     }
 
@@ -163,18 +165,18 @@ public class QMUIDrawableHelper {
      * 由一个drawable生成bitmap
      */
     public static Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable == null)
+        if (drawable == null) {
             return null;
-        else if (drawable instanceof BitmapDrawable) {
+        } else if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
 
         int intrinsicWidth = drawable.getIntrinsicWidth();
         int intrinsicHeight = drawable.getIntrinsicHeight();
 
-        if (!(intrinsicWidth > 0 && intrinsicHeight > 0))
+        if (!(intrinsicWidth > 0 && intrinsicHeight > 0)) {
             return null;
-
+        }
         try {
             Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
                     : Bitmap.Config.RGB_565;

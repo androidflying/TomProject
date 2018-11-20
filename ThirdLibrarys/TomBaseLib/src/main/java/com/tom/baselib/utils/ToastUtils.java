@@ -1,8 +1,10 @@
 package com.tom.baselib.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
@@ -26,7 +28,6 @@ import java.lang.reflect.Field;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -39,18 +40,18 @@ import androidx.core.app.NotificationManagerCompat;
  */
 public class ToastUtils {
 
-    private static final int     COLOR_DEFAULT = 0xFEFFFFFF;
-    private static final Handler HANDLER       = new Handler(Looper.getMainLooper());
-    private static final String  NULL          = "null";
+    private static final int COLOR_DEFAULT = 0xFEFFFFFF;
+    private static final Handler HANDLER = new Handler(Looper.getMainLooper());
+    private static final String NULL = "null";
 
-    private static IToast sToast;
-    private static int    sGravity     = -1;
-    private static int    sXOffset     = -1;
-    private static int    sYOffset     = -1;
-    private static int    sBgColor     = COLOR_DEFAULT;
-    private static int    sBgResource  = -1;
-    private static int    sMsgColor    = COLOR_DEFAULT;
-    private static int    sMsgTextSize = -1;
+    private static IToast iToast;
+    private static int sGravity = -1;
+    private static int sXOffset = -1;
+    private static int sYOffset = -1;
+    private static int sBgColor = COLOR_DEFAULT;
+    private static int sBgResource = -1;
+    private static int sMsgColor = COLOR_DEFAULT;
+    private static int sMsgTextSize = -1;
 
     private ToastUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -106,7 +107,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a short period of time.
+     * Show the toast for a short period of time.
      *
      * @param text The text.
      */
@@ -115,7 +116,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a short period of time.
+     * Show the toast for a short period of time.
      *
      * @param resId The resource id for text.
      */
@@ -124,7 +125,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a short period of time.
+     * Show the toast for a short period of time.
      *
      * @param resId The resource id for text.
      * @param args  The args.
@@ -134,7 +135,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a short period of time.
+     * Show the toast for a short period of time.
      *
      * @param format The format.
      * @param args   The args.
@@ -144,7 +145,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a long period of time.
+     * Show the toast for a long period of time.
      *
      * @param text The text.
      */
@@ -153,7 +154,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a long period of time.
+     * Show the toast for a long period of time.
      *
      * @param resId The resource id for text.
      */
@@ -162,7 +163,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a long period of time.
+     * Show the toast for a long period of time.
      *
      * @param resId The resource id for text.
      * @param args  The args.
@@ -172,7 +173,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show the sToast for a long period of time.
+     * Show the toast for a long period of time.
      *
      * @param format The format.
      * @param args   The args.
@@ -182,7 +183,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show custom sToast for a short period of time.
+     * Show custom toast for a short period of time.
      *
      * @param layoutId ID for an XML layout resource to load.
      */
@@ -193,7 +194,7 @@ public class ToastUtils {
     }
 
     /**
-     * Show custom sToast for a long period of time.
+     * Show custom toast for a long period of time.
      *
      * @param layoutId ID for an XML layout resource to load.
      */
@@ -204,11 +205,11 @@ public class ToastUtils {
     }
 
     /**
-     * Cancel the sToast.
+     * Cancel the toast.
      */
     public static void cancel() {
-        if (sToast != null) {
-            sToast.cancel();
+        if (iToast != null) {
+            iToast.cancel();
         }
     }
 
@@ -250,14 +251,8 @@ public class ToastUtils {
             @Override
             public void run() {
                 cancel();
-                if (Utils.isAdaptScreen()) {
-                    Utils.cancelAdaptScreen();
-                    sToast = ToastFactory.makeToast(Utils.getApp(), text, duration);
-                    Utils.restoreAdaptScreen();
-                } else {
-                    sToast = ToastFactory.makeToast(Utils.getApp(), text, duration);
-                }
-                final TextView tvMessage = sToast.getView().findViewById(android.R.id.message);
+                iToast = ToastFactory.makeToast(Utils.getTopActivityOrApp(), text, duration);
+                final TextView tvMessage = iToast.getView().findViewById(android.R.id.message);
                 if (sMsgColor != COLOR_DEFAULT) {
                     tvMessage.setTextColor(sMsgColor);
                 }
@@ -265,10 +260,10 @@ public class ToastUtils {
                     tvMessage.setTextSize(sMsgTextSize);
                 }
                 if (sGravity != -1 || sXOffset != -1 || sYOffset != -1) {
-                    sToast.setGravity(sGravity, sXOffset, sYOffset);
+                    iToast.setGravity(sGravity, sXOffset, sYOffset);
                 }
                 setBg(tvMessage);
-                sToast.show();
+                iToast.show();
             }
         });
     }
@@ -278,24 +273,24 @@ public class ToastUtils {
             @Override
             public void run() {
                 cancel();
-                sToast = ToastFactory.newToast(Utils.getApp());
-                sToast.setView(view);
-                sToast.setDuration(duration);
+                iToast = ToastFactory.newToast(Utils.getApp());
+                iToast.setView(view);
+                iToast.setDuration(duration);
                 if (sGravity != -1 || sXOffset != -1 || sYOffset != -1) {
-                    sToast.setGravity(sGravity, sXOffset, sYOffset);
+                    iToast.setGravity(sGravity, sXOffset, sYOffset);
                 }
                 setBg();
-                sToast.show();
+                iToast.show();
             }
         });
     }
 
     private static void setBg() {
         if (sBgResource != -1) {
-            final View toastView = sToast.getView();
+            final View toastView = iToast.getView();
             toastView.setBackgroundResource(sBgResource);
         } else if (sBgColor != COLOR_DEFAULT) {
-            final View toastView = sToast.getView();
+            final View toastView = iToast.getView();
             Drawable background = toastView.getBackground();
             if (background != null) {
                 background.setColorFilter(
@@ -313,11 +308,11 @@ public class ToastUtils {
 
     private static void setBg(final TextView tvMsg) {
         if (sBgResource != -1) {
-            final View toastView = sToast.getView();
+            final View toastView = iToast.getView();
             toastView.setBackgroundResource(sBgResource);
             tvMsg.setBackgroundColor(Color.TRANSPARENT);
         } else if (sBgColor != COLOR_DEFAULT) {
-            final View toastView = sToast.getView();
+            final View toastView = iToast.getView();
             Drawable tvBg = toastView.getBackground();
             Drawable msgBg = tvMsg.getBackground();
             if (tvBg != null && msgBg != null) {
@@ -346,22 +341,14 @@ public class ToastUtils {
             if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
                 return new SystemToast(makeNormalToast(context, text, duration));
             }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
-                return new ToastWithoutNotification(makeNormalToast(context, text, duration));
-            }
-            Log.e("ToastUtils", "Toast is GG. In fact, next step is useless.");
-            return new SystemToast(makeNormalToast(context, text, duration));
+            return new ToastWithoutNotification(makeNormalToast(context, text, duration));
         }
 
         static IToast newToast(Context context) {
             if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
                 return new SystemToast(new Toast(context));
             }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
-                return new ToastWithoutNotification(new Toast(context));
-            }
-            Log.e("ToastUtils", "Toast is GG. In fact, next step is useless.");
-            return new SystemToast(new Toast(context));
+            return new ToastWithoutNotification(new Toast(context));
         }
 
         private static Toast makeNormalToast(Context context, CharSequence text, int duration) {
@@ -372,15 +359,13 @@ public class ToastUtils {
         }
     }
 
-    static class SystemToast implements IToast {
-
-        Toast mToast;
+    static class SystemToast extends AbsToast {
 
         private static Field sField_mTN;
         private static Field sField_TN_Handler;
 
-        SystemToast(@NonNull Toast toast) {
-            mToast = toast;
+        SystemToast(Toast toast) {
+            super(toast);
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
                 try {
                     //noinspection JavaReflectionMemberAccess
@@ -405,36 +390,6 @@ public class ToastUtils {
             mToast.cancel();
         }
 
-        @Override
-        public void setView(View view) {
-            mToast.setView(view);
-        }
-
-        @Override
-        public View getView() {
-            return mToast.getView();
-        }
-
-        @Override
-        public void setDuration(int duration) {
-            mToast.setDuration(duration);
-        }
-
-        @Override
-        public void setGravity(int gravity, int xOffset, int yOffset) {
-            mToast.setGravity(gravity, xOffset, yOffset);
-        }
-
-        @Override
-        public void setText(int resId) {
-            mToast.setText(resId);
-        }
-
-        @Override
-        public void setText(CharSequence s) {
-            mToast.setText(s);
-        }
-
         static class SafeHandler extends Handler {
             private Handler impl;
 
@@ -447,7 +402,7 @@ public class ToastUtils {
                 try {
                     impl.handleMessage(msg);
                 } catch (Exception e) {
-                    LogUtils.e(e);
+                    Log.e("ToastUtils", e.toString());
                 }
             }
 
@@ -458,9 +413,7 @@ public class ToastUtils {
         }
     }
 
-    static class ToastWithoutNotification implements IToast {
-
-        private Toast mToast;
+    static class ToastWithoutNotification extends AbsToast {
 
         private WindowManager mWM;
 
@@ -468,20 +421,8 @@ public class ToastUtils {
 
         private WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
 
-        private Handler mHandler = new Handler(Looper.myLooper());
-
-        ToastWithoutNotification(@NonNull Toast toast) {
-            mToast = toast;
-
-            mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-            mParams.format = PixelFormat.TRANSLUCENT;
-            mParams.windowAnimations = android.R.style.Animation_Toast;
-            mParams.type = WindowManager.LayoutParams.TYPE_TOAST;
-            mParams.setTitle("ToastWithoutNotification");
-            mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        ToastWithoutNotification(Toast toast) {
+            super(toast);
         }
 
         @Override
@@ -491,7 +432,18 @@ public class ToastUtils {
                 return;
             }
             Context context = mToast.getView().getContext();
-            mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+                mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                mParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+                mParams.y = mToast.getYOffset();
+            } else {
+                Context topActivityOrApp = Utils.getTopActivityOrApp();
+                if (topActivityOrApp instanceof Activity) {
+                    mWM = ((Activity) topActivityOrApp).getWindowManager();
+                }
+                mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
+                mParams.y = mToast.getYOffset() + getNavBarHeight();
+            }
 
             final Configuration config = context.getResources().getConfiguration();
             final int gravity;
@@ -500,6 +452,16 @@ public class ToastUtils {
             } else {
                 gravity = mToast.getGravity();
             }
+
+            mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            mParams.format = PixelFormat.TRANSLUCENT;
+            mParams.windowAnimations = android.R.style.Animation_Toast;
+
+            mParams.setTitle("ToastWithoutNotification");
+            mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
             mParams.gravity = gravity;
             if ((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.FILL_HORIZONTAL) {
                 mParams.horizontalWeight = 1.0f;
@@ -508,15 +470,13 @@ public class ToastUtils {
                 mParams.verticalWeight = 1.0f;
             }
             mParams.x = mToast.getXOffset();
-            mParams.y = mToast.getYOffset();
-
             mParams.packageName = Utils.getApp().getPackageName();
 
             try {
                 mWM.addView(mView, mParams);
             } catch (Exception ignored) { /**/ }
 
-            mHandler.postDelayed(new Runnable() {
+            HANDLER.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     cancel();
@@ -527,11 +487,32 @@ public class ToastUtils {
         @Override
         public void cancel() {
             try {
-                mWM.removeView(mView);
-            } catch (IllegalArgumentException ignored) { /**/ }
+                if (mWM != null) {
+                    mWM.removeView(mView);
+                }
+            } catch (Exception ignored) { /**/ }
             mView = null;
-            mHandler = null;
+            mWM = null;
             mToast = null;
+        }
+
+        private int getNavBarHeight() {
+            Resources res = Resources.getSystem();
+            int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
+            if (resourceId != 0) {
+                return res.getDimensionPixelSize(resourceId);
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    static abstract class AbsToast implements IToast {
+
+        Toast mToast;
+
+        AbsToast(Toast toast) {
+            mToast = toast;
         }
 
         @Override

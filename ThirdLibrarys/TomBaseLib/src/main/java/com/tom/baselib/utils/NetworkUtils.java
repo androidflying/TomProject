@@ -111,6 +111,16 @@ public class NetworkUtils {
         return ret;
     }
 
+
+    @RequiresPermission(INTERNET)
+    public static void isAvailableByDns(String ip) {
+
+    }
+
+    public interface Callback {
+        void call(boolean isSuccess);
+    }
+
     /**
      * Return whether mobile data is enabled.
      *
@@ -269,7 +279,7 @@ public class NetworkUtils {
     public static String getNetworkOperatorName() {
         TelephonyManager tm =
                 (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        if (tm == null){
+        if (tm == null) {
             return "";
         }
         return tm.getNetworkOperatorName();
@@ -511,14 +521,5 @@ public class NetworkUtils {
             return "";
         }
         return Formatter.formatIpAddress(wm.getDhcpInfo().serverAddress);
-    }
-
-    @RequiresPermission(INTERNET)
-    public static void isAvailableByDns(String ip) {
-
-    }
-
-    public interface Callback {
-        void call(boolean isSuccess);
     }
 }

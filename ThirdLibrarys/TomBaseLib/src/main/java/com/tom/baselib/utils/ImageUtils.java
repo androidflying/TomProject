@@ -1577,7 +1577,9 @@ public class ImageUtils {
         try {
             os = new BufferedOutputStream(new FileOutputStream(file));
             ret = src.compress(format, 100, os);
-            if (recycle && !src.isRecycled()) src.recycle();
+            if (recycle && !src.isRecycled()) {
+                src.recycle();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

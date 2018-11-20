@@ -38,7 +38,7 @@ import static android.Manifest.permission.EXPAND_STATUS_BAR;
  * 描述：系统状态栏操作工具类
  */
 public class BarUtils {
-///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // status bar
     ///////////////////////////////////////////////////////////////////////////
 
@@ -347,6 +347,22 @@ public class BarUtils {
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layoutParams.height = getStatusBarHeight();
         fakeStatusBar.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+    }
+
+    /**
+     * Set the custom status bar.
+     *
+     * @param fakeStatusBar The fake status bar view.
+     */
+    public static void setStatusBarCustom(@NonNull final View fakeStatusBar) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return;
+        }
+        fakeStatusBar.setVisibility(View.VISIBLE);
+        transparentStatusBar((Activity) fakeStatusBar.getContext());
+        ViewGroup.LayoutParams layoutParams = fakeStatusBar.getLayoutParams();
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = getStatusBarHeight();
     }
 
     /**

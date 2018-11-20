@@ -62,25 +62,28 @@ public class MainActivity extends MyActivity {
     @Override
     public void doBusiness() {
 
-        UserHelper.fetchUserInfo(new FetchUserInfoListener<String>() {
-            @Override
-            public void done(String s, BmobException e) {
+        if (UserHelper.isLogin()) {
 
-                if (e == null) {
-                    TomUser tomUser = new Gson().fromJson(s, TomUser.class);
-                    tv_user.setText("昵称：" + tomUser.getUsername()
-                            + "\n手机号：" + tomUser.getMobilePhoneNumber()
-                            + "\n是否验证手机号：" + tomUser.getMobilePhoneNumberVerified()
-                            + "\n真实姓名：" + tomUser.getRealName()
+            UserHelper.fetchUserInfo(new FetchUserInfoListener<String>() {
+                @Override
+                public void done(String s, BmobException e) {
 
-                            + "\n工号：" + tomUser.getWorkId());
-                } else {
-                    ToastUtils.showLong(e.toString());
+                    if (e == null) {
+                        TomUser tomUser = new Gson().fromJson(s, TomUser.class);
+                        tv_user.setText("昵称：" + tomUser.getUsername()
+                                + "\n手机号：" + tomUser.getMobilePhoneNumber()
+                                + "\n是否验证手机号：" + tomUser.getMobilePhoneNumberVerified()
+                                + "\n真实姓名：" + tomUser.getRealName()
+
+                                + "\n工号：" + tomUser.getWorkId());
+                    } else {
+                        ToastUtils.showLong(e.toString());
+                    }
+
+
                 }
-
-
-            }
-        });
+            });
+        }
     }
 
     @Override

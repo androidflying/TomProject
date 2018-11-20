@@ -74,9 +74,7 @@ public class KeyboardUtils {
      * @param activity The activity.
      */
     public static void showSoftInputUsingToggle(final Activity activity) {
-        if (isSoftInputVisible(activity)) {
-            return;
-        }
+        if (isSoftInputVisible(activity)) return;
         toggleSoftInput();
     }
 

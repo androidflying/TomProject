@@ -49,6 +49,7 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         }
     }
 
+    @Override
     public boolean setWidthLimit(int widthLimit) {
         if (mLayoutHelper.setWidthLimit(widthLimit)) {
             requestLayout();
@@ -57,11 +58,13 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         return true;
     }
 
+    @Override
     public void updateTopDivider(int topInsetLeft, int topInsetRight, int topDividerHeight, int topDividerColor) {
         mLayoutHelper.updateTopDivider(topInsetLeft, topInsetRight, topDividerHeight, topDividerColor);
         invalidate();
     }
 
+    @Override
     public boolean setHeightLimit(int heightLimit) {
         if (mLayoutHelper.setHeightLimit(heightLimit)) {
             requestLayout();
@@ -70,10 +73,12 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         return true;
     }
 
+    @Override
     public void setUseThemeGeneralShadowElevation() {
         mLayoutHelper.setUseThemeGeneralShadowElevation();
     }
 
+    @Override
     public void updateBottomDivider(int bottomInsetLeft, int bottomInsetRight, int bottomDividerHeight, int bottomDividerColor) {
         mLayoutHelper.updateBottomDivider(bottomInsetLeft, bottomInsetRight, bottomDividerHeight, bottomDividerColor);
         invalidate();
@@ -84,10 +89,12 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         mLayoutHelper.setOutlineExcludePadding(outlineExcludePadding);
     }
 
+    @Override
     public void setOuterNormalColor(int color) {
         mLayoutHelper.setOuterNormalColor(color);
     }
 
+    @Override
     public void updateLeftDivider(int leftInsetTop, int leftInsetBottom, int leftDividerWidth, int leftDividerColor) {
         mLayoutHelper.updateLeftDivider(leftInsetTop, leftInsetBottom, leftDividerWidth, leftDividerColor);
         invalidate();
@@ -100,12 +107,14 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         mLayoutHelper.dispatchRoundBorderDraw(canvas);
     }
 
+    @Override
     public void updateRightDivider(int rightInsetTop, int rightInsetBottom, int rightDividerWidth, int rightDividerColor) {
         mLayoutHelper.updateRightDivider(rightInsetTop, rightInsetBottom, rightDividerWidth, rightDividerColor);
         invalidate();
     }
 
 
+    @Override
     public void onlyShowTopDivider(int topInsetLeft, int topInsetRight,
                                    int topDividerHeight, int topDividerColor) {
         mLayoutHelper.onlyShowTopDivider(topInsetLeft, topInsetRight, topDividerHeight, topDividerColor);
@@ -113,6 +122,7 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
     }
 
 
+    @Override
     public void onlyShowBottomDivider(int bottomInsetLeft, int bottomInsetRight,
                                       int bottomDividerHeight, int bottomDividerColor) {
         mLayoutHelper.onlyShowBottomDivider(bottomInsetLeft, bottomInsetRight, bottomDividerHeight, bottomDividerColor);
@@ -120,11 +130,13 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
     }
 
 
+    @Override
     public void onlyShowLeftDivider(int leftInsetTop, int leftInsetBottom, int leftDividerWidth, int leftDividerColor) {
         mLayoutHelper.onlyShowLeftDivider(leftInsetTop, leftInsetBottom, leftDividerWidth, leftDividerColor);
         invalidate();
     }
 
+    @Override
     public void onlyShowRightDivider(int rightInsetTop, int rightInsetBottom, int rightDividerWidth, int rightDividerColor) {
         mLayoutHelper.onlyShowRightDivider(rightInsetTop, rightInsetBottom, rightDividerWidth, rightDividerColor);
         invalidate();
@@ -155,18 +167,27 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
     }
 
 
+    @Override
     public void setRadiusAndShadow(int radius, int shadowElevation, final float shadowAlpha) {
         mLayoutHelper.setRadiusAndShadow(radius, shadowElevation, shadowAlpha);
     }
 
+    @Override
     public void setRadiusAndShadow(int radius, @QMUILayoutHelper.HideRadiusSide int hideRadiusSide, int shadowElevation, final float shadowAlpha) {
         mLayoutHelper.setRadiusAndShadow(radius, hideRadiusSide, shadowElevation, shadowAlpha);
     }
 
+    @Override
+    public void setRadiusAndShadow(int radius, int hideRadiusSide, int shadowElevation, int shadowColor, float shadowAlpha) {
+        mLayoutHelper.setRadiusAndShadow(radius, hideRadiusSide, shadowElevation, shadowColor, shadowAlpha);
+    }
+
+    @Override
     public void setRadius(int radius) {
         mLayoutHelper.setRadius(radius);
     }
 
+    @Override
     public void setRadius(int radius, @QMUILayoutHelper.HideRadiusSide int hideRadiusSide) {
         mLayoutHelper.setRadius(radius, hideRadiusSide);
     }
@@ -181,16 +202,19 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         mLayoutHelper.setOutlineInset(left, top, right, bottom);
     }
 
+    @Override
     public void setBorderColor(@ColorInt int borderColor) {
         mLayoutHelper.setBorderColor(borderColor);
         invalidate();
     }
 
+    @Override
     public void setBorderWidth(int borderWidth) {
         mLayoutHelper.setBorderWidth(borderWidth);
         invalidate();
     }
 
+    @Override
     public void setShowBorderOnlyBeforeL(boolean showBorderOnlyBeforeL) {
         mLayoutHelper.setShowBorderOnlyBeforeL(showBorderOnlyBeforeL);
         invalidate();
@@ -207,6 +231,7 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
     }
 
 
+    @Override
     public void setShadowElevation(int elevation) {
         mLayoutHelper.setShadowElevation(elevation);
     }
@@ -217,6 +242,7 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
     }
 
 
+    @Override
     public void setShadowAlpha(float shadowAlpha) {
         mLayoutHelper.setShadowAlpha(shadowAlpha);
     }
@@ -226,5 +252,14 @@ public class QMUILinearLayout extends QMUIAlphaLinearLayout implements IQMUILayo
         return mLayoutHelper.getShadowAlpha();
     }
 
+    @Override
+    public void setShadowColor(int shadowColor) {
+        mLayoutHelper.setShadowColor(shadowColor);
+    }
+
+    @Override
+    public int getShadowColor() {
+        return mLayoutHelper.getShadowColor();
+    }
 
 }

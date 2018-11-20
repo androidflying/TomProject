@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.annotation.NonNull;
-import androidx.collection.SimpleArrayMap;
 
 /**
  * 作者：tom_flying
@@ -27,8 +26,9 @@ import androidx.collection.SimpleArrayMap;
 public final class CacheDoubleUtils implements CacheConstants {
 
     private static final Map<String, CacheDoubleUtils> CACHE_MAP = new ConcurrentHashMap<>();
-    private CacheMemoryUtils mCacheMemoryUtils;
-    private CacheDiskUtils mCacheDiskUtils;
+
+    private final CacheMemoryUtils mCacheMemoryUtils;
+    private final CacheDiskUtils mCacheDiskUtils;
 
     /**
      * Return the single {@link CacheDoubleUtils} instance.

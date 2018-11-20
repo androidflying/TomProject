@@ -79,7 +79,6 @@ public class RegexUtils {
         return isMatch(RegexConstants.REGEX_ID_CARD18, input);
     }
 
-
     /**
      * Return whether input matches regex of exact id card number which length is 18.
      *
@@ -145,7 +144,6 @@ public class RegexUtils {
         }
         return false;
     }
-
 
     /**
      * Return whether input matches regex of email.

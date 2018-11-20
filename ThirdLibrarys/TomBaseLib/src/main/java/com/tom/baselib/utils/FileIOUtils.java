@@ -248,7 +248,9 @@ public class FileIOUtils {
             fc = new FileOutputStream(file, append).getChannel();
             fc.position(fc.size());
             fc.write(ByteBuffer.wrap(bytes));
-            if (isForce) fc.force(true);
+            if (isForce) {
+                fc.force(true);
+            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();

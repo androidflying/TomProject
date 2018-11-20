@@ -469,10 +469,8 @@ public class FileUtils {
             return false;
         }
         if (destDir.exists()) {
-            // require delete the old directory
-            if (listener == null || listener.onReplace()) {
-                // unsuccessfully delete then return false
-                if (!deleteAllInDir(destDir)) {
+            if (listener == null || listener.onReplace()) {// require delete the old directory
+                if (!deleteAllInDir(destDir)) {// unsuccessfully delete then return false
                     return false;
                 }
             } else {
@@ -525,10 +523,8 @@ public class FileUtils {
             return false;
         }
         if (destFile.exists()) {
-            // require delete the old file
-            if (listener == null || listener.onReplace()) {
-                // unsuccessfully delete then return false
-                if (!destFile.delete()) {
+            if (listener == null || listener.onReplace()) {// require delete the old file
+                if (!destFile.delete()) {// unsuccessfully delete then return false
                     return false;
                 }
             } else {
@@ -875,9 +871,7 @@ public class FileUtils {
      * @return the time that the file was last modified
      */
     public static long getFileLastModified(final File file) {
-        if (file == null) {
-            return -1;
-        }
+        if (file == null) return -1;
         return file.lastModified();
     }
 
@@ -952,17 +946,13 @@ public class FileUtils {
             if (LINE_SEP.endsWith("\n")) {
                 while ((readChars = is.read(buffer, 0, 1024)) != -1) {
                     for (int i = 0; i < readChars; ++i) {
-                        if (buffer[i] == '\n'){
-                            ++count;
-                        }
+                        if (buffer[i] == '\n') ++count;
                     }
                 }
             } else {
                 while ((readChars = is.read(buffer, 0, 1024)) != -1) {
                     for (int i = 0; i < readChars; ++i) {
-                        if (buffer[i] == '\r') {
-                            ++count;
-                        }
+                        if (buffer[i] == '\r') ++count;
                     }
                 }
             }
@@ -1086,9 +1076,7 @@ public class FileUtils {
      * @return the length of file
      */
     public static long getFileLength(final File file) {
-        if (!isFile(file)) {
-            return -1;
-        }
+        if (!isFile(file)) return -1;
         return file.length();
     }
 
@@ -1140,9 +1128,7 @@ public class FileUtils {
             dis = new DigestInputStream(fis, md);
             byte[] buffer = new byte[1024 * 256];
             while (true) {
-                if (!(dis.read(buffer) > 0)) {
-                    break;
-                }
+                if (!(dis.read(buffer) > 0)) break;
             }
             md = dis.getMessageDigest();
             return md.digest();
@@ -1234,7 +1220,7 @@ public class FileUtils {
      * @return the name of file without extension
      */
     public static String getFileNameNoExtension(final String filePath) {
-        if (isSpace(filePath)){
+        if (isSpace(filePath)) {
             return "";
         }
         int lastPoi = filePath.lastIndexOf('.');
@@ -1255,7 +1241,7 @@ public class FileUtils {
      * @return the extension of file
      */
     public static String getFileExtension(final File file) {
-        if (file == null){
+        if (file == null) {
             return "";
         }
         return getFileExtension(file.getPath());
@@ -1268,7 +1254,7 @@ public class FileUtils {
      * @return the extension of file
      */
     public static String getFileExtension(final String filePath) {
-        if (isSpace(filePath)){
+        if (isSpace(filePath)) {
             return "";
         }
         int lastPoi = filePath.lastIndexOf('.');

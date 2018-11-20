@@ -9,6 +9,7 @@ package com.tom.baselib.constant;
  */
 public final class RegexConstants {
 
+
     /**
      * Regex of simple mobile.
      */

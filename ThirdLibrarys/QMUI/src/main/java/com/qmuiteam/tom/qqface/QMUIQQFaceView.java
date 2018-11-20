@@ -13,6 +13,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import static android.view.View.MeasureSpec.AT_MOST;
@@ -85,6 +87,7 @@ public class QMUIQQFaceView extends View {
     private Typeface mTypeface = null;
     private int mParagraphSpace = 0; // 段间距
     private int mSpecialDrawablePadding = 0;
+    private int mGravity = Gravity.NO_GRAVITY;
 
     public QMUIQQFaceView(Context context) {
         this(context, null);
@@ -149,6 +152,14 @@ public class QMUIQQFaceView extends View {
 
     public void setOpenQQFace(boolean openQQFace) {
         mOpenQQFace = openQQFace;
+    }
+
+    public void setGravity(int gravity) {
+        mGravity = gravity;
+    }
+
+    public int getGravity() {
+        return mGravity;
     }
 
     public void setMaxWidth(int maxWidth) {
@@ -463,27 +474,25 @@ public class QMUIQQFaceView extends View {
             }
         }
         mNeedReCalculateLines = true;
-        int paddingHor = getPaddingLeft() + getPaddingRight();
         if (getLayoutParams() == null) {
             return;
         }
-        if (getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+        if (getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT ||
+                getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT) {
             requestLayout();
             invalidate();
             return;
         }
-        if (getWidth() > paddingHor) {
+        int paddingHor = getPaddingLeft() + getPaddingRight();
+        int paddingVer = getPaddingBottom() + getPaddingTop();
+        if (getWidth() > paddingHor && getHeight() > paddingVer) {
             mLines = 0;
             calculateLinesAndContentWidth(getWidth());
             int oldDrawLine = mNeedDrawLine;
-            int maxLine = mMaxLine;
-            if (getLayoutParams().height != ViewGroup.LayoutParams.WRAP_CONTENT) {
-                maxLine = (getLayoutParams().height + mLineSpace) / (mFontHeight / mLineSpace);
-            }
+            int maxLine = Math.min((getHeight() - paddingVer + mLineSpace) / (mFontHeight + mLineSpace), mMaxLine);
             calculateNeedDrawLine(maxLine);
             // 优化： 如果高度固定或者绘制的行数相同，则不进行requestLayout
-            if (oldDrawLine == mNeedDrawLine
-                    || getLayoutParams().height != ViewGroup.LayoutParams.WRAP_CONTENT) {
+            if (oldDrawLine == mNeedDrawLine) {
                 invalidate();
             } else {
                 requestLayout();
@@ -494,7 +503,7 @@ public class QMUIQQFaceView extends View {
 
     private boolean needReCalculateFontHeight = true;
 
-    private void calculateFontHeight() {
+    protected int calculateFontHeight() {
         if (needReCalculateFontHeight) {
             Paint.FontMetricsInt fontMetricsInt = mPaint.getFontMetricsInt();
             if (fontMetricsInt == null) {
@@ -516,6 +525,15 @@ public class QMUIQQFaceView extends View {
                 }
             }
         }
+        return mFontHeight;
+    }
+
+    public int getFontHeight() {
+        return mFontHeight;
+    }
+
+    public int getLineSpace() {
+        return mLineSpace;
     }
 
 
@@ -543,7 +561,7 @@ public class QMUIQQFaceView extends View {
     private int mLastCalContentWidth = 0;
     private int mLastCalLines = 0;
 
-    private int calculateLinesAndContentWidth(int limitWidth) {
+    protected int calculateLinesAndContentWidth(int limitWidth) {
         if (limitWidth <= (getPaddingRight() + getPaddingLeft()) || isElementEmpty()) {
             mLines = 0;
             mLastCalLines = 0;
@@ -738,9 +756,20 @@ public class QMUIQQFaceView extends View {
             setMeasuredDimension(width, heightMode == AT_MOST ? 0 : heightSize);
             return;
         }
-
+        int maxLine = mMaxLine;
         switch (heightMode) {
             case AT_MOST:
+                // calculate line count first
+                maxLine = (heightSize - getPaddingTop() - getPaddingBottom() + mLineSpace) / (mFontHeight + mLineSpace);
+                maxLine = Math.min(maxLine, mMaxLine);
+                calculateNeedDrawLine(maxLine);
+                height = getPaddingTop() + getPaddingBottom();
+                if (mNeedDrawLine < 2) {
+                    height += mNeedDrawLine * mFontHeight;
+                } else {
+                    height += (mNeedDrawLine - 1) * (mFontHeight + mLineSpace) + mFontHeight;
+                }
+                break;
             case MeasureSpec.UNSPECIFIED:
             default:
                 // calculate line count first
@@ -754,13 +783,15 @@ public class QMUIQQFaceView extends View {
                 break;
             case MeasureSpec.EXACTLY:
                 height = heightSize;
-                int maxLine = (height - getPaddingTop() - getPaddingBottom() + mLineSpace) / (mFontHeight + mLineSpace);
+                maxLine = (height - getPaddingTop() - getPaddingBottom() + mLineSpace) / (mFontHeight + mLineSpace);
+                maxLine = Math.min(maxLine, mMaxLine);
                 calculateNeedDrawLine(maxLine);
                 break;
         }
         setMeasuredDimension(width, height);
-        Log.i(TAG, "mLines = " + mLines + " ; width = " + width + " ; height = " + height +
-                "; measure time = " + (System.currentTimeMillis() - start));
+        Log.i(TAG, "mLines = " + mLines + " ; width = " + width + " ; height = "
+                + height + " ; maxLine = " + maxLine + "; measure time = "
+                + (System.currentTimeMillis() - start));
     }
 
 //    private int getParagraphCount(){
@@ -793,7 +824,7 @@ public class QMUIQQFaceView extends View {
         List<QMUIQQFaceCompiler.Element> elements = mElementList.getElements();
         mCurrentDrawBaseLine = getPaddingTop() + mFirstBaseLine;
         mCurrentDrawLine = 1;
-        mCurrentDrawUsedWidth = getPaddingLeft();
+        setStartDrawUsedWidth(getPaddingLeft(), getWidth() - getPaddingLeft() - getPaddingRight());
         mIsExecutedMiddleEllipsize = false;
         drawElements(canvas, elements, getWidth() - getPaddingLeft() - getPaddingRight());
         Log.i(TAG, "onDraw spend time = " + (System.currentTimeMillis() - start));
@@ -850,7 +881,7 @@ public class QMUIQQFaceView extends View {
                     drawMoreActionText(canvas, endWidth);
                     return;
                 }
-                toNewDrawLine(startLeft, true);
+                toNewDrawLine(startLeft, true, usefulWidth);
             }
         }
     }
@@ -868,14 +899,14 @@ public class QMUIQQFaceView extends View {
         }
     }
 
-    private void toNewDrawLine(int startLeft) {
-        toNewDrawLine(startLeft, false);
+    private void toNewDrawLine(int startLeft, int usefulWidth) {
+        toNewDrawLine(startLeft, false, usefulWidth);
     }
 
     /**
      * 控制段落切换
      */
-    private void toNewDrawLine(int startLeft, boolean paragraph) {
+    private void toNewDrawLine(int startLeft, boolean paragraph, int usefulWidth) {
         int addOn = (paragraph ? mParagraphSpace : 0) + mLineSpace;
         mCurrentDrawLine++;
         if (mIsNeedEllipsize) {
@@ -902,7 +933,25 @@ public class QMUIQQFaceView extends View {
         } else {
             mCurrentDrawBaseLine += mFontHeight + addOn;
         }
-        mCurrentDrawUsedWidth = startLeft;
+        setStartDrawUsedWidth(startLeft, usefulWidth);
+    }
+
+    private void setStartDrawUsedWidth(int startLeft, int usefulWidth) {
+        if (mIsNeedEllipsize) {
+            mCurrentDrawUsedWidth = startLeft;
+            return;
+        }
+        if (mCurrentDrawLine == mNeedDrawLine) {
+            if (mGravity == Gravity.CENTER) {
+                mCurrentDrawUsedWidth = (usefulWidth - (mCurrentCalWidth - startLeft)) / 2 + startLeft;
+            } else if (mGravity == Gravity.RIGHT) {
+                mCurrentDrawUsedWidth = (usefulWidth - (mCurrentCalWidth - startLeft)) + startLeft;
+            } else {
+                mCurrentDrawUsedWidth = startLeft;
+            }
+        } else {
+            mCurrentDrawUsedWidth = startLeft;
+        }
     }
 
     private void onRealDrawText(Canvas canvas, CharSequence text, float[] fontWidths, int offset, int widthStart, int widthEnd) {
@@ -911,7 +960,7 @@ public class QMUIQQFaceView extends View {
         for (int i = offset; i < fontWidths.length; i++) {
             if (targetUsedWidth + fontWidths[i] > widthEnd) {
                 drawText(canvas, text, startPos, i, widthEnd - mCurrentDrawUsedWidth);
-                toNewDrawLine(widthStart);
+                toNewDrawLine(widthStart, widthEnd - widthStart);
                 targetUsedWidth = mCurrentDrawUsedWidth;
                 startPos = i;
             }
@@ -950,7 +999,7 @@ public class QMUIQQFaceView extends View {
                         if (mCurrentDrawUsedWidth + fontWidths[i] <= widthEnd) {
                             mCurrentDrawUsedWidth += fontWidths[i];
                         } else {
-                            toNewDrawLine(widthStart);
+                            toNewDrawLine(widthStart, widthEnd - widthStart);
                             onDrawText(canvas, text, fontWidths, i, widthStart, widthEnd);
                             return;
                         }
@@ -965,7 +1014,7 @@ public class QMUIQQFaceView extends View {
                             if (mCurrentDrawUsedWidth > needStopWidth) {
                                 newStart = i;
                             }
-                            toNewDrawLine(widthStart + mEllipsizeTextLength);
+                            toNewDrawLine(widthStart + mEllipsizeTextLength, widthEnd - widthStart);
                             onDrawText(canvas, text, fontWidths, newStart, widthStart, widthEnd);
                             return;
                         }
@@ -980,7 +1029,7 @@ public class QMUIQQFaceView extends View {
                             targetDrawWidth += fontWidths[i];
                         } else {
                             drawText(canvas, text, offset, i, widthEnd - mCurrentDrawUsedWidth);
-                            toNewDrawLine(widthStart);
+                            toNewDrawLine(widthStart, widthEnd - widthStart);
                             onDrawText(canvas, text, fontWidths, i, widthStart, widthEnd);
                             return;
                         }
@@ -1023,7 +1072,7 @@ public class QMUIQQFaceView extends View {
                             targetUsedWidth += fontWidths[i];
                         } else {
                             drawText(canvas, text, offset, i, widthEnd - mCurrentDrawUsedWidth);
-                            toNewDrawLine(widthStart);
+                            toNewDrawLine(widthStart, widthEnd - widthStart);
                             onDrawText(canvas, text, fontWidths, i, widthStart, widthEnd);
                             return;
                         }
@@ -1043,7 +1092,7 @@ public class QMUIQQFaceView extends View {
                             mCurrentDrawUsedWidth += mEllipsizeTextLength;
                             drawMoreActionText(canvas, widthEnd);
                             // 依然要去到下一行，使得后续不会进入这个逻辑
-                            toNewDrawLine(widthStart);
+                            toNewDrawLine(widthStart, widthEnd - widthStart);
                             return;
                         }
                     }
@@ -1078,7 +1127,7 @@ public class QMUIQQFaceView extends View {
                 if (mCurrentDrawUsedWidth + fontWidths[i] <= widthEnd) {
                     mCurrentDrawUsedWidth += fontWidths[i];
                 } else {
-                    toNewDrawLine(widthStart);
+                    toNewDrawLine(widthStart, widthEnd - widthStart);
                     handleTextAfterMiddleEllipsize(canvas, text, fontWidths, i, ellipsizeLine, widthStart, widthEnd);
                     return;
                 }
@@ -1121,15 +1170,15 @@ public class QMUIQQFaceView extends View {
         canvas.drawText(text, start, end, mCurrentDrawUsedWidth, mCurrentDrawBaseLine, mPaint);
     }
 
-    private void onDrawQQFace(Canvas canvas, int res, Drawable specialDrawable, int widthStart, int widthEnd, boolean isFirst, boolean isLast) {
-        int size = res != -1 ? mQQFaceSize : specialDrawable.getIntrinsicWidth() + (isFirst || isLast ? mSpecialDrawablePadding : mSpecialDrawablePadding * 2);
+    private void onDrawQQFace(Canvas canvas, int res, @Nullable Drawable specialDrawable, int widthStart, int widthEnd, boolean isFirst, boolean isLast) {
+        int size = res != -1 || specialDrawable == null ? mQQFaceSize : specialDrawable.getIntrinsicWidth() + (isFirst || isLast ? mSpecialDrawablePadding : mSpecialDrawablePadding * 2);
         if (mIsNeedEllipsize) {
             if (mEllipsize == TextUtils.TruncateAt.START) {
                 if (mCurrentDrawLine > mLines - mNeedDrawLine) {
                     onRealDrawQQFace(canvas, res, specialDrawable, mNeedDrawLine - mLines, widthStart, widthEnd, isFirst, isLast);
                 } else if (mCurrentDrawLine < mLines - mNeedDrawLine) {
                     if (size + mCurrentDrawUsedWidth > widthEnd) {
-                        toNewDrawLine(widthStart);
+                        toNewDrawLine(widthStart, widthEnd - widthStart);
                         onDrawQQFace(canvas, res, specialDrawable, widthStart, widthEnd, isFirst, isLast);
                     } else {
                         mCurrentDrawUsedWidth += size;
@@ -1139,7 +1188,7 @@ public class QMUIQQFaceView extends View {
                     if (size + mCurrentDrawUsedWidth < needStopWidth) {
                         mCurrentDrawUsedWidth += size;
                     } else {
-                        toNewDrawLine(widthStart + mEllipsizeTextLength);
+                        toNewDrawLine(widthStart + mEllipsizeTextLength, widthEnd - widthStart);
                     }
                 }
             } else if (mEllipsize == TextUtils.TruncateAt.MIDDLE) {
@@ -1179,7 +1228,7 @@ public class QMUIQQFaceView extends View {
                         mCurrentDrawUsedWidth += mEllipsizeTextLength;
                         drawMoreActionText(canvas, widthEnd);
                         // 去新的一行，避免再次走入这一行的逻辑
-                        toNewDrawLine(widthStart);
+                        toNewDrawLine(widthStart, widthEnd - widthStart);
                     } else {
                         drawQQFace(canvas, res, specialDrawable, mCurrentDrawLine, isFirst, isLast);
                         mCurrentDrawUsedWidth += size;
@@ -1217,7 +1266,7 @@ public class QMUIQQFaceView extends View {
 
         if (mCurrentDrawLine < needStopLine) {
             if (size + mCurrentDrawUsedWidth > widthEnd) {
-                toNewDrawLine(widthStart);
+                toNewDrawLine(widthStart, widthEnd - widthStart);
                 onDrawQQFace(canvas, res, specialDrawable, widthStart, widthEnd, isFirst, isLast);
             } else {
                 mCurrentDrawUsedWidth += size;
@@ -1242,19 +1291,19 @@ public class QMUIQQFaceView extends View {
         }
     }
 
-    private void onRealDrawQQFace(Canvas canvas, int res, Drawable specialDrawable, int adjustLine,
+    private void onRealDrawQQFace(Canvas canvas, int res, @Nullable Drawable specialDrawable, int adjustLine,
                                   int widthStart, int widthEnd, boolean isFirst, boolean isLast) {
-        int size = res != 0 ? mQQFaceSize : specialDrawable.getIntrinsicWidth() + (isFirst || isLast ? mSpecialDrawablePadding : mSpecialDrawablePadding * 2);
+        int size = res != 0 || specialDrawable == null ? mQQFaceSize : specialDrawable.getIntrinsicWidth() + (isFirst || isLast ? mSpecialDrawablePadding : mSpecialDrawablePadding * 2);
         if (mCurrentDrawUsedWidth + size > widthEnd) {
-            toNewDrawLine(widthStart);
+            toNewDrawLine(widthStart, widthEnd - widthStart);
         }
         drawQQFace(canvas, res, specialDrawable, mCurrentDrawLine + adjustLine, isFirst, isLast);
         mCurrentDrawUsedWidth += size;
     }
 
-    private void drawQQFace(Canvas canvas, int res, Drawable specialDrawable, int line, boolean isFirst, boolean isLast) {
+    private void drawQQFace(Canvas canvas, int res, @Nullable Drawable specialDrawable, int line, boolean isFirst, boolean isLast) {
         Drawable drawable = res != 0 ? ContextCompat.getDrawable(getContext(), res) : specialDrawable;
-        int size = res != 0 ? mQQFaceSize : specialDrawable.getIntrinsicWidth() + (isFirst || isLast ? mSpecialDrawablePadding : mSpecialDrawablePadding * 2);
+        int size = res != 0 || specialDrawable == null ? mQQFaceSize : specialDrawable.getIntrinsicWidth() + (isFirst || isLast ? mSpecialDrawablePadding : mSpecialDrawablePadding * 2);
         if (drawable == null) {
             return;
         }

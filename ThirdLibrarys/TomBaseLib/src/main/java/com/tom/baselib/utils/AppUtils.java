@@ -80,9 +80,7 @@ public class AppUtils {
      * @param file The file.
      */
     public static void installApp(final File file) {
-        if (!isFileExists(file)) {
-            return;
-        }
+        if (!isFileExists(file)) return;
         Utils.getApp().startActivity(getInstallAppIntent(file, true));
     }
 
@@ -294,24 +292,13 @@ public class AppUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isAppInstalled(@NonNull final String packageName) {
-        return !isSpace(packageName)
-                && Utils.getApp().getPackageManager().getLaunchIntentForPackage(packageName) != null;
-    }
-
-    /**
-     * Return whether the app is installed.
-     *
-     * @param action   The Intent action, such as ACTION_VIEW.
-     * @param category The desired category.
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isAppInstalled(@NonNull final String action,
-                                         @NonNull final String category) {
-        Intent intent = new Intent(action);
-        intent.addCategory(category);
-        PackageManager pm = Utils.getApp().getPackageManager();
-        ResolveInfo info = pm.resolveActivity(intent, 0);
-        return info != null;
+        PackageManager packageManager = Utils.getApp().getPackageManager();
+        try {
+            return packageManager.getApplicationInfo(packageName, 0) != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -445,15 +432,17 @@ public class AppUtils {
         relaunchApp(false);
     }
 
+    /**
+     * Relaunch the application.
+     *
+     * @param isKillProcess True to kill the process, false otherwise.
+     */
     public static void relaunchApp(final boolean isKillProcess) {
         PackageManager packageManager = Utils.getApp().getPackageManager();
         Intent intent = packageManager.getLaunchIntentForPackage(Utils.getApp().getPackageName());
         if (intent == null) {
             return;
         }
-        ComponentName componentName = intent.getComponent();
-        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
-        Utils.getApp().startActivity(mainIntent);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Utils.getApp().startActivity(intent);
         if (!isKillProcess) {

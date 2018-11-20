@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.qmuiteam.tom.util.QMUIWindowInsetHelper;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.view.ViewCompat;
 import androidx.viewpager.widget.PagerAdapter;
@@ -202,17 +203,17 @@ public class QMUIViewPager extends ViewPager implements IWindowInsetLayout {
         }
 
         @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             mAdapter.setPrimaryItem(container, position, object);
         }
 
         @Override
-        public void unregisterDataSetObserver(DataSetObserver observer) {
+        public void unregisterDataSetObserver(@NonNull DataSetObserver observer) {
             mAdapter.unregisterDataSetObserver(observer);
         }
 
         @Override
-        public void registerDataSetObserver(DataSetObserver observer) {
+        public void registerDataSetObserver(@NonNull DataSetObserver observer) {
             mAdapter.registerDataSetObserver(observer);
         }
 

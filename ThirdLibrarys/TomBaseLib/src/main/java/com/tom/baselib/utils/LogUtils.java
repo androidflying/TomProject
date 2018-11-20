@@ -92,12 +92,13 @@ public class LogUtils {
     private static final String MIDDLE_BORDER = MIDDLE_CORNER + MIDDLE_DIVIDER + MIDDLE_DIVIDER;
     private static final String BOTTOM_BORDER = BOTTOM_CORNER + SIDE_DIVIDER + SIDE_DIVIDER;
     private static final int MAX_LEN = 3000;
-    private static final ThreadLocal<SimpleDateFormat> SDF_THREAD_LOCAL = new ThreadLocal<>();
     private static final String NOTHING = "log nothing";
     private static final String NULL = "null";
     private static final String ARGS = "args";
     private static final String PLACEHOLDER = " ";
     private static final Config CONFIG = new Config();
+
+    private static final ThreadLocal<SimpleDateFormat> SDF_THREAD_LOCAL = new ThreadLocal<>();
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
@@ -209,9 +210,13 @@ public class LogUtils {
     }
 
     public static void log(final int type, final String tag, final Object... contents) {
-        if (!CONFIG.mLogSwitch || (!CONFIG.mLog2ConsoleSwitch && !CONFIG.mLog2FileSwitch)) return;
+        if (!CONFIG.mLogSwitch || (!CONFIG.mLog2ConsoleSwitch && !CONFIG.mLog2FileSwitch)) {
+            return;
+        }
         int type_low = type & 0x0f, type_high = type & 0xf0;
-        if (type_low < CONFIG.mConsoleFilter && type_low < CONFIG.mFileFilter) return;
+        if (type_low < CONFIG.mConsoleFilter && type_low < CONFIG.mFileFilter) {
+            return;
+        }
         final TagHead tagHead = processTagAndHead(tag);
         String body = processBody(type_high, contents);
         if (CONFIG.mLog2ConsoleSwitch && type_low >= CONFIG.mConsoleFilter && type_high != FILE) {
@@ -285,7 +290,9 @@ public class LogUtils {
 
     private static String getFileName(final StackTraceElement targetElement) {
         String fileName = targetElement.getFileName();
-        if (fileName != null) return fileName;
+        if (fileName != null) {
+            return fileName;
+        }
         // If name of file is null, should add
         // "-keepattributes SourceFile,LineNumberTable" in proguard file.
         String className = targetElement.getClassName();
@@ -324,14 +331,22 @@ public class LogUtils {
     }
 
     private static String formatObject(int type, Object object) {
-        if (object == null) return NULL;
-        if (type == JSON) return LogFormatter.formatJson(object.toString());
-        if (type == XML) return LogFormatter.formatXml(object.toString());
+        if (object == null) {
+            return NULL;
+        }
+        if (type == JSON) {
+            return LogFormatter.formatJson(object.toString());
+        }
+        if (type == XML) {
+            return LogFormatter.formatXml(object.toString());
+        }
         return formatObject(object);
     }
 
     private static String formatObject(Object object) {
-        if (object == null) return NULL;
+        if (object == null) {
+            return NULL;
+        }
         if (!I_FORMATTER_MAP.isEmpty()) {
             IFormatter iFormatter = I_FORMATTER_MAP.get(getClassFromObject(object));
             if (iFormatter != null) {
@@ -339,10 +354,18 @@ public class LogUtils {
                 return iFormatter.format(object);
             }
         }
-        if (object.getClass().isArray()) return LogFormatter.array2String(object);
-        if (object instanceof Throwable) return LogFormatter.throwable2String((Throwable) object);
-        if (object instanceof Bundle) return LogFormatter.bundle2String((Bundle) object);
-        if (object instanceof Intent) return LogFormatter.intent2String((Intent) object);
+        if (object.getClass().isArray()) {
+            return LogFormatter.array2String(object);
+        }
+        if (object instanceof Throwable) {
+            return LogFormatter.throwable2String((Throwable) object);
+        }
+        if (object instanceof Bundle) {
+            return LogFormatter.bundle2String((Bundle) object);
+        }
+        if (object instanceof Intent) {
+            return LogFormatter.intent2String((Intent) object);
+        }
         return object.toString();
     }
 
@@ -371,7 +394,9 @@ public class LogUtils {
             for (String aHead : head) {
                 Log.println(type, tag, CONFIG.mLogBorderSwitch ? LEFT_BORDER + aHead : aHead);
             }
-            if (CONFIG.mLogBorderSwitch) Log.println(type, tag, MIDDLE_BORDER);
+            if (CONFIG.mLogBorderSwitch) {
+                Log.println(type, tag, MIDDLE_BORDER);
+            }
         }
     }
 
@@ -467,15 +492,6 @@ public class LogUtils {
         }
     }
 
-    private static SimpleDateFormat getSdf() {
-        SimpleDateFormat simpleDateFormat = SDF_THREAD_LOCAL.get();
-        if (simpleDateFormat == null) {
-            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            SDF_THREAD_LOCAL.set(simpleDateFormat);
-        }
-        return simpleDateFormat;
-    }
-
     private static void print2File(final int type, final String tag, final String msg) {
         Date now = new Date(System.currentTimeMillis());
         String format = getSdf().format(now);
@@ -499,10 +515,23 @@ public class LogUtils {
         input2File(content, fullPath);
     }
 
+    private static SimpleDateFormat getSdf() {
+        SimpleDateFormat simpleDateFormat = SDF_THREAD_LOCAL.get();
+        if (simpleDateFormat == null) {
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            SDF_THREAD_LOCAL.set(simpleDateFormat);
+        }
+        return simpleDateFormat;
+    }
+
     private static boolean createOrExistsFile(final String filePath) {
         File file = new File(filePath);
-        if (file.exists()) return file.isFile();
-        if (!createOrExistsDir(file.getParentFile())) return false;
+        if (file.exists()) {
+            return file.isFile();
+        }
+        if (!createOrExistsDir(file.getParentFile())) {
+            return false;
+        }
         try {
             deleteDueLogs(filePath);
             boolean isCreate = file.createNewFile();
@@ -525,7 +554,9 @@ public class LogUtils {
                 return name.matches("^" + CONFIG.mFilePrefix + "-[0-9]{4}-[0-9]{2}-[0-9]{2}.txt$");
             }
         });
-        if (files.length <= 0) return;
+        if (files.length <= 0) {
+            return;
+        }
         final int length = filePath.length();
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         try {
@@ -584,7 +615,9 @@ public class LogUtils {
     }
 
     private static boolean isSpace(final String s) {
-        if (s == null) return true;
+        if (s == null) {
+            return true;
+        }
         for (int i = 0, len = s.length(); i < len; ++i) {
             if (!Character.isWhitespace(s.charAt(i))) {
                 return false;
@@ -636,11 +669,13 @@ public class LogUtils {
         private int mSaveDays = -1;    // The save days of log.
 
         private Config() {
-            if (mDefaultDir != null) return;
+            if (mDefaultDir != null) {
+                return;
+            }
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                    && Utils.getApp().getExternalCacheDir() != null)
+                    && Utils.getApp().getExternalCacheDir() != null) {
                 mDefaultDir = Utils.getApp().getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
-            else {
+            } else {
                 mDefaultDir = Utils.getApp().getCacheDir() + FILE_SEP + "log" + FILE_SEP;
             }
         }
@@ -865,7 +900,9 @@ public class LogUtils {
                 } else {
                     sb.append(formatObject(value));
                 }
-                if (!iterator.hasNext()) return sb.append(" }").toString();
+                if (!iterator.hasNext()) {
+                    return sb.append(" }").toString();
+                }
                 sb.append(',').append(' ');
             }
         }

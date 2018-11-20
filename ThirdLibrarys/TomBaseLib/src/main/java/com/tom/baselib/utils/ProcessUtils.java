@@ -33,6 +33,7 @@ import static android.Manifest.permission.KILL_BACKGROUND_PROCESSES;
  */
 public final class ProcessUtils {
 
+
     private ProcessUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
@@ -97,9 +98,7 @@ public final class ProcessUtils {
                             .queryUsageStats(UsageStatsManager.INTERVAL_BEST,
                                     beginTime, endTime);
                 }
-                if (usageStatsList == null || usageStatsList.isEmpty()) {
-                    return null;
-                }
+                if (usageStatsList == null || usageStatsList.isEmpty()) return null;
                 UsageStats recentStats = null;
                 for (UsageStats usageStats : usageStatsList) {
                     if (recentStats == null
@@ -198,15 +197,6 @@ public final class ProcessUtils {
             }
         }
         return true;
-    }
-
-    /**
-     * Return whether app running in the main process.
-     *
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isMainProcess(Context context) {
-        return context.getPackageName().equals(getCurrentProcessName());
     }
 
     /**

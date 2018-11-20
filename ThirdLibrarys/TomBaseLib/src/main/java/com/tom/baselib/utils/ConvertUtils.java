@@ -213,7 +213,9 @@ public final class ConvertUtils {
      */
     public static double byte2MemorySize(final long byteSize,
                                          @MemoryConstants.Unit final int unit) {
-        if (byteSize < 0) return -1;
+        if (byteSize < 0) {
+            return -1;
+        }
         return (double) byteSize / unit;
     }
 
@@ -505,9 +507,7 @@ public final class ConvertUtils {
      * @return bytes
      */
     public static byte[] bitmap2Bytes(final Bitmap bitmap, final Bitmap.CompressFormat format) {
-        if (bitmap == null) {
-            return null;
-        }
+        if (bitmap == null) return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(format, 100, baos);
         return baos.toByteArray();
