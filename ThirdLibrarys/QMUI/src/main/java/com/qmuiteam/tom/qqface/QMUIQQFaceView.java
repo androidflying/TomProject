@@ -448,6 +448,7 @@ public class QMUIQQFaceView extends View {
             return;
         }
         mOriginText = charSequence;
+        setContentDescription(charSequence);
         if (mOpenQQFace && mCompiler == null) {
             throw new RuntimeException("mCompiler == null");
         }

@@ -57,6 +57,7 @@ public class MainActivity extends MyActivity {
         findViewById(R.id.button6).setOnClickListener(this);
         findViewById(R.id.button7).setOnClickListener(this);
         findViewById(R.id.button8).setOnClickListener(this);
+        findViewById(R.id.button9).setOnClickListener(this);
     }
 
     @Override
@@ -70,12 +71,7 @@ public class MainActivity extends MyActivity {
 
                     if (e == null) {
                         TomUser tomUser = new Gson().fromJson(s, TomUser.class);
-                        tv_user.setText("昵称：" + tomUser.getUsername()
-                                + "\n手机号：" + tomUser.getMobilePhoneNumber()
-                                + "\n是否验证手机号：" + tomUser.getMobilePhoneNumberVerified()
-                                + "\n真实姓名：" + tomUser.getRealName()
-
-                                + "\n工号：" + tomUser.getWorkId());
+                        updateUserInfo(tomUser);
                     } else {
                         ToastUtils.showLong(e.toString());
                     }
@@ -104,12 +100,7 @@ public class MainActivity extends MyActivity {
                     @Override
                     public void done(TomUser tomUser, BmobException e) {
                         if (e == null) {
-                            tv_user.setText("昵称：" + tomUser.getUsername()
-                                    + "\n手机号：" + tomUser.getMobilePhoneNumber()
-                                    + "\n是否验证手机号：" + tomUser.getMobilePhoneNumberVerified()
-                                    + "\n真实姓名：" + tomUser.getRealName()
-
-                                    + "\n工号：" + tomUser.getWorkId());
+                            updateUserInfo(tomUser);
                         } else {
                             ToastUtils.showLong(e.toString());
                         }
@@ -122,7 +113,7 @@ public class MainActivity extends MyActivity {
                     public void done(BmobException e) {
                         if (e == null) {
                             ToastUtils.showLong("更新成功");
-
+                            updateUserInfo(UserHelper.getCurrentUser());
                         } else {
                             ToastUtils.showLong(e.toString());
                         }
@@ -134,11 +125,8 @@ public class MainActivity extends MyActivity {
                     @Override
                     public void done(TomUser tomUser, BmobException e) {
                         if (e == null) {
-                            tv_user.setText("昵称：" + tomUser.getUsername()
-                                    + "\n手机号：" + tomUser.getMobilePhoneNumber()
-                                    + "\n是否验证手机号：" + tomUser.getMobilePhoneNumberVerified()
-                                    + "\n真实姓名：" + tomUser.getRealName()
-                                    + "\n工号：" + tomUser.getWorkId());
+                            updateUserInfo(tomUser);
+
                         } else {
                             ToastUtils.showLong(e.toString());
                         }
@@ -146,10 +134,22 @@ public class MainActivity extends MyActivity {
                 });
                 break;
             case R.id.button9:
-
                 UserHelper.logout();
+                updateUserInfo(null);
                 break;
             default:
+        }
+    }
+
+    private void updateUserInfo(TomUser tomUser) {
+        if (tomUser != null) {
+            tv_user.setText("昵称：" + tomUser.getUsername()
+                    + "\n手机号：" + tomUser.getMobilePhoneNumber()
+                    + "\n是否验证手机号：" + tomUser.getMobilePhoneNumberVerified()
+                    + "\n真实姓名：" + tomUser.getRealName()
+                    + "\n工号：" + tomUser.getWorkId());
+        } else {
+            tv_user.setText("未登录");
         }
     }
 }

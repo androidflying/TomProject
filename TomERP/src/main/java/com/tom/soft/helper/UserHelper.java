@@ -75,8 +75,17 @@ public class UserHelper {
      * @return true 已登录 ::: false 未登录
      */
     public static boolean isLogin() {
+        return getCurrentUser() != null;
+    }
+
+    /**
+     * 是否登录用户
+     *
+     * @return true 已登录 ::: false 未登录
+     */
+    public static TomUser getCurrentUser() {
         TomUser user = BmobUser.getCurrentUser(TomUser.class);
-        return user != null;
+        return user;
     }
 
     /**

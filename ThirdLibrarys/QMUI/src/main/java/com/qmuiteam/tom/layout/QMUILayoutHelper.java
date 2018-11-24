@@ -82,7 +82,7 @@ public class QMUILayoutHelper implements IQMUILayout {
     // shadow
     private boolean mIsShowBorderOnlyBeforeL = true;
     private int mShadowElevation = 0;
-    private float mShadowAlpha = 0f;
+    private float mShadowAlpha;
     private int mShadowColor = Color.BLACK;
 
     // outline inset
@@ -540,7 +540,7 @@ public class QMUILayoutHelper implements IQMUILayout {
     @Override
     public void setRadiusAndShadow(int radius, int hideRadiusSide, int shadowElevation, int shadowColor, float shadowAlpha) {
 
-        View owner = mOwner.get();
+        final View owner = mOwner.get();
         if (owner == null) {
             return;
         }
@@ -606,7 +606,13 @@ public class QMUILayoutHelper implements IQMUILayout {
                         right = Math.max(left + 1, right - view.getPaddingRight());
                         bottom = Math.max(top + 1, bottom - view.getPaddingBottom());
                     }
-                    outline.setAlpha(mShadowAlpha);
+                    float shadowAlpha = mShadowAlpha;
+                    if (mShadowElevation == 0) {
+                        // outline.setAlpha will work even if shadowElevation == 0
+                        shadowAlpha = 1f;
+                    }
+
+                    outline.setAlpha(shadowAlpha);
                     if (mRadius <= 0) {
                         outline.setRect(left, top,
                                 right, bottom);

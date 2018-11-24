@@ -26,7 +26,7 @@ public abstract class BaseApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (ProcessUtils.isMainProcess(this)) {
+        if (ProcessUtils.isMainProcess()) {
             initARouter();
             initNetWork();
             initLog();

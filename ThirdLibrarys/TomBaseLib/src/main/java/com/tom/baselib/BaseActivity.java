@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.tom.baselib.utils.AdaptScreenUtils;
 import com.tom.baselib.utils.BarUtils;
 import com.tom.baselib.utils.ScreenUtils;
 
@@ -43,10 +44,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             //今日头条屏幕适配方案
             if (ScreenUtils.isPortrait()) {
                 //以宽度为基准，竖屏
-                ScreenUtils.adaptScreen4VerticalSlide(this, setAdaptVerticalScreen());
+                AdaptScreenUtils.adaptWidth(getResources(), setAdaptVerticalScreen());
             } else {
                 //以高度为基准，横屏
-                ScreenUtils.adaptScreen4HorizontalSlide(this, setAdaptHorizontalScreen());
+                AdaptScreenUtils.adaptHeight(getResources(), setAdaptHorizontalScreen());
             }
         }
         if (BarUtils.isNavBarVisible(this)) {
@@ -93,8 +94,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     protected void onDestroy() {
-        if (!isNeedAdapt() && !ScreenUtils.isAdaptScreen()) {
-            ScreenUtils.cancelAdaptScreen(this);
+        if (!isNeedAdapt()) {
+            AdaptScreenUtils.closeAdapt(getResources());
         }
         super.onDestroy();
     }

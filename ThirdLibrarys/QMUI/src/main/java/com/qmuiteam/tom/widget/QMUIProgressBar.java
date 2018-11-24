@@ -27,7 +27,6 @@ import com.qmuiteam.tom.util.QMUIDisplayHelper;
  * @date 2015-07-29
  */
 public class QMUIProgressBar extends View {
-
     public static int TYPE_RECT = 0;
     public static int TYPE_CIRCLE = 1;
     public static int TOTAL_DURATION = 1000;
@@ -234,7 +233,11 @@ public class QMUIProgressBar extends View {
     }
 
     public void setProgress(int progress) {
-        if (progress > mValue && progress < 0) {
+        setProgress(progress, true);
+    }
+
+    public void setProgress(int progress, boolean animated) {
+        if (progress > mMaxValue || progress < 0) {
             return;
         }
         if (isAnimating) {
@@ -243,7 +246,11 @@ public class QMUIProgressBar extends View {
         }
         int oldValue = mValue;
         mValue = progress;
-        startAnimation(oldValue, progress);
+        if (animated) {
+            startAnimation(oldValue, progress);
+        } else {
+            invalidate();
+        }
     }
 
     public int getMaxValue() {

@@ -18,6 +18,7 @@ import com.qmuiteam.tom.widget.IWindowInsetLayout;
 import java.lang.ref.WeakReference;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -40,7 +41,7 @@ public class QMUIWindowInsetHelper {
         } else {
             // some rom crash with WindowInsets...
             ViewCompat.setOnApplyWindowInsetsListener(viewGroup,
-                    new androidx.core.view.OnApplyWindowInsetsListener() {
+                    new OnApplyWindowInsetsListener() {
                         @Override
                         public WindowInsetsCompat onApplyWindowInsets(View v,
                                                                       WindowInsetsCompat insets) {
@@ -116,12 +117,12 @@ public class QMUIWindowInsetHelper {
         if (QMUINotchHelper.isNotchOfficialSupport()) {
             return defaultApplySystemWindowInsets(viewGroup, (WindowInsets) insets);
         } else {
-            return defaultApplySystemWindowInsetsComapt(viewGroup, (WindowInsetsCompat) insets);
+            return defaultApplySystemWindowInsetsCompat(viewGroup, (WindowInsetsCompat) insets);
         }
     }
 
     @TargetApi(21)
-    public boolean defaultApplySystemWindowInsetsComapt(ViewGroup viewGroup, WindowInsetsCompat insets) {
+    public boolean defaultApplySystemWindowInsetsCompat(ViewGroup viewGroup, WindowInsetsCompat insets) {
         if (!insets.hasSystemWindowInsets()) {
             return false;
         }
@@ -234,7 +235,7 @@ public class QMUIWindowInsetHelper {
     }
 
     @SuppressLint("RtlHardcoded")
-    private void computeInsetsWithGravity(View view, Rect insets) {
+    public void computeInsetsWithGravity(View view, Rect insets) {
         ViewGroup.LayoutParams lp = view.getLayoutParams();
         int gravity = -1;
         if (lp instanceof FrameLayout.LayoutParams) {
