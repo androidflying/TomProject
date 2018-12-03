@@ -118,7 +118,7 @@ public class MeiwenActivity extends MyActivity {
                 MeiwenBean bean = new Gson().fromJson(response.body(), MeiwenBean.class);
                 title = bean.getData().getTitle();
                 author = "作者：" + bean.getData().getAuthor() + "\n\n包含字数：" + bean.getData().getWc() + "字";
-                content = new SpanUtils().appendLine(Html.fromHtml(bean.getData().getContent())).setLeadingMargin((int) tv_content.getTextSize() * 2, 10).create();
+                content = new SpanUtils().appendLine(Html.fromHtml(bean.getData().getContent().trim())).setLeadingMargin((int) tv_content.getTextSize() * 2, 10).create();
             }
         });
     }
