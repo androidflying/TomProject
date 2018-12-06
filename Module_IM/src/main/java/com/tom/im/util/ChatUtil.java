@@ -79,7 +79,7 @@ public class ChatUtil {
      * @param token
      */
     public static void connect(Application application, String token) {
-        if (ProcessUtils.isMainProcess(application)) {
+        if (ProcessUtils.isMainProcess()) {
 
             RongIM.connect(token, new RongIMClient.ConnectCallback() {
 

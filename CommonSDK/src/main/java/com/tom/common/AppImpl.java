@@ -27,7 +27,7 @@ public class AppImpl implements ApplicationImpl {
     @Override
     public void onCreate(@NonNull Application application) {
 
-        if (ProcessUtils.isMainProcess(application)) {
+        if (ProcessUtils.isMainProcess()) {
 
             application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
                 @Override
